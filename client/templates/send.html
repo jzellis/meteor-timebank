@@ -1,0 +1,29 @@
+<template name='send'>
+	<div class='container'>
+	<h1>Send {{getOption "currencyName"}} to {{recipient.username}}</h1>
+	<p>You are sending {{#if amount}}<b>{{getOption "currencyAbbr"}} {{amount}}</b>{{else}}{{getOption "currencyName"}}{{/if}} to <b><a href='/users/{{recipient.username}}'>{{recipient.username}}</a></b> ({{recipient.emails.0.address}}).</p>
+	<form role='form'>
+		<input type='hidden' id='recipientId' value='{{recipient._id}}'>
+		<fieldset class='form-group'>
+		<label for='amount'>Amount</label>
+		<div class="input-group input-group-lg">
+  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
+		<input type='text' class='form-control' id='amount' {{#if amount}}value='{{amount}}'{{/if}}>
+	</div>
+	</fieldset>
+	<div class='row'>
+		<ul class='list-unstyled'>
+			<li>Your current balance: {{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</li>
+			<li>Balance after sending: {{getOption "currencyAbbr"}} <span class='afterSend'>{{#if amount}}{{subtract amount currentUser.profile.balance}}{{/if}}</span></li>
+		</ul>
+	</div>
+			<fieldset class='form-group'>
+		<label for='description'>Description</label>
+	<textarea id='description' class='form-control' rows='4'></textarea>
+	</fieldset>
+	<fieldset>
+		<button type='submit' class='btn btn-lg btn-success'>Send</button>
+	</fieldset>
+	</form>
+</div>
+</template>

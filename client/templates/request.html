@@ -1,0 +1,23 @@
+<template name="request">
+		<div class='container'>
+	<h1>Request {{getOption "currencyName"}} from {{recipient.username}}</h1>
+	<p>You are requesting {{#if amount}}<b>{{getOption "currencyAbbr"}} {{amount}}</b>{{else}}{{getOption "currencyName"}}{{/if}} from <b><a href='/users/{{recipient.username}}'>{{recipient.username}}</a></b> ({{recipient.emails.0.address}}).</p>
+	<form role='form'>
+		<input type='hidden' id='recipientId' value='{{recipient._id}}'>
+		<fieldset class='form-group'>
+		<label for='amount'>Amount</label>
+		<div class="input-group input-group-lg">
+  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
+		<input type='text' class='form-control' id='amount' {{#if amount}}value='{{amount}}'{{/if}}>
+	</div>
+	</fieldset>
+			<fieldset class='form-group'>
+		<label for='description'>Description</label>
+	<textarea id='description' class='form-control' rows='4'></textarea>
+	</fieldset>
+	<fieldset>
+		<button type='submit' class='btn btn-lg btn-success'>Request</button>
+	</fieldset>
+	</form>
+</div>
+</template>

@@ -1,0 +1,15 @@
+<template name='recentTransactions'>
+<ul class='list-unstyled'>
+	{{#each recentTransactions 10}}
+	<li class='well'>
+<div>
+		{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}} sent {{#with getUserById recipient}}<a href='/users/{{username}}'>{{{username}}</a>{{/with}} <b>{{getOption "currencyAbbr"}} {{amount}}</b>
+	</div>
+	{{#if description}}<div style='font-style:italic'>&quot;{{description}}&quot;</div>{{/if}}
+	<div style='text-align:right; font-size: 0.8em'>
+		{{timeago timestamp}}
+	</div>
+	</li>
+	{{/each}}
+</ul>
+</template>

@@ -1,0 +1,47 @@
+<template name='account'>
+	<div class='container'>
+		{{#if currentUser}}
+	<h2>{{currentUser.username}}</h2>
+	Current Balance: <strong>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</strong>
+
+	<h3>Favorites</h3>
+		{{#if currentUser.profile.favorites}}
+
+	<ul class='list-unstyled'>
+
+
+	{{#each currentUser.profile.favorites}}
+	<li>
+		{{#with getUserById this}}
+		<a href='/users/{{username}}'><b>{{username}}</b></a> <a href='/send/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-right"></i> Send {{getOption "currencyAbbr"}}</a> <a href='/request/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-left"></i> Request {{getOption "currencyAbbr"}}</a>
+		{{/with}}
+	</li>
+	{{/each}}
+
+	</ul>
+	{{else}}
+	<i>No favorites yet!</i>
+{{/if}}
+	<h3>Transactions</h3>
+	{{#if getMyTransactions}}
+	<table class='table table-striped'>
+		<thead><tr><td>Sender</td><td>Recipient</td><td>Amount ({{getOption "currencyAbbr"}})</td><td>Description</td><td>Date</td></tr></thead>
+		<tbody>
+	{{#each getMyTransactions}}
+	<tr class='{{transactionType}}'>
+	<td>{{#with getUserById sender}}{{username}}{{/with}}</td><td>{{#with getUserById recipient}}{{username}}{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{timestamp}}</td></tr>
+	</tr>
+	{{/each}}
+</tbody>
+	</table>
+{{else}}
+<i>No transactions yet!</i>
+{{/if}}
+	{{/if}}
+</div>
+<style>
+tr.sender td{
+	background: #efe !important;
+}
+</style>
+</template>

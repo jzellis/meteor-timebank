@@ -1,0 +1,142 @@
+<template name='welcome'>
+	<div class='container'>
+	<h2>Welcome to Timebank!</h2>
+	<p>Welcome to your new community! Use the following form to set things up.</p>
+	<form role='form'>
+
+		<div class='well'>
+			<h3>Your Account</h3>
+			<span class="help-block">
+				This is your admin account. Unless you explicitly allow other users admin privilege, you will have sole control of your community. We recommend you create a personal account for yourself as well as an admin account, if you're planning on transacting within the community yourself.
+			</span>
+		{{> accountForm}}
+	</div>
+
+		<div class='well'>
+			<h3>Community Info</h3>
+		<fieldset class='form-group'>
+			<label for='siteName'>Community Name</label>
+				<input class='form-control input-lg' id='siteName'>
+							<span class="help-block">
+				This is the public name of your community
+			</span>
+		</fieldset>
+
+		<fieldset class='form-group'>
+			<label for='siteImage'>Icon/Avatar</label>
+				<input type='file' class='form-control input-lg' id='siteImage'>
+							<span class="help-block">
+				This is your community's icon or avatar.
+			</span>
+		</fieldset>
+
+		<fieldset class='form-group'>
+			<label for='siteDescription'>Community Description</label>
+				<textarea class='form-control' id='siteDescription' rows='8'></textarea>
+							<span class="help-block">
+				Describe your community &em; what it is, what it's for.
+			</span>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='location'>Community Location (optional)</label>
+				<input class='form-control' id='location'>
+							<span class="help-block">
+				Optional, but useful if your community is based on geography.
+			</span>
+		</fieldset>
+	</div>
+
+		<div class='well'>
+			<h3>Currency Info</h3>
+		<fieldset class='form-group'>
+			<label for='currencyName'>Currency Name</label>
+				<input class='form-control' id='currencyName'>
+							<span class="help-block">
+				e.g. AustinBucks, DogeCoin, etc.
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<label for='currencyDescription'>Currency Description</label>
+				<textarea class='form-control' id='currencyDescription' rows='8'></textarea>
+							<span class="help-block">
+				What is your currency based on? How is it shared?
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<label for='currencyAbbr'>Currency Abbrev</label>
+			<div class='row'>
+				<div class='col-md-2'>
+				<input class='form-control' id='currencyAbbr'>
+							<span class="help-block">
+				e.g. auBck, USh, $
+			</span>
+			</div>
+		</div>
+		</fieldset>
+	</div>
+
+	<div class='well'>
+			<h3>Community Options</h3>
+		<fieldset class='form-group'>
+			<label for='defaultBalance'>New User Default Balance</label>
+				<input class='form-control' id='defaultBalance' value='0.00'>
+							<span class="help-block">
+				Should new users start with an existing amount of your currency?
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<div class='checkbox'>
+			<label for='negativeBalance'>
+				<input type='checkbox' id='negativeBalance' value='true'>
+				Can Users Have A Negative Balance?
+			</label>
+		</div>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='maxNegativeBalance'>Maximum Negative Balance</label>
+				<input class='form-control' id='maxNegativeBalance' value='-100.00' disabled>
+							<span class="help-block">
+				This is the maximum amount of negative balance a user can have. If they reach this threshold, they cannot give currency to any other user until their balance gets less negative.
+			</span>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='whoCanJoin'>Who can join the community?</label>
+			<select class='form-control' id='whoCanJoin'>
+				<option value='anyone'>Anyone</option>
+				<option value='invite'>Anyone with an invite code</option>
+			</select>
+						<span class="help-block">
+				Invite codes can be tied to a particular person, or you can generate random ones that you can hand out/print out/make up on the fly.
+			</span>
+		</fieldset>
+	</div>
+	<div class='well'>
+		<h3>Config Stuff</h3>
+		<fieldset class='form-group'>
+			<h4>Facebook</h4>
+			<p class='help-block'>Enter your site's Facebook client id/secret here.</p>
+			<label for='fbClientId'>Client ID</label>
+				<input class='form-control' id='fbClientId' >
+			<label for='fbSecret'>Secret</label>
+								<input class='form-control' id='fbSecret' >
+
+		</fieldset>
+		<fieldset class='form-group'>
+			<h4>Twitter</h4>
+			<p class='help-block'>Enter your site's Twitter client id/secret here.</p>
+			<label for='twClientId'>Client ID</label>
+				<input class='form-control' id='twClientId' >
+			<label for='twSecret'>Secret</label>
+								<input class='form-control' id='twSecret' >
+
+		</fieldset>
+	</div>
+	<div class='row'>
+<div class='col-md-12' style='text-align:center'>
+
+	<button type='submit' class='btn btn-lg btn-success'>Let's Go!</button>
+</div>
+</div>
+	</form>
+</div>
+</template>

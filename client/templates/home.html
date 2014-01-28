@@ -1,0 +1,21 @@
+<template name="home">
+<div class='container'>
+	{{#if getImage "siteImage"}}<img src='{{getImage "siteImage"}}' style='float: left; height: 4em'>{{/if}} <h1>{{getOption "sitename"}}</h1>
+<div class='row'>
+
+<div class='col-md-8'>
+	<h2>Recent Transactions</h2>
+	{{> recentTransactions}}
+</div>
+<div class='col-md-4'>
+	<h2>Recently Joined</h2>
+	<ul class='list-unstyled'>
+		{{#each recentUsers}}
+		<li><a href='/{{username}}'><img src='{{profile.picture}}' style='height: 1.5em'></a> <a href='/users/{{username}}'>{{username}}</a></li>
+		{{/each}}
+	</ul>
+
+</div>
+</div>
+</div>
+</template>
