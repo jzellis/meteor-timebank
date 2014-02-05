@@ -1,3 +1,9 @@
 <template name='autocompleteSuggestion'>
-<li role='navigation'>{{value}}</li>
+<div class='row'>
+	<div class='col-md-4'><img src='{{profile.picture}}' style='height: 2em'></div>
+	<div class='col-md-8'>{{username}}</div>
+	</div>
+<div class='row'>
+	<div class='col-md-12'><small>Balance: {{profile.balance}}</small></div>
+</div>
 </template>

@@ -284,17 +284,15 @@ Template.navbar.rendered = function() {
                     $regex: query
                 }
             }).map(function(user, index, cursor) {
-                return {
-                    username: user.username,
-                    picture: user.profile.picture
-                };
+                return user;
             }));
 
 
         },
         templates: {
-            suggestion: function(value) {
-                return "<img src='" + value.picture + "' style='height:1em'> " + value.username
+            suggestion: function(user) {
+                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
+                return Template.autocompleteSuggestion(user);
             }
         }
     });

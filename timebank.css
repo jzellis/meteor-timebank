@@ -8,7 +8,8 @@
 
 .tt-suggestion{
 	cursor: pointer;
-	padding: 0 .5em 2px .5em;
+	padding: .5em;
+	border-bottom: 1px solid #eee;
 }
 
 .tt-suggestion:hover{
