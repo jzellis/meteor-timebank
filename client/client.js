@@ -21,12 +21,24 @@ Router.map(function() {
         path: '/about' // match the root path
     });
 
-    this.route('welcome', {
-        path: '/welcome'
+    this.route('setup', {
+        path: '/setup',
+        before: function() {
+            // if (Meteor.users.find().count() > 0) {
+            //     this.render('alreadySetup');
+
+            //     // stop the rest of the before hooks and the action function 
+            //     this.stop();
+            // }
+        }
     });
 
     this.route('account', {
         path: '/account'
+    });
+
+    this.route('signup', {
+        path: '/signup'
     });
 
     this.route('send', {
@@ -90,23 +102,24 @@ Router.map(function() {
     });
 
 
-    this.route('createAccount', {
-        path: '/createAccount'
-    });
+
 
 });
 
 Router.before(function() {
-    // if (Meteor.users.find().count() == 0) {
-    //     window.location.href = '/welcome';
-    // }
+    if (Meteor.users.find().count() == 0) {
+        this.render('notSetup');
+
+        // stop the rest of the before hooks and the action function 
+        this.stop();
+    }
 
     if (Meteor.user() && !Meteor.user().emails || Meteor.user() && !Meteor.user().profile.bio) {
         window.location.href = '/completeProfile';
     }
 
 }, {
-    except: 'completeProfile'
+    except: ['setup', 'completeProfile']
 });
 
 
@@ -119,7 +132,7 @@ $(document).ready(function() {
     if (Options.findOne({
         name: 'sitename'
     })) {
-        $('title').append(Options.findOne({
+        $('title').text(Options.findOne({
             name: 'sitename'
         }).value);
     }
@@ -132,10 +145,14 @@ Handlebars.registerHelper("formatAmount", function(amount) {
     return amount.toFixed(2);
 });
 
+Handlebars.registerHelper("formatDate", function(timestamp) {
+    return moment(timestamp).format('LLL');
+});
+
 Handlebars.registerHelper("recentUsers", function() {
     return Meteor.users.find({}, {
         sort: {
-            "profile.timestamp": -1
+            "profile.timestamp": 1
         },
         limit: 10
     }).fetch();
@@ -154,6 +171,33 @@ Handlebars.registerHelper("getMyTransactions", function() {
     }).forEach(function(transaction) {
 
         if (transaction.sender == Meteor.userId()) {
+            transaction.transactionType = 'sender';
+        } else {
+            transaction.transactionType = 'recipient';
+        }
+
+        transactions.push(transaction);
+
+
+    });
+
+    return transactions;
+
+});
+
+Handlebars.registerHelper("getUserTransactions", function(userId) {
+
+    transactions = [];
+
+    Transactions.find({
+        $or: [{
+            sender: userId
+        }, {
+            recipient: userId
+        }]
+    }).forEach(function(transaction) {
+
+        if (transaction.sender == userId) {
             transaction.transactionType = 'sender';
         } else {
             transaction.transactionType = 'recipient';
@@ -195,7 +239,6 @@ Handlebars.registerHelper("getImage", function(imageName) {
 });
 
 Handlebars.registerHelper("isFavorite", function(id) {
-    console.log(id);
     if ($.inArray(id, Meteor.user().profile.favorites) != -1) {
         return true;
     }
@@ -225,6 +268,43 @@ Handlebars.registerHelper("recentTransactions", function(num) {
 
 });
 
+Template.navbar.rendered = function() {
+
+
+    $('#navbarSearch').typeahead({
+        minLength: 3,
+        highlight: true,
+    }, {
+        displayKey: 'user',
+        source: function(query, cb) {
+
+
+            cb(Meteor.users.find({
+                username: {
+                    $regex: query
+                }
+            }).map(function(user, index, cursor) {
+                return {
+                    username: user.username,
+                    picture: user.profile.picture
+                };
+            }));
+
+
+        },
+        templates: {
+            suggestion: function(value) {
+                return "<img src='" + value.picture + "' style='height:1em'> " + value.username
+            }
+        }
+    });
+
+    $('#navbarSearch').on('typeahead:selected', function(object, data, name) {
+        window.location.href = "/users/" + data.username;
+    })
+
+}
+
 Template.navbar.events({
     'click #logout': function(e) {
         Meteor.logout();
@@ -239,7 +319,14 @@ Template.navbar.events({
         Meteor.loginWithTwitter(function(error) {
             console.log(error);
         })
+    },
+    'submit #loginForm': function(e) {
+        e.preventDefault();
+        Meteor.loginWithPassword($('#loginForm input[name="username"]').val(), $('#loginForm input[name="password"]').val(), function(error) {
+            console.log(error);
+        })
     }
+
 });
 
 Template.completeProfile.events({
@@ -283,29 +370,23 @@ Template.send.events({
 
         Transactions.insert(transaction);
 
-
-        newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
-
-        Meteor.users.update({
-            _id: Meteor.userId()
-        }, {
-            $set: {
-                "profile.balance": newBalance
-            }
-        });
-
         recipient = Meteor.users.findOne({
             _id: transaction.recipient
         });
-        newRecipientBalance = parseFloat(recipient.profile.balance) + parseFloat(transaction.amount);
 
-        Meteor.users.update({
-            _id: recipient._id
-        }, {
-            $set: {
-                "profile.balance": newRecipientBalance
-            }
+
+        newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+
+        Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
+
+            abbr = Options.findOne({
+                name: "currencyAbbr"
+            }).value;
+
+            window.location.href = '/';
         });
+
+
 
     }
 
@@ -362,32 +443,33 @@ Template.user.events({
 
 });
 
-Template.createAccount.events({
+Template.signup.events({
 
     'submit form': function(e) {
         e.preventDefault();
 
         user = {
-            username: $('.username').val(),
-            email: $('.email').val(),
+            username: $('#username').val(),
+            email: $('#email').val(),
             password: $('input[name="password"]').val(),
 
             profile: {
-                name: $('.fullName').val(),
-                url: $('.url').val(),
-                bio: $('.bio').val(),
+                name: $('#fullName').val(),
+                url: $('#url').val(),
+                bio: $('#bio').val(),
                 createdAt: new Date(),
                 balance: 0.00,
                 favorites: []
             }
         };
-        console.log(user);
-        Accounts.createUser(user);
+        Accounts.createUser(user, function() {
+            uploadUserAvatar($('#avatar'), Meteor.userId());
+        });
     }
 
 });
 
-Template.welcome.events({
+Template.setup.events({
 
     'click #negativeBalance': function(e) {
 
@@ -406,29 +488,38 @@ Template.welcome.events({
     //     });
     // },
 
-    'submit form': function(e) {
+    'submit #adminAccountForm': function(e) {
 
         e.preventDefault();
 
 
 
         admin = {
-            username: $('.username').val(),
-            email: $('.email').val(),
+            username: $('#username').val(),
+            email: $('#email').val(),
             password: $('input[name="password"]').val(),
 
             profile: {
-                name: $('.fullName').val(),
-                url: $('.url').val(),
-                bio: $('.bio').val(),
+                name: $('#fullName').val(),
+                url: $('#url').val(),
+                bio: $('#bio').val(),
                 createdAt: new Date(),
                 balance: 0.00,
-                favorites: []
+                favorites: [],
+                isAdmin: true
             }
         };
 
-        Accounts.createUser(admin);
+        Accounts.createUser(admin, function() {
+            uploadUserAvatar($('#avatar'), Meteor.userId());
+            window.location.href = "/";
+        });
 
+    },
+
+    'submit #communityForm': function(e) {
+
+        e.preventDefault();
         Options.insert({
             name: "sitename",
             value: $('#siteName').val()
@@ -492,7 +583,7 @@ Template.welcome.events({
         }
 
         uploadImageToCollection($('#siteImage'), 'siteImage');
-
+        window.location.href = "/";
     }
 
 });
@@ -509,7 +600,6 @@ uploadImageToCollection = function(field, name, callback) {
 
 
         reader.onload = function(e) {
-            console.log(e.target);
             Images.insert({
                 name: name,
                 src: e.target.result
@@ -518,6 +608,30 @@ uploadImageToCollection = function(field, name, callback) {
                     _id: id
                 });
                 if (callback) callback(item);
+            });
+        }
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('This file is too large');
+    }
+
+}
+
+uploadUserAvatar = function(field, userId, callback) {
+    file = field[0].files[0];
+
+    if (file.size < 4000000) {
+        var reader = new FileReader();
+
+
+        reader.onload = function(e) {
+            Meteor.users.update({
+                _id: userId
+            }, {
+                $set: {
+                    "profile.picture": e.target.result
+                }
             });
         }
 

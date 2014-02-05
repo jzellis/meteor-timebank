@@ -13,7 +13,7 @@
 	{{#each currentUser.profile.favorites}}
 	<li>
 		{{#with getUserById this}}
-		<a href='/users/{{username}}'><b>{{username}}</b></a> <a href='/send/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-right"></i> Send {{getOption "currencyAbbr"}}</a> <a href='/request/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-left"></i> Request {{getOption "currencyAbbr"}}</a>
+		<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 1em'> <b>{{username}}</b></a> <a href='/send/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-right"></i> Send {{getOption "currencyAbbr"}}</a> <a href='/request/{{_id}}' class='btn btn-primary btn-xs'><i class="fa fa-arrow-circle-o-left"></i> Request {{getOption "currencyAbbr"}}</a>
 		{{/with}}
 	</li>
 	{{/each}}
@@ -29,7 +29,7 @@
 		<tbody>
 	{{#each getMyTransactions}}
 	<tr class='{{transactionType}}'>
-	<td>{{#with getUserById sender}}{{username}}{{/with}}</td><td>{{#with getUserById recipient}}{{username}}{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{timestamp}}</td></tr>
+	<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
 	</tr>
 	{{/each}}
 </tbody>

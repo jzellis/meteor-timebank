@@ -11,43 +11,45 @@ Images = new Meteor.Collection("images");
 
 
 
-Accounts.onCreateUser(function(options, user) {
+// Accounts.onCreateUser(function(options, user) {
 
-    if (options.profile) {
+//     if (options.profile) {
 
-        if (user.services.facebook !== undefined) {
+//         if (user.services.facebook !== undefined) {
 
-            options.profile.picture = "http://graph.facebook.com/" + user.services.facebook.id + "/picture/?type=large";
-            // options.profile.name = user.services.facebook.name;
-            user.username = user.services.facebook.username;
-            user.emails = [{
-                address: user.services.facebook.email,
-                verified: false
-            }];
-
-
-        }
-
-        if (user.services.google !== undefined) {
-
-            options.profile.picture = user.services.google.picture;
-
-        }
-        if (user.services.twitter !== undefined) {
-
-            options.profile.picture = user.services.twitter.profile_image_url; // sudo param name
-            user.username = user.services.twitter.screenName;
+//             options.profile.picture = "http://graph.facebook.com/" + user.services.facebook.id + "/picture/?type=large";
+//             // options.profile.name = user.services.facebook.name;
+//             user.username = user.services.facebook.username;
+//             user.emails = [{
+//                 address: user.services.facebook.email,
+//                 verified: false
+//             }];
 
 
-        }
-        options.profile.favorites = [];
-        options.profile.url = '';
-        options.profile.bio = '';
-        options.profile.balance = 0;
-        user.profile = options.profile;
-    }
-    return user;
-})
+//         }
+
+//         if (user.services.google !== undefined) {
+
+//             options.profile.picture = user.services.google.picture;
+
+//         }
+//         if (user.services.twitter !== undefined) {
+
+//             options.profile.picture = user.services.twitter.profile_image_url; // sudo param name
+//             user.username = user.services.twitter.screenName;
+
+
+//         }
+//         options.profile = {
+//             favorites: [],
+//             url: '',
+//             bio: '',
+//             balance: parseFloat(0)
+//         };
+//         user.profile = options.profile;
+//     }
+//     return user;
+// });
 
 Meteor.startup(function() {
 
@@ -62,6 +64,20 @@ Meteor.startup(function() {
     //     }
     // });
 
+    Meteor.users.find({}).forEach(function(user) {
+
+
+        if (!user.profile.balance) {
+            Meteor.users.update({
+                _id: user._id
+            }, {
+                $set: {
+                    "profile.balance": 0
+                }
+            });
+        }
+
+    });
 
 
 
@@ -136,10 +152,37 @@ Meteor.methods({
                     verified: true
                 }],
                 "profile.bio": item.bio,
-                "profile.url": item.url
+                "profile.url": item.url,
+                "profile.balance": 0.00,
+                "profile.favorites": []
             }
         });
 
+
+    },
+
+    updateBalance: function(balance, transaction) {
+
+        Meteor.users.update({
+            _id: Meteor.userId()
+        }, {
+            $set: {
+                "profile.balance": balance
+            }
+        });
+
+        recipient = Meteor.users.findOne({
+            _id: transaction.recipient
+        });
+        newRecipientBalance = parseFloat(recipient.profile.balance) + parseFloat(transaction.amount);
+
+        Meteor.users.update({
+            _id: recipient._id
+        }, {
+            $set: {
+                "profile.balance": newRecipientBalance
+            }
+        });
 
     }
 

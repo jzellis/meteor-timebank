@@ -2,6 +2,11 @@
 	<div class='container'>
 		{{#if user}}
 	<h1><img src='{{user.profile.picture}}' style='height: 1.5em'> {{user.username}}</h1>
+	<ul class='list-unstyled'>
+		<li><a href='{{user.profile.url}}' target='_new'>{{user.profile.url}}</a></li>
+		<li>{{user.profile.bio}}</li>
+	</ul>
+	{{#if currentUser}}<h2>Balance: {{getOption "currencyAbbr"}} {{user.profile.balance}}</h2>{{/if}}
 	<div class='btn {{#if isFavorite user._id}}btn-success{{else}}btn-primary{{/if}} btn-sm toggleFavorite' data-id='{{user._id}}'>
 		{{#if isFavorite user._id}}<i class='fa fa-star-o'></i> Remove From Favorites
 		{{else}}
@@ -9,5 +14,20 @@
 		{{/if}}
 	</div> <a class='btn btn-primary btn-sm' href='/send/{{user.username}}'><i class='fa fa-arrow-circle-right'></i> Send {{user.username}} {{getOption "currencyName"}}</a> <a class='btn btn-primary btn-sm' href='/request/{{user.username}}'><i class='fa fa-arrow-circle-left'></i> Request {{getOption "currencyName"}} from {{user.username}} </a>
 	{{/if}}
+		<h3>Transactions</h3>
+	{{#if getUserTransactions user._id}}
+	<table class='table table-striped'>
+		<thead><tr><td>Sender</td><td>Recipient</td><td>Amount ({{getOption "currencyAbbr"}})</td><td>Description</td><td>Date</td></tr></thead>
+		<tbody>
+	{{#each getMyTransactions}}
+	<tr class='{{transactionType}}'>
+	<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
+	</tr>
+	{{/each}}
+</tbody>
+	</table>
+{{else}}
+<i>No transactions yet!</i>
+{{/if}}
 </div>
 </template>

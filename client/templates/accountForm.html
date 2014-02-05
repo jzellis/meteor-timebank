@@ -1,23 +1,34 @@
 <template name='accountForm'>
 		<fieldset class='form-group'>
-			<input class='form-control username' placeholder='Username'>
+			<label for='username'>Username</label>
+			<input class='form-control' id='username' {{#if username}}value='{{username}}'{{/if}}>
+		</fieldset>
+		<fieldset>
+			<label for='avatar'>User Picture/Avatar (maximum file size 4MB)</label>
+			<input type='file' name='avatar' class='form-control' id='avatar'>
 		</fieldset>
 		<fieldset class='form-group'>
-			<input class='form-control email' type='email' placeholder='Email'>
+			<label for='email'>Email</label>
+			<input class='form-control' type='email' id='email'>
 		</fieldset>
 		<fieldset class='form-group'>
-			<input class='form-control' name='password' type='password' placeholder='Password'>
+			<label for='password'>Password</label>
+			<input class='form-control' id='password' name='password' type='password'>
 		</fieldset>
 		<fieldset class='form-group'>
-			<input class='form-control fullName' placeholder='Real Name'>
+			<label for='password2'>Repeat Password</label>
+			<input class='form-control' id='password2' name='password2' type='password'>
 		</fieldset>
 		<fieldset class='form-group'>
-			<input class='form-control url' placeholder='Homepage/Business URL'>
+			<label for='fullName'>Full Name</label>
+			<input class='form-control' id='fullName'>
 		</fieldset>
 		<fieldset class='form-group'>
-			<textarea class='form-control bio' placeholder = 'Description/short bio'></textarea>
+			<label for='url'>Homepage/Business URL</label>
+			<input class='form-control' id='url' placeholder='http://www.mysite.com'>
 		</fieldset>
-				<fieldset class='form-group' style='text-align:center'>
-			<button type='submit' class = 'btn btn-success'>Create Account</button>
+		<fieldset class='form-group'>
+			<label for='bio'>Description/short bio</label>
+			<textarea class='form-control' id='bio' Placeholder='Tell us a little about you and/or your business or service.'></textarea>
 		</fieldset>
 </template>

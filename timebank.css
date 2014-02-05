@@ -1,1 +1,16 @@
 /* CSS declarations go here */
+
+.tt-dropdown-menu{
+	background: white;
+	width: 100%;
+	border: 1px solid #ccc;
+}
+
+.tt-suggestion{
+	cursor: pointer;
+	padding: 0 .5em 2px .5em;
+}
+
+.tt-suggestion:hover{
+	background: #eee;
+}

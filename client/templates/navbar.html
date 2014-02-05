@@ -1,5 +1,5 @@
 <template name='navbar'>
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -17,9 +17,8 @@
                     <ul class="nav navbar-nav navbar-left">
 <li><form class="navbar-form navbar-right" role="search">
   <div class="form-group">
-    <input type="text" class="input-sm form-control" placeholder="Search">
+    <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users">
   </div>
-  <button type="submit" class="btn btn-sm btn-default">Go</button>
 </form>
 </li>
 </ul>
@@ -29,15 +28,22 @@
               <img src='{{currentUser.profile.picture}}' style='height: 2em'> {{currentUser.username}} <b class="caret"></b></a>
               <ul class="dropdown-menu">
           <li><a href="/account">Account</a></li>
+          <li><a href="/users/{{currentUser.username}}">Profile</a></li>
+
           <li><a href='#' id='logout'>Logout</a></li>
         </ul>
               </li>
             {{else}}
             <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
               Signup/Login <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-          <li><a id='loginFacebook' class='btn btn-primary'><i class='fa fa-facebook-square'></i> Facebook</a></li>
-          <li><a id='loginTwitter' class='btn btn-info'><i class='fa fa-twitter-square'></i> Twitter</a></li>
+              <ul class="dropdown-menu" style='padding: 1em'>
+<!--           <li><a id='loginFacebook' class='btn btn-primary'><i class='fa fa-facebook-square'></i> Facebook</a></li>
+         <li><a id='loginTwitter' class='btn btn-info'><i class='fa fa-twitter-square'></i> Twitter</a></li> -->
+          <li><form role='form' id='loginForm'><fieldset class='form-group'><input type='text' name='username' class='form-control' placeholder='Username/Email'>
+          <input type='password' name='password' class='form-control' placeholder='Password'>
+          </fieldset><button type='submit' class='form-control btn-success'>Login</button></form>          </li>
+          <li class='divider'></li>
+          <li><a href='/signup'>Signup</a></li>
 
         </ul>
               </li>
