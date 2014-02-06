@@ -22,10 +22,12 @@
 </form>
 </li>
 </ul>
+
+
           <ul class="nav navbar-nav navbar-right">
             {{#if currentUser}}
             <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
-              <img src='{{currentUser.profile.picture}}' style='height: 2em'> {{currentUser.username}} <b class="caret"></b></a>
+              <img src='{{currentUser.profile.picture}}' style='height: 2em'> {{currentUser.profile.name}} <b class="caret"></b></a>
               <ul class="dropdown-menu">
           <li><a href="/account">Account</a></li>
           <li><a href="/users/{{currentUser.username}}">Profile</a></li>
@@ -37,13 +39,14 @@
             <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
               Signup/Login <b class="caret"></b></a>
               <ul class="dropdown-menu" style='padding: 1em'>
-<!--           <li><a id='loginFacebook' class='btn btn-primary'><i class='fa fa-facebook-square'></i> Facebook</a></li>
-         <li><a id='loginTwitter' class='btn btn-info'><i class='fa fa-twitter-square'></i> Twitter</a></li> -->
-          <li><form role='form' id='loginForm'><fieldset class='form-group'><input type='text' name='username' class='form-control' placeholder='Username/Email'>
+          <li><a id='loginFacebook' class='btn btn-primary' style='color:white'><i class='fa fa-facebook-square'></i> Login With Facebook</a></li>
+          <li class='divider'></li>
+
+          <li><form role='form' id='loginForm'><fieldset class='form-group'><input type='text' name='username' class='form-control' placeholder='Username/Email' style='margin-bottom: .5em'>
           <input type='password' name='password' class='form-control' placeholder='Password'>
           </fieldset><button type='submit' class='form-control btn-success'>Login</button></form>          </li>
           <li class='divider'></li>
-          <li><a href='/signup'>Signup</a></li>
+          <li style='text-align:center'><b><a href='/signup'>Signup</a></b></li>
 
         </ul>
               </li>

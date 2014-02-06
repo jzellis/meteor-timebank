@@ -11,45 +11,38 @@ Images = new Meteor.Collection("images");
 
 
 
-// Accounts.onCreateUser(function(options, user) {
+Accounts.onCreateUser(function(options, user) {
 
-//     if (options.profile) {
+    if (options.profile) {
 
-//         if (user.services.facebook !== undefined) {
+        if (user.services.facebook !== undefined) {
 
-//             options.profile.picture = "http://graph.facebook.com/" + user.services.facebook.id + "/picture/?type=large";
-//             // options.profile.name = user.services.facebook.name;
-//             user.username = user.services.facebook.username;
-//             user.emails = [{
-//                 address: user.services.facebook.email,
-//                 verified: false
-//             }];
-
-
-//         }
-
-//         if (user.services.google !== undefined) {
-
-//             options.profile.picture = user.services.google.picture;
-
-//         }
-//         if (user.services.twitter !== undefined) {
-
-//             options.profile.picture = user.services.twitter.profile_image_url; // sudo param name
-//             user.username = user.services.twitter.screenName;
+            options.profile = {
+                picture: "http://graph.facebook.com/" + user.services.facebook.id + "/picture/?type=large",
+                name: user.services.facebook.name,
+                url: '',
+                bio: '',
+                createdAt: new Date(),
+                balance: 0.00,
+                favorites: [],
+            };
+            // options.profile.name = user.services.facebook.name;
+            user.username = user.services.facebook.username;
+            user.emails = [{
+                address: user.services.facebook.email,
+                verified: false
+            }];
 
 
-//         }
-//         options.profile = {
-//             favorites: [],
-//             url: '',
-//             bio: '',
-//             balance: parseFloat(0)
-//         };
-//         user.profile = options.profile;
-//     }
-//     return user;
-// });
+
+
+        }
+
+
+        user.profile = options.profile;
+    }
+    return user;
+});
 
 Meteor.startup(function() {
 

@@ -114,9 +114,9 @@ Router.before(function() {
         this.stop();
     }
 
-    if (Meteor.user() && !Meteor.user().emails || Meteor.user() && !Meteor.user().profile.bio) {
-        window.location.href = '/completeProfile';
-    }
+    // if (Meteor.user() && !Meteor.user().emails || Meteor.user() && !Meteor.user().profile.bio) {
+    //     window.location.href = '/completeProfile';
+    // }
 
 }, {
     except: ['setup', 'completeProfile']
@@ -136,6 +136,9 @@ $(document).ready(function() {
             name: 'sitename'
         }).value);
     }
+
+
+
 });
 
 
@@ -268,6 +271,7 @@ Handlebars.registerHelper("recentTransactions", function(num) {
 
 });
 
+
 Template.navbar.rendered = function() {
 
 
@@ -302,6 +306,16 @@ Template.navbar.rendered = function() {
     })
 
 }
+
+Template.home.events({
+    'click .loginFacebook': function(e) {
+
+        Meteor.loginWithFacebook(function(error) {
+            console.log(error);
+        })
+
+    }
+});
 
 Template.navbar.events({
     'click #logout': function(e) {
@@ -377,10 +391,6 @@ Template.send.events({
 
         Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
 
-            abbr = Options.findOne({
-                name: "currencyAbbr"
-            }).value;
-
             window.location.href = '/';
         });
 
@@ -449,7 +459,7 @@ Template.signup.events({
         user = {
             username: $('#username').val(),
             email: $('#email').val(),
-            password: $('input[name="password"]').val(),
+            password: $('#password').val(),
 
             profile: {
                 name: $('#fullName').val(),
@@ -495,7 +505,7 @@ Template.setup.events({
         admin = {
             username: $('#username').val(),
             email: $('#email').val(),
-            password: $('input[name="password"]').val(),
+            password: $('#password').val(),
 
             profile: {
                 name: $('#fullName').val(),

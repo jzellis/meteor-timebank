@@ -1,5 +1,6 @@
 <template name='send'>
 	<div class='container'>
+		{{#if currentUser}}
 	<h1>Send {{getOption "currencyName"}} to {{recipient.username}}</h1>
 	<p>You are sending {{#if amount}}<b>{{getOption "currencyAbbr"}} {{amount}}</b>{{else}}{{getOption "currencyName"}}{{/if}} to <b><a href='/users/{{recipient.username}}'>{{recipient.username}}</a></b> ({{recipient.emails.0.address}}).</p>
 	<form role='form'>
@@ -25,5 +26,8 @@
 		<button type='submit' class='btn btn-lg btn-success'>Send</button>
 	</fieldset>
 	</form>
+	{{else}}
+	<h2>You must be logged in to do this.</h2>
+	{{/if}}
 </div>
 </template>
