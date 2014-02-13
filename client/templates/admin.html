@@ -24,10 +24,10 @@
 
   <div class="tab-pane" id="users">
 <table class='table'>
-	<thead><tr><th>Username</th><th>Email</th><th>Balance</th><th>Added</th><th>Admin</th><th></th></tr></thead>
+	<thead><tr><th>Username</th><th>Real Name</th><th>Email</th><th>Balance</th><th>Added</th><th>Admin</th><th></th></tr></thead>
 <tbody>
 	{{#each getUsers}}
-	<tr><td><a href='/users/{{username}}' target='_new'>{{username}}</a></td><td><a href='mailto:{{emails.0.address}}'>{{emails.0.address}}</a></td><td>{{profile.balance}}</td><td>{{formatDate profile.timestamp}}</td><td><input type='checkbox' class='isAdmin' value='{{_id}}' {{#if profile.isAdmin}}checked='checked'{{/if}}></td><td><button type='button' value='{{_id}}' class='deleteButton btn btn-danger btn-sm'>Delete</button></td></tr>
+	<tr><td><a href='/users/{{username}}' target='_new'>{{username}}</a></td><td>{{profile.name}}</td><td><a href='mailto:{{emails.0.address}}'>{{emails.0.address}}</a></td><td>{{profile.balance}}</td><td>{{formatDate profile.timestamp}}</td><td><input type='checkbox' class='isAdmin' value='{{_id}}' {{#if profile.isAdmin}}checked='checked'{{/if}}></td><td><button type='button' value='{{_id}}' class='deleteButton btn btn-danger btn-sm'>Delete</button></td></tr>
 	{{/each}}
 </tbody>
 </table>
