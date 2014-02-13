@@ -1,0 +1,153 @@
+<template name='admin'>
+	<div class='container'>
+
+	{{#if currentUser.profile.isAdmin}}
+	<h1>Admin</h1>
+
+<div class='row'>
+	<ul class="nav nav-tabs">
+  <li class="active"><a href="#stats" data-toggle="tab">Stats</a></li>
+
+  <li><a href="#users" data-toggle="tab">Users</a></li>
+  <li><a href="#settings" data-toggle="tab">Settings</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="stats">
+  	<ul>
+  		<li>	Users: {{userCount}}</li>
+  		<li>Total Time: {{getTotalTime}}</li>
+  	</ul>
+
+  </div>
+
+  <div class="tab-pane" id="users">
+<table class='table'>
+	<thead><tr><th>Username</th><th>Email</th><th>Balance</th><th>Added</th><th>Admin</th><th></th></tr></thead>
+<tbody>
+	{{#each getUsers}}
+	<tr><td><a href='/users/{{username}}' target='_new'>{{username}}</a></td><td><a href='mailto:{{emails.0.address}}'>{{emails.0.address}}</a></td><td>{{profile.balance}}</td><td>{{formatDate profile.timestamp}}</td><td><input type='checkbox' class='isAdmin' value='{{_id}}' {{#if profile.isAdmin}}checked='checked'{{/if}}></td><td><button type='button' value='{{_id}}' class='deleteButton btn btn-danger btn-sm'>Delete</button></td></tr>
+	{{/each}}
+</tbody>
+</table>
+  </div>
+
+  <div class="tab-pane" id="settings">
+  	
+<form role='form' id='communityForm'>
+		<div class='well' id='step2'>
+			<h3>Step 2: Community Info</h3>
+		<fieldset class='form-group'>
+			<label for='siteName'>Community Name</label>
+				<input class='form-control input-lg' id='siteName' value='{{getOption "sitename"}}'>
+							<span class="help-block">
+				This is the public name of your community
+			</span>
+		</fieldset>
+
+		<fieldset class='form-group'>
+			<label for='siteImage'>Icon/Avatar</label>
+				<input type='file' class='form-control input-lg' id='siteImage'>
+							<span class="help-block">
+				This is your community's icon or avatar.
+			</span>
+		</fieldset>
+
+		<fieldset class='form-group'>
+			<label for='siteDescription'>Community Description</label>
+				<textarea class='form-control' id='siteDescription' rows='8'>{{getOption "description"}}</textarea>
+							<span class="help-block">
+				Describe your community &em; what it is, what it's for.
+			</span>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='location'>Community Location (optional)</label>
+				<input class='form-control' id='location' value='{{getOption "location"}}'>
+							<span class="help-block">
+				Optional, but useful if your community is based on geography.
+			</span>
+		</fieldset>
+	</div>
+
+		<div class='well' id='step3'>
+			<h3>Currency Info</h3>
+		<fieldset class='form-group'>
+			<label for='currencyName'>Currency Name</label>
+				<input class='form-control' id='currencyName' value='{{getOption "currencyName"}}'>
+							<span class="help-block">
+				e.g. AustinBucks, DogeCoin, etc.
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<label for='currencyDescription'>Currency Description</label>
+				<textarea class='form-control' id='currencyDescription' rows='8'>{{getOption "currencyDescription"}}</textarea>
+							<span class="help-block">
+				What is your currency based on? How is it shared?
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<label for='currencyAbbr'>Currency Abbrev</label>
+			<div class='row'>
+				<div class='col-md-2'>
+				<input class='form-control' id='currencyAbbr' value='{{getOption "currencyAbbr"}}'>
+							<span class="help-block">
+				e.g. auBck, USh, $
+			</span>
+			</div>
+		</div>
+		</fieldset>
+	</div>
+
+	<div class='well' id='step4'>
+			<h3>Community Options</h3>
+		<fieldset class='form-group'>
+			<label for='defaultBalance'>New User Default Balance</label>
+				<input class='form-control' id='defaultBalance' value='{{getOption "defaultBalance"}}'>
+							<span class="help-block">
+				Should new users start with an existing amount of your currency?
+			</span>
+		</fieldset>
+		<fieldset class='form-group'>
+			<div class='checkbox'>
+			<label for='negativeBalance'>
+				<input type='checkbox' id='negativeBalance' value='true' {{#if getOption "negativeBalance"}}checked='checked'{{/if}}>
+				Can Users Have A Negative Balance?
+			</label>
+		</div>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='maxNegativeBalance'>Maximum Negative Balance</label>
+				<input class='form-control' id='maxNegativeBalance' value='{{getOption "maxNegativeBalance"}}' {{#unless getOption "negativeBalance"}}disabled{{/unless}}>
+							<span class="help-block">
+				This is the maximum amount of negative balance a user can have. If they reach this threshold, they cannot give currency to any other user until their balance gets less negative.
+			</span>
+		</fieldset>
+				<fieldset class='form-group'>
+			<label for='whoCanJoin'>Who can join the community?</label>
+			<select class='form-control' id='whoCanJoin'>
+				<option value='anyone'>Anyone</option>
+				<option value='invite'>Anyone with an invite code</option>
+			</select>
+						<span class="help-block">
+				Invite codes can be tied to a particular person, or you can generate random ones that you can hand out/print out/make up on the fly.
+			</span>
+		</fieldset>
+	</div>
+
+	<div class='row'>
+<div class='col-md-12' style='text-align:center'>
+
+	<button type='submit' class='btn btn-lg btn-success'>Update Settings</button>
+</div>
+</div>
+	</form>
+
+  </div>
+</div>
+</div>
+	{{else}}
+	You are not an admin user.
+	{{/if}}
+		</div>
+</template>

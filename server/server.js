@@ -154,6 +154,74 @@ Meteor.methods({
 
     },
 
+    updateProfile: function(item) {
+
+        Meteor.users.update({
+            _id: Meteor.userId()
+        }, {
+            $set: {
+                emails: [{
+                    address: item.email,
+                    verified: true
+                }],
+                "profile.bio": item.bio,
+                "profile.url": item.url
+            }
+        });
+
+    },
+
+    toggleAdmin: function(userId) {
+        if (Meteor.user().profile.isAdmin) {
+            user = Meteor.users.findOne({
+                _id: userId
+            });
+            if (user.profile.isAdmin) {
+                Meteor.users.update({
+                    _id: userId
+                }, {
+                    $unset: {
+                        "profile.isAdmin": ""
+                    }
+                });
+            } else {
+                Meteor.users.update({
+                    _id: userId
+                }, {
+                    $set: {
+                        "profile.isAdmin": true
+                    }
+                });
+
+            }
+        }
+    },
+
+    deleteUser: function(userId) {
+        if (Meteor.user().profile.isAdmin) {
+            Meteor.users.remove({
+                _id: userId
+            });
+        }
+    },
+
+    updateSettings: function(settings) {
+
+        settings.forEach(function(setting) {
+
+            Options.upsert({
+                name: setting.name
+            }, {
+                $set: {
+                    value: setting.value
+                }
+            });
+
+        });
+
+
+    },
+
     updateBalance: function(balance, transaction) {
 
         Meteor.users.update({

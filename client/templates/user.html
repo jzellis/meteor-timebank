@@ -19,7 +19,7 @@
 	<table class='table table-striped'>
 		<thead><tr><td>Sender</td><td>Recipient</td><td>Amount ({{getOption "currencyAbbr"}})</td><td>Description</td><td>Date</td></tr></thead>
 		<tbody>
-	{{#each getMyTransactions}}
+	{{#each getUserTransactions user._id}}
 	<tr class='{{transactionType}}'>
 	<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
 	</tr>

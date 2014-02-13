@@ -9,7 +9,15 @@ Images = new Meteor.Collection("images");
 Router.map(function() {
 
     this.route('home', {
-        path: '/' // match the root path
+        path: '/', // match the root path
+        before: function() {
+            if (Meteor.user()) {
+                this.render('account');
+                this.stop();
+            } else {
+                this.render('home')
+            }
+        }
     });
 
     this.route('completeProfile', {
@@ -19,6 +27,14 @@ Router.map(function() {
 
     this.route('about', {
         path: '/about' // match the root path
+    });
+
+    this.route('stats', {
+        path: '/stats' // match the root path
+    });
+
+    this.route('admin', {
+        path: '/admin' // match the root path
     });
 
     this.route('setup', {
@@ -161,6 +177,20 @@ Handlebars.registerHelper("recentUsers", function() {
     }).fetch();
 });
 
+
+Handlebars.registerHelper("getUsers", function() {
+    return Meteor.users.find({}, {
+        sort: {
+            "profile.timestamp": 1
+        }
+    }).fetch();
+});
+
+Handlebars.registerHelper("userCount", function() {
+    return Meteor.users.find().count();
+});
+
+
 Handlebars.registerHelper("getMyTransactions", function() {
 
     transactions = [];
@@ -175,8 +205,10 @@ Handlebars.registerHelper("getMyTransactions", function() {
 
         if (transaction.sender == Meteor.userId()) {
             transaction.transactionType = 'sender';
+            transaction.isSender = true;
         } else {
             transaction.transactionType = 'recipient';
+            transaction.isRecipient = true;
         }
 
         transactions.push(transaction);
@@ -185,6 +217,12 @@ Handlebars.registerHelper("getMyTransactions", function() {
     });
 
     return transactions;
+
+});
+
+Handlebars.registerHelper("getTotalTime", function() {
+
+    return getTotalTime();
 
 });
 
@@ -202,15 +240,16 @@ Handlebars.registerHelper("getUserTransactions", function(userId) {
 
         if (transaction.sender == userId) {
             transaction.transactionType = 'sender';
+            transaction.isSender = true;
         } else {
             transaction.transactionType = 'recipient';
+            transaction.isRecipient = true;
         }
 
         transactions.push(transaction);
 
 
     });
-
     return transactions;
 
 });
@@ -317,6 +356,40 @@ Template.home.events({
     }
 });
 
+Template.account.events({
+    'focus #accountForm *': function(e) {
+        $('#accountForm input, #accountForm textarea').removeClass('unstyled');
+        $('#accountFormButtons').show();
+    },
+
+    'click #accountForm button.cancel': function(e) {
+        $('#accountForm input, #accountForm textarea').addClass('unstyled');
+        $('#accountForm input, #accountForm textarea').each(function(i) {
+            $(this).val($(this).attr('data-original'));
+        });
+        $('#accountFormButtons').hide();
+    },
+
+    'submit #accountForm': function(e) {
+        e.preventDefault();
+
+        item = {
+            email: $('#email').val(),
+            url: $('#url').val(),
+            bio: $('#bio').val()
+        };
+
+        Meteor.call("updateProfile", item, function(error, result) {
+
+            $('#accountForm input, #accountForm textarea').addClass('unstyled');
+            $('#accountFormButtons').hide();
+
+        });
+
+
+    }
+});
+
 Template.navbar.events({
     'click #logout': function(e) {
         Meteor.logout();
@@ -332,7 +405,7 @@ Template.navbar.events({
             console.log(error);
         })
     },
-    'submit #loginForm': function(e) {
+    'click #loginForm button': function(e) {
         e.preventDefault();
         Meteor.loginWithPassword($('#loginForm input[name="username"]').val(), $('#loginForm input[name="password"]').val(), function(error) {
             console.log(error);
@@ -545,6 +618,10 @@ Template.setup.events({
             value: $('#currencyAbbr').val()
         });
         Options.insert({
+            name: "currencyDescription",
+            value: $('#currencyDescription').val()
+        });
+        Options.insert({
             name: "defaultBalance",
             value: $('#defaultBalance').val()
         });
@@ -596,9 +673,88 @@ Template.setup.events({
 
 });
 
+Template.admin.events({
+
+    'change .isAdmin': function(e) {
+        e.preventDefault();
+        Meteor.call("toggleAdmin", $(e.currentTarget).val());
+    },
+
+    'click .deleteButton': function(e) {
+        e.preventDefault();
+        if (confirm("Are you sure you want to do this?")) {
+            Meteor.call("deleteUser", $(e.currentTarget).val());
+        }
+    },
+
+    'submit #communityForm': function(e) {
+
+        e.preventDefault();
+
+        settings = [{
+                name: "sitename",
+                value: $('#siteName').val()
+            }, {
+                name: "description",
+                value: $('#siteDescription').val()
+            }, {
+                name: "currencyName",
+                value: $('#currencyName').val()
+            }, {
+                name: "currencyAbbr",
+                value: $('#currencyAbbr').val()
+            }, {
+                name: "currencyDescription",
+                value: $('#currencyDescription').val()
+            }, {
+                name: "defaultBalance",
+                value: $('#defaultBalance').val()
+            }
+
+        ];
+
+        if ($('#location').val() != '') settings.push({
+            name: "location",
+            value: $('#location').val()
+        });
+        if ($('#negativeBalance').is(':checked')) {
+            settings.push({
+                name: "negativeBalance",
+                value: true
+            });
+            settings.push({
+                name: "maxNegativeBalance",
+                value: $('#maxNegativeBalance').val()
+            });
+
+        }
+
+
+        Meteor.call("updateSettings", settings);
+
+    }
+
+});
 
 
 // My functions
+
+
+getTotalTime = function() {
+
+    total = 0;
+
+    Meteor.users.find().forEach(function(user) {
+
+        if (user.profile.balance > 0) {
+            total += user.profile.balance;
+        }
+
+
+    });
+    return total;
+
+}
 
 uploadImageToCollection = function(field, name, callback) {
     file = field[0].files[0];
