@@ -12,6 +12,7 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
+            <li><form><a class='btn btn-default navbar-btn' href='/'>Send</a></form></li>
             <li><a href="about">About</a></li>
           </ul>
                     <ul class="nav navbar-nav navbar-left">
@@ -26,15 +27,28 @@
 
           <ul class="nav navbar-nav navbar-right">
             {{#if currentUser}}
-            <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
-              <img src='{{currentUser.profile.picture}}' style='height: 2em'> {{currentUser.profile.name}} <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-          <li><a href="/account">Account</a></li>
-          <li><a href="/users/{{currentUser.username}}">Profile</a></li>
+<li class='col-md-12' style='padding-top:9px'>
 
-          <li><a href='#' id='logout'>Logout</a></li>
-        </ul>
-              </li>
+
+    <div class='row'>
+    <div class='col-md-2'>
+      <img src='{{currentUser.profile.picture}}' style='height: 2.25em'>
+    </div>
+    <div class='col-md-10'>
+      <div class='row'>
+        <div class='col-md-12 h4'><a href='/account'>{{currentUser.username}}</a></div>
+      </div>
+      <div class='row'>
+        <div class='col-md-6 small'><b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
+        <div class='col-md-4 small'><a href='/users/{{currentUser.username}}'>Profile</a></div>
+
+        <div class='col-md-2 text-right small logout btn-link'>Logout</div>
+      </div>
+
+
+
+</li>
+
             {{else}}
             <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
               Signup/Login <b class="caret"></b></a>

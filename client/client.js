@@ -10,14 +10,14 @@ Router.map(function() {
 
     this.route('home', {
         path: '/', // match the root path
-        before: function() {
-            if (Meteor.user()) {
-                this.render('account');
-                this.stop();
-            } else {
-                this.render('home')
-            }
-        }
+        // before: function() {
+        //     if (Meteor.user()) {
+        //         this.render('account');
+        //         this.stop();
+        //     } else {
+        //         this.render('home')
+        //     }
+        // }
     });
 
     this.route('completeProfile', {
@@ -153,6 +153,10 @@ $(document).ready(function() {
         }).value);
     }
 
+    $('.change').on('click', function() {
+        console.log('hello');
+        $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
+    });
 
 
 });
@@ -201,6 +205,10 @@ Handlebars.registerHelper("getMyTransactions", function() {
         }, {
             recipient: Meteor.userId()
         }]
+    }, {
+        sort: {
+            timestamp: -1
+        }
     }).forEach(function(transaction) {
 
         if (transaction.sender == Meteor.userId()) {
@@ -236,6 +244,10 @@ Handlebars.registerHelper("getUserTransactions", function(userId) {
         }, {
             recipient: userId
         }]
+    }, {
+        sort: {
+            $natural: 1
+        }
     }).forEach(function(transaction) {
 
         if (transaction.sender == userId) {
@@ -311,6 +323,51 @@ Handlebars.registerHelper("recentTransactions", function(num) {
 });
 
 
+Template.home.rendered = function() {
+
+
+    $('#sendForm .userSearch').typeahead({
+        minLength: 3,
+        highlight: true,
+    }, {
+        displayKey: 'user',
+        source: function(query, cb) {
+
+
+            cb(Meteor.users.find({
+                username: {
+                    $regex: query
+                }
+            }).map(function(user, index, cursor) {
+                return user;
+            }));
+
+
+        },
+        templates: {
+            suggestion: function(user) {
+                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
+                return Template.autocompleteSuggestion(user);
+            }
+        }
+    });
+
+    $('#sendForm .userSearch').on('typeahead:selected', function(object, data, name) {
+        html = "<div class='row'><div class='col-md-2'><img src='" + data.profile.picture + "' style='height: 2.25em'></div><div class='col-md-10'><div class='row'><div class='col-md-12 h4'>" + data.username + "</div></div><div class='row'><div class='col-md-6 small'><b>" + Options.findOne({
+            name: "currencyAbbr"
+        }).value + " " + data.profile.balance + "</b></div><div id='changeUser' class='col-md-6 text-right small change btn-link'>Change</div></div></div><input type='hidden' name='userTwoId' value='" + data._id + "'>";
+        $('.userTwo').html(html);
+
+
+
+    });
+
+
+
+
+}
+
+
 Template.navbar.rendered = function() {
 
 
@@ -353,7 +410,92 @@ Template.home.events({
             console.log(error);
         })
 
+    },
+
+    'submit #sendForm': function(e) {
+        e.preventDefault();
+
+        if (Meteor.user()) {
+
+            data = $(e.currentTarget).serializeObject();
+            data.userOneId = Meteor.userId();
+
+            if (data.toFrom == "send") {
+
+                transaction = {
+                    sender: Meteor.userId(),
+                    recipient: data.userTwoId,
+                    amount: data.amount,
+                    description: data.description,
+                    timestamp: new Date()
+                };
+
+                Transactions.insert(transaction);
+
+                recipient = Meteor.users.findOne({
+                    _id: transaction.recipient
+                });
+
+
+                newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+
+                Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
+
+                    // window.location.href = '/';
+                });
+            } else {
+
+                request = {
+                    sender: Meteor.userId(),
+                    recipient: data.userTwoId,
+                    amount: data.amount,
+                    description: data.description,
+                    timestamp: new Date()
+                };
+
+                Requests.insert(request, function(error, id) {
+
+                    Meteor.call("sendRequest", id);
+
+
+                });
+
+
+            }
+
+            $('#sendForm input[type="text"]').val('');
+        }
+    },
+
+    'click .logout': function() {
+        Meteor.logout();
+    },
+
+    'click #changeUser': function() {
+        $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
+
     }
+
+});
+
+Template.loginPanel.events({
+
+    'click .fbLogin': function() {
+        Meteor.loginWithFacebook(function(error) {
+            console.log(error);
+        });
+    },
+
+    'submit': function(e) {
+        e.preventDefault();
+        Meteor.loginWithPassword(
+            $('#loginPanel .username').val(),
+            $('#loginPanel input[type="password"]').val(),
+            function(error) {
+                console.log(error)
+            });
+    }
+
 });
 
 Template.account.events({
@@ -394,6 +536,11 @@ Template.navbar.events({
     'click #logout': function(e) {
         Meteor.logout();
         window.location.href = '/';
+    },
+    'click .logout': function() {
+        Meteor.logout();
+        window.location.href = '/';
+
     },
     'click #loginFacebook': function() {
         Meteor.loginWithFacebook(function(error) {
@@ -805,3 +952,20 @@ uploadUserAvatar = function(field, userId, callback) {
     }
 
 }
+
+
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
