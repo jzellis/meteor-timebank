@@ -1,0 +1,1 @@
+{"version":3,"file":"/packages/handlebars-server.js","sources":["handlebars-server/handlebars-server.js"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;AAAA,+C;;AAEA,sB;AACA,gB;AACA,G","sourcesContent":["OriginalHandlebars = Npm.require('handlebars');\n\n_.extend(Handlebars, {\n  templates: {},\n});\n"]}
