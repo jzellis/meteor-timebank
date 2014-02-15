@@ -1,0 +1,16 @@
+{
+  "name": "meteor-timebank",
+  "version": "0.1.0",
+  "description": "Meteor Timebank is a timebank/alternative currency community server written in Meteor.",
+  "main": "timebank.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jzellis/meteor-timebank.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
