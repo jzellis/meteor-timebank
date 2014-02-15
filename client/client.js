@@ -24,6 +24,10 @@ Router.map(function() {
         path: '/completeProfile' // match the root path
     });
 
+    this.route('loginThingy', {
+        path: '/loginThingy' // match the root path
+    });
+
 
     this.route('about', {
         path: '/about' // match the root path

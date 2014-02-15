@@ -634,6 +634,15 @@
       "hash": "ff55c4109a536f8ab6476ae5da47c42a8dbcede6"
     },
     {
+      "path": "app/client/templates/template.loginThingy.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.loginThingy.js?bdaca0755d5695b1ad0849fbac56a73dbcf6b7da",
+      "size": 132,
+      "hash": "bdaca0755d5695b1ad0849fbac56a73dbcf6b7da"
+    },
+    {
       "path": "app/client/templates/template.navbar.js",
       "where": "client",
       "type": "js",
@@ -755,9 +764,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?1554857314603aaad392980aebb68f5c1be2ab5a",
-      "size": 22942,
-      "hash": "1554857314603aaad392980aebb68f5c1be2ab5a"
+      "url": "/client/client.js?aad9efdec0e63a53f964f26c517fdd5536dbc32b",
+      "size": 23035,
+      "hash": "aad9efdec0e63a53f964f26c517fdd5536dbc32b"
     },
     {
       "path": "app/timebank.js",
@@ -879,7 +888,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "ba1593897f1a56d6e52b0e34c194da85983b5729"
+      "hash": "ad0f4126c695ae5b60c3dbbb53adc4251111f350"
     }
   ]
 }
