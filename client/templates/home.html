@@ -4,6 +4,8 @@
 <div class='row'>
 
 <div class='col-md-8 col-md-offset-2'>
+	<div class='panel panel-default'>
+		  <div class="panel-body" style='margin:9px'>
 <form role='form' class='form-inline' id='sendForm'>
 <div class='row'>
 	<div class='col-md-5 well well-sm userOne'>
@@ -62,11 +64,12 @@
 	</div>
 </div>
 </form>
+</div></div>
 </div>
 
 	<div class='col-md-8 col-md-offset-2 small' style='margin-top: 4em;'>
-					{{#if getMyTransactions}}
-					<h2>My Transactions</h2>
+					{{#if recentTransactions 20}}
+					<h2>Transactions</h2>
 					<div  style='height: 16em; overflow-y: scroll'>
 	<table class='table table-striped transactionsTable'>
 		<thead><tr><td></td><td>Sender</td><td>Recipient</td><td>Amount ({{getOption "currencyAbbr"}})</td><td>Description</td><td>Date</td></tr></thead>

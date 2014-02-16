@@ -128,7 +128,7 @@ Router.map(function() {
 
 Router.before(function() {
     if (Meteor.users.find().count() == 0) {
-        this.render('notSetup');
+        this.render('loading');
 
         // stop the rest of the before hooks and the action function 
         this.stop();
