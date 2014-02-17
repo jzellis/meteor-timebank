@@ -4,10 +4,10 @@
 			<h2>{{#if currentUser.profile.picture}}<img src='{{currentUser.profile.picture}}' style='height:1em'> {{/if}}{{currentUser.username}}</h2>
 			<div>Balance: <b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
 			<h3>Profile</h3>
-		<form id='accountForm'>
+		<form id='accountForm' parsley-validate>
 			<fieldset class='form-group'>
 				<label for='email'>Email</label>
-				<input type='email' id='email' class='email form-control unstyled' data-original='{{currentUser.emails.0.address}}' value='{{currentUser.emails.0.address}}'>
+				<input type='email' id='email' class='email form-control unstyled' parsley-trigger="change" data-original='{{currentUser.emails.0.address}}' value='{{currentUser.emails.0.address}}'>
 			</fieldset>
 			<fieldset class='form-group'>
 				<label for='url'>URL</label>

@@ -420,8 +420,11 @@ Template.navbar.rendered = function() {
 }
 
 Template.user.rendered = function() {
+
+    $('#tags').removeData('tagsinput');
+    $(".bootstrap-tagsinput").remove();
     $('#tags').tagsinput({
-        confirmKeys: [13, 188],
+        confirmKeys: [13, 9, 188],
         maxTags: 20
     });
     Meteor.users.findOne({
@@ -431,6 +434,8 @@ Template.user.rendered = function() {
         $('#tags').tagsinput('add', tag);
 
     });
+
+
 }
 
 Template.home.events({
@@ -444,56 +449,94 @@ Template.home.events({
 
     'submit #sendForm': function(e) {
         e.preventDefault();
+        $.pnotify.defaults.history = false;
+        erroropts = {
+            type: "error",
+            addclass: "stack-bar-top",
+            cornerclass: "",
+            width: "90%",
+            hide: false,
+            sticker: false,
+            closer_hover: false
+            // stack: stack_bar_top
+        };
+
+
 
         if (Meteor.user()) {
+
+            $('.stack-bar-top').remove();
 
             data = $(e.currentTarget).serializeObject();
             data.userOneId = Meteor.userId();
 
-            if (data.toFrom == "send") {
+            console.log(data);
 
-                transaction = {
-                    sender: Meteor.userId(),
-                    recipient: data.userTwoId,
-                    amount: data.amount,
-                    description: data.description,
-                    timestamp: new Date()
-                };
+            switch (true) {
 
-                Transactions.insert(transaction);
+                case data.amount == "":
+                    erroropts.title = "No Amount Specified";
+                    erroropts.text = "You must provide an amount.";
+                    $.pnotify(erroropts);
+                    break;
 
-                recipient = Meteor.users.findOne({
-                    _id: transaction.recipient
-                });
+                case typeof(data.userTwoId) == "undefined":
+                    erroropts.title = "No Recipient Specified";
+                    erroropts.text = "You must choose a recipient.";
+                    $.pnotify(erroropts);
+                    break;
 
+                default:
 
-                newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+                    if (data.toFrom == "send") {
 
-                Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
+                        transaction = {
+                            sender: Meteor.userId(),
+                            recipient: data.userTwoId,
+                            amount: data.amount,
+                            description: data.description,
+                            timestamp: new Date()
+                        };
 
-                    // window.location.href = '/';
-                });
-            } else {
+                        Transactions.insert(transaction);
 
-                request = {
-                    sender: Meteor.userId(),
-                    recipient: data.userTwoId,
-                    amount: data.amount,
-                    description: data.description,
-                    timestamp: new Date()
-                };
-
-                Requests.insert(request, function(error, id) {
-
-                    Meteor.call("sendRequest", id);
+                        recipient = Meteor.users.findOne({
+                            _id: transaction.recipient
+                        });
 
 
-                });
+                        newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+
+                        Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
+
+                            // window.location.href = '/';
+                        });
+                    } else {
+
+                        request = {
+                            sender: Meteor.userId(),
+                            recipient: data.userTwoId,
+                            amount: data.amount,
+                            description: data.description,
+                            timestamp: new Date()
+                        };
+
+                        Requests.insert(request, function(error, id) {
+
+                            Meteor.call("sendRequest", id);
 
 
+                        });
+
+
+                    }
+
+                    $('#sendForm input[type="text"]').val('');
+
+                    break;
             }
 
-            $('#sendForm input[type="text"]').val('');
+
         }
     },
 
@@ -622,6 +665,8 @@ Template.send.events({
     'submit form': function(e) {
         e.preventDefault();
 
+
+
         transaction = {
             sender: Meteor.userId(),
             recipient: $('#recipientId').val(),
@@ -701,22 +746,58 @@ Template.user.events({
 
     'submit #profileForm': function(e) {
         e.preventDefault();
-        profile = $('#profileForm').serializeObject();
-        profile.tags = $('#tags').tagsinput('items');
-        console.log(profile);
+        $('.error').remove();
+        $('*').removeClass('has-error');
 
-        update = {
-            email: profile.email,
-            bio: profile.bio,
-            url: profile.url,
-            tags: profile.tags
+        error = {};
+
+        switch (true) {
+
+            case $('#email').val() == "":
+                error.field = "#email";
+                error.msg = "You must provide an email address";
+                break;
+
+            case validateEmail($('#email').val()) == false:
+                error.field = "#email";
+                error.msg = "You must provide a valid email address";
+                break;
+
+            case $('#url').val() != "" && validateURL($('#url').val()) == false:
+                error.field = "#url";
+                error.msg = "You must provide a valid URL";
+                break;
+
+            default:
+
+                profile = $('#profileForm').serializeObject();
+                profile.tags = $('#tags').tagsinput('items');
+                console.log(profile);
+
+                update = {
+                    email: profile.email,
+                    bio: profile.bio,
+                    url: profile.url,
+                    tags: profile.tags
+                }
+
+
+                Meteor.call("updateProfile", update, function(error, result) {
+
+                    location.reload();
+
+                });
+
+                break;
         }
 
-        Meteor.call("updateProfile", update, function(error, result) {
+        if (error.msg) {
+            $(error.field).parent().addClass('has-error');
+            $(error.field).after("<div class='help-block error'>" + error.msg + "</div>");
+        }
 
 
 
-        });
     }
 
 });
@@ -726,28 +807,76 @@ Template.signup.events({
     'submit form': function(e) {
         e.preventDefault();
 
-        user = {
-            username: $('#username').val(),
-            email: $('#email').val(),
-            password: $('#password').val(),
+        $('.error').remove();
+        $('*').removeClass('has-error');
 
-            profile: {
-                name: $('#fullName').val(),
-                url: $('#url').val(),
-                bio: $('#bio').val(),
-                createdAt: new Date(),
-                balance: 0.00,
-                favorites: []
-            }
-        };
-        Accounts.createUser(user, function() {
-            if ($('#avatar')[0].files.length > 0) {
-                uploadUserAvatar($('#avatar'), Meteor.userId());
-            }
-            window.location.href = "/";
+        error = {};
 
-        });
+        switch (true) {
+
+            case $('#username').val() == "":
+                error.field = "#username";
+                error.msg = "You must provide a valid username";
+                break;
+
+            case $('#email').val() == "":
+                error.field = "#email";
+                error.msg = "You must provide an email address";
+                break;
+
+            case validateEmail($('#email').val()) == false:
+                error.field = "#email";
+                error.msg = "You must provide a valid email address";
+                break;
+
+            case $('#password').val() != $('#password2').val():
+                error.field = "#password2";
+                error.msg = "Passwords must match";
+                break;
+
+            case $('#fullName').val() == "":
+                error.field = "#fullName";
+                error.msg = "You must provide a name";
+                break;
+
+            case $('#url').val() != "" && validateURL($('#url').val()) == false:
+                error.field = "#url";
+                error.msg = "You must provide a valid URL";
+                break;
+
+            default:
+
+                user = {
+                    username: $('#username').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+
+                    profile: {
+                        name: $('#fullName').val(),
+                        url: $('#url').val(),
+                        bio: $('#bio').val(),
+                        createdAt: new Date(),
+                        balance: 0.00,
+                        favorites: []
+                    }
+                };
+                Accounts.createUser(user, function() {
+                    if ($('#avatar')[0].files.length > 0) {
+                        uploadUserAvatar($('#avatar'), Meteor.userId());
+                    }
+                    window.location.href = "/";
+
+                });
+
+                break;
+        }
+
+        if (error.msg) {
+            $(error.field).parent().addClass('has-error');
+            $(error.field).after("<div class='help-block error'>" + error.msg + "</div>");
+        }
     }
+
 
 });
 
@@ -1025,3 +1154,14 @@ $.fn.serializeObject = function() {
     });
     return o;
 };
+
+function validateEmail(email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function validateURL(textval) {
+    var urlregex = new RegExp(
+        "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+    return urlregex.test(textval);
+}

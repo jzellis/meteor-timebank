@@ -575,18 +575,18 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.account.js?ab02d481316ac6037cca922f79a68af8155c46e0",
-      "size": 3973,
-      "hash": "ab02d481316ac6037cca922f79a68af8155c46e0"
+      "url": "/client/templates/template.account.js?99b74714e336d99732c0c4cb45caffba99b1da3f",
+      "size": 4017,
+      "hash": "99b74714e336d99732c0c4cb45caffba99b1da3f"
     },
     {
       "path": "app/client/templates/template.accountForm.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.accountForm.js?58900e95ebdd2c107626e15227400861e869d7a0",
-      "size": 1608,
-      "hash": "58900e95ebdd2c107626e15227400861e869d7a0"
+      "url": "/client/templates/template.accountForm.js?f791553984e7adcf79ddccab80e24464d8a1b034",
+      "size": 1617,
+      "hash": "f791553984e7adcf79ddccab80e24464d8a1b034"
     },
     {
       "path": "app/client/templates/template.admin.js",
@@ -737,9 +737,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.user.js?f6e594c98482a28f67890b8163e076600e9f8adf",
-      "size": 4608,
-      "hash": "f6e594c98482a28f67890b8163e076600e9f8adf"
+      "url": "/client/templates/template.user.js?91d1cc1232497c031ad1b4b45c0bfab06dc355d1",
+      "size": 4660,
+      "hash": "91d1cc1232497c031ad1b4b45c0bfab06dc355d1"
     },
     {
       "path": "app/template.timebank.js",
@@ -758,6 +758,15 @@
       "url": "/client/lib/bootstrap-tagsinput.min.js?5b3e9f40104327617d2c37e5c8b802b9b73ab1c0",
       "size": 11341,
       "hash": "5b3e9f40104327617d2c37e5c8b802b9b73ab1c0"
+    },
+    {
+      "path": "app/client/lib/jquery.pnotify.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/lib/jquery.pnotify.js?fa9acdc35559b5dc8d01b7933f8bda8e36a4294a",
+      "size": 44537,
+      "hash": "fa9acdc35559b5dc8d01b7933f8bda8e36a4294a"
     },
     {
       "path": "app/client/lib/jquery.scrollto.js",
@@ -787,13 +796,22 @@
       "hash": "b1259738e39e9f46b13ef62ec9f161fe5d405797"
     },
     {
+      "path": "app/client/lib/validate.min.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/lib/validate.min.js?324c1c17ce721e4b9698eb869059eab2738f26a1",
+      "size": 6214,
+      "hash": "324c1c17ce721e4b9698eb869059eab2738f26a1"
+    },
+    {
       "path": "app/client/client.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?1eec1146d5b64916637b104900f1b958f9ab52b3",
-      "size": 24260,
-      "hash": "1eec1146d5b64916637b104900f1b958f9ab52b3"
+      "url": "/client/client.js?8bae87efebb44409a7d767745ec9ff0e367da623",
+      "size": 29092,
+      "hash": "8bae87efebb44409a7d767745ec9ff0e367da623"
     },
     {
       "path": "app/timebank.js",
@@ -868,6 +886,15 @@
       "hash": "e17fcd18a5fa1383fd25bdd8213174f55bd2a727"
     },
     {
+      "path": "app/client/css/jquery.pnotify.default.css",
+      "where": "client",
+      "type": "css",
+      "cacheable": true,
+      "url": "/client/css/jquery.pnotify.default.css?61aa184dadfb6c4afe60f30200d6faf72e7008e3",
+      "size": 1766,
+      "hash": "61aa184dadfb6c4afe60f30200d6faf72e7008e3"
+    },
+    {
       "path": "app/timebank.css",
       "where": "client",
       "type": "css",
@@ -933,7 +960,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "ebab3cc4fdd1860d3daea612caec5ba04384e9ea"
+      "hash": "bb2643ec4a4320098b1827d557d3736247be57a4"
     }
   ]
 }

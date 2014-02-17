@@ -7,7 +7,7 @@
 <div class='col-md-8'>
 	<div class='well text-center'>
 		<div class='row'>
-{{#if isCurrentUser user._id}}<form role='form' id='profileForm'>{{/if}}
+{{#if isCurrentUser user._id}}<form role='form' name='profileForm' id='profileForm'>{{/if}}
 {{#if user.profile.picture}}<img src='{{user.profile.picture}}' style='height: 4em'>{{/if}}<br>
 				<div class='h1'>{{user.username}}</div>
 
@@ -27,9 +27,11 @@
 				<div class='row' style='margin-bottom: 1em'>
 					{{#if isCurrentUser user._id}}
 					{{#constant}}
+					<div>
 					<fieldset class='form-group text-left'><label for='tags'>Tags</label>
 						<input id='tags' name='tags' class='form-control' data-role="tagsinput">
 					</fieldset>
+				</div>
 					{{/constant}}
 					{{else}}
 					<b>Tags:</b> 
