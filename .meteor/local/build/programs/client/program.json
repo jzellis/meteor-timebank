@@ -661,6 +661,15 @@
       "hash": "042531cf41484261f684a1b77056bf91fe5f78e0"
     },
     {
+      "path": "app/client/templates/template.notFound.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.notFound.js?c4b090955f0c4fefe0712e007d7103357f08b227",
+      "size": 114,
+      "hash": "c4b090955f0c4fefe0712e007d7103357f08b227"
+    },
+    {
       "path": "app/client/templates/template.notSetup.js",
       "where": "client",
       "type": "js",
@@ -728,9 +737,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.user.js?b65719804af40ccbfde53e1d4db9c734d993d7c6",
-      "size": 2372,
-      "hash": "b65719804af40ccbfde53e1d4db9c734d993d7c6"
+      "url": "/client/templates/template.user.js?f6e594c98482a28f67890b8163e076600e9f8adf",
+      "size": 4608,
+      "hash": "f6e594c98482a28f67890b8163e076600e9f8adf"
     },
     {
       "path": "app/template.timebank.js",
@@ -740,6 +749,15 @@
       "url": "/template.timebank.js?f6f8284992ca867e4adf2b3139abd264c7574580",
       "size": 214,
       "hash": "f6f8284992ca867e4adf2b3139abd264c7574580"
+    },
+    {
+      "path": "app/client/lib/bootstrap-tagsinput.min.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/lib/bootstrap-tagsinput.min.js?5b3e9f40104327617d2c37e5c8b802b9b73ab1c0",
+      "size": 11341,
+      "hash": "5b3e9f40104327617d2c37e5c8b802b9b73ab1c0"
     },
     {
       "path": "app/client/lib/jquery.scrollto.js",
@@ -773,9 +791,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?11c7d8d6426d24f942a05bcb2ce895b3d99e7779",
-      "size": 23034,
-      "hash": "11c7d8d6426d24f942a05bcb2ce895b3d99e7779"
+      "url": "/client/client.js?1eec1146d5b64916637b104900f1b958f9ab52b3",
+      "size": 24260,
+      "hash": "1eec1146d5b64916637b104900f1b958f9ab52b3"
     },
     {
       "path": "app/timebank.js",
@@ -841,6 +859,15 @@
       "hash": "7b6e74d628e59311774e7b3409bdc3686e70e788"
     },
     {
+      "path": "app/client/css/bootstrap-tagsinput.css",
+      "where": "client",
+      "type": "css",
+      "cacheable": true,
+      "url": "/client/css/bootstrap-tagsinput.css?e17fcd18a5fa1383fd25bdd8213174f55bd2a727",
+      "size": 1073,
+      "hash": "e17fcd18a5fa1383fd25bdd8213174f55bd2a727"
+    },
+    {
       "path": "app/timebank.css",
       "where": "client",
       "type": "css",
@@ -895,9 +922,18 @@
       "hash": "99845c3b52c327cd654ed279ea1c263bbd1ce8ba"
     },
     {
+      "path": "app/js/bootstrap-tagsinput.min.js",
+      "where": "client",
+      "type": "asset",
+      "cacheable": false,
+      "url": "/js/bootstrap-tagsinput.min.js",
+      "size": 6752,
+      "hash": "fc34742e58622277156938814c88a7d236bf5107"
+    },
+    {
       "path": "app.html",
       "where": "internal",
-      "hash": "7566bfc97ed3a227728c8accbdab0c195d7457ff"
+      "hash": "4b1e9eadfec742446b2c28d74810dc9b6390665e"
     }
   ]
 }

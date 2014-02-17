@@ -165,7 +165,8 @@ Meteor.methods({
                     verified: true
                 }],
                 "profile.bio": item.bio,
-                "profile.url": item.url
+                "profile.url": item.url,
+                "profile.tags": item.tags
             }
         });
 

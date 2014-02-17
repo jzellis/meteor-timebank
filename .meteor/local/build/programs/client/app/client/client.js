@@ -4,7 +4,10 @@ Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
 // This sets up the routing
 
-
+Router.configure({
+    notFoundTemplate: 'notFound',
+    loadingTemplate: 'loading'
+});
 
 Router.map(function() {
 
@@ -162,7 +165,6 @@ $(document).ready(function() {
         $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
     });
 
-
 });
 
 
@@ -274,6 +276,10 @@ Handlebars.registerHelper("subtract", function(amount1, amount2) {
     return (parseFloat(amount2) - parseFloat(amount1)).toFixed(2);
 });
 
+Handlebars.registerHelper("urlEncode", function(text) {
+    return encodeURIComponent(text);
+});
+
 Handlebars.registerHelper("add", function(amount1, amount2) {
     return (parseFloat(amount2) + parseFloat(amount1)).toFixed(2);
 });
@@ -298,6 +304,12 @@ Handlebars.registerHelper("getImage", function(imageName) {
 
 Handlebars.registerHelper("isFavorite", function(id) {
     if ($.inArray(id, Meteor.user().profile.favorites) != -1) {
+        return true;
+    }
+});
+
+Handlebars.registerHelper("isCurrentUser", function(id) {
+    if (id == Meteor.userId()) {
         return true;
     }
 });
@@ -405,6 +417,20 @@ Template.navbar.rendered = function() {
         window.location.href = "/users/" + data.username;
     })
 
+}
+
+Template.user.rendered = function() {
+    $('#tags').tagsinput({
+        confirmKeys: [13, 188],
+        maxTags: 20
+    });
+    Meteor.users.findOne({
+        _id: Meteor.userId()
+    }).profile.tags.forEach(function(tag) {
+
+        $('#tags').tagsinput('add', tag);
+
+    });
 }
 
 Template.home.events({
@@ -671,6 +697,26 @@ Template.user.events({
             });
             return true;
         }
+    },
+
+    'submit #profileForm': function(e) {
+        e.preventDefault();
+        profile = $('#profileForm').serializeObject();
+        profile.tags = $('#tags').tagsinput('items');
+        console.log(profile);
+
+        update = {
+            email: profile.email,
+            bio: profile.bio,
+            url: profile.url,
+            tags: profile.tags
+        }
+
+        Meteor.call("updateProfile", update, function(error, result) {
+
+
+
+        });
     }
 
 });
@@ -695,7 +741,11 @@ Template.signup.events({
             }
         };
         Accounts.createUser(user, function() {
-            uploadUserAvatar($('#avatar'), Meteor.userId());
+            if ($('#avatar')[0].files.length > 0) {
+                uploadUserAvatar($('#avatar'), Meteor.userId());
+            }
+            window.location.href = "/";
+
         });
     }
 
@@ -743,7 +793,9 @@ Template.setup.events({
         };
 
         Accounts.createUser(admin, function() {
-            uploadUserAvatar($('#avatar'), Meteor.userId());
+            if ($('#avatar')[0].files.length > 0) {
+                uploadUserAvatar($('#avatar'), Meteor.userId());
+            }
             window.location.href = "/";
         });
 
