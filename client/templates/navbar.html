@@ -36,13 +36,11 @@
     </div>
     <div class='col-md-10'>
       <div class='row'>
-        <div class='col-md-12 h4'><a href='/account'>{{currentUser.username}}</a></div>
+        <div class='col-md-12 h4'><a href='/users/{{currentUser.username}}'>{{currentUser.username}}</a></div>
       </div>
       <div class='row'>
-        <div class='col-md-6 small'><b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
-        <div class='col-md-4 small'><a href='/users/{{currentUser.username}}'>Profile</a></div>
-
-        <div class='col-md-2 text-right small logout btn-link'>Logout</div>
+        <div class='col-md-9 small'><b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
+        <div class='col-md-3 text-right small logout btn-link'>Logout</div>
       </div>
 
 

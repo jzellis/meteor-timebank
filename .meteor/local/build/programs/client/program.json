@@ -656,9 +656,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.navbar.js?042531cf41484261f684a1b77056bf91fe5f78e0",
-      "size": 3310,
-      "hash": "042531cf41484261f684a1b77056bf91fe5f78e0"
+      "url": "/client/templates/template.navbar.js?dac38be42d121fd999771e4571fd54ea26c18106",
+      "size": 3234,
+      "hash": "dac38be42d121fd999771e4571fd54ea26c18106"
     },
     {
       "path": "app/client/templates/template.notFound.js",
@@ -933,7 +933,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "4b1e9eadfec742446b2c28d74810dc9b6390665e"
+      "hash": "ebab3cc4fdd1860d3daea612caec5ba04384e9ea"
     }
   ]
 }
