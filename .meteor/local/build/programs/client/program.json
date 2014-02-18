@@ -809,9 +809,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?8bae87efebb44409a7d767745ec9ff0e367da623",
-      "size": 29092,
-      "hash": "8bae87efebb44409a7d767745ec9ff0e367da623"
+      "url": "/client/client.js?da46af0258815cc1120cca8f95b88e75f0562fbf",
+      "size": 29430,
+      "hash": "da46af0258815cc1120cca8f95b88e75f0562fbf"
     },
     {
       "path": "app/timebank.js",
@@ -960,7 +960,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "bb2643ec4a4320098b1827d557d3736247be57a4"
+      "hash": "4407fb31287c7799d994b5b8ef186d4c775a3088"
     }
   ]
 }
