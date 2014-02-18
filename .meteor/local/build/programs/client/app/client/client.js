@@ -351,9 +351,22 @@ Template.home.rendered = function() {
 
 
             cb(Meteor.users.find({
-                username: {
-                    $regex: query
-                }
+                $or: [{
+                    username: {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "profile.name": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "emails.0.address": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }]
             }).map(function(user, index, cursor) {
                 return user;
             }));
@@ -396,9 +409,22 @@ Template.navbar.rendered = function() {
 
 
             cb(Meteor.users.find({
-                username: {
-                    $regex: query
-                }
+                $or: [{
+                    username: {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "profile.name": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "emails.0.address": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }]
             }).map(function(user, index, cursor) {
                 return user;
             }));
