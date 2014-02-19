@@ -2,6 +2,9 @@ Transactions = new Meteor.Collection("transactions");
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
+Wanteds = new Meteor.Collection("wanteds");
+Offers = new Meteor.Collection("offers");
+
 // This sets up the routing
 
 Router.configure({
@@ -118,6 +121,26 @@ Router.map(function() {
 
             return {
                 user: displayUser
+
+
+            }
+        }
+    });
+
+    this.route('tagSearch', {
+        path: '/tags/:tag',
+        data: function() {
+
+            tagUsers = Meteor.users.find({
+                "profile.tags": {
+                    $regex: this.params.tag,
+                    $options: "i"
+                }
+            });
+
+            return {
+                tag: this.params.tag,
+                users: tagUsers
 
 
             }

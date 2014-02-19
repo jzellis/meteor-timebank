@@ -3,7 +3,8 @@ Transactions = new Meteor.Collection("transactions");
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
-
+Wanteds = new Meteor.Collection("wanteds");
+Offers = new Meteor.Collection("offers");
 
 // Accounts.config({
 // 	sendVerificationEmail: true
