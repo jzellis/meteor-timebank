@@ -2,8 +2,17 @@
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
-Wanteds = new Meteor.Collection("wanteds");
-Offers = new Meteor.Collection("offers");
+Wanteds = new Meteor.Collection("wanteds", {
+    transform: function(doc) {
+        return new Wanted(doc);
+    }
+});
+
+Offers = new Meteor.Collection("offers", {
+    transform: function(doc) {
+        return new Offer(doc);
+    }
+});
 
 // This sets up the routing
 
@@ -68,7 +77,11 @@ Router.map(function() {
     });
 
     this.route('wanted', {
-        path: '/wanted'
+        path: '/wanted/'
+    });
+
+    this.route('offers', {
+        path: '/offers/'
     });
 
     this.route('send', {
@@ -143,12 +156,22 @@ Router.map(function() {
                 }
             });
 
-            return {
-                tag: this.params.tag,
-                users: tagUsers
+            tagWanted = Wanteds.find({
+                active: true,
+                tags: {
+                    $regex: this.params.tag,
+                    $options: "i"
+                }
+            });
 
+            returned = {
+                tag: this.params.tag
+            };
 
-            }
+            if (tagUsers.count() > 0) returned.users = tagUsers;
+            if (tagWanted.count() > 0) returned.wanteds = tagWanted;
+
+            return returned;
         }
     });
 
@@ -366,6 +389,60 @@ Handlebars.registerHelper("recentTransactions", function(num) {
 
 });
 
+Handlebars.registerHelper("getWanteds", function() {
+
+    return Wanteds.find({
+        active: true
+    }, {
+        sort: {
+            timestamp: -1
+        }
+    }).fetch();
+
+
+});
+
+Handlebars.registerHelper("getOffers", function() {
+
+    return Offers.find({
+        active: true
+    }, {
+        sort: {
+            timestamp: -1
+        }
+    }).fetch();
+
+
+});
+
+Handlebars.registerHelper("getUserWanteds", function(id) {
+
+    return Wanteds.find({
+        userId: id,
+        active: true
+    }, {
+        sort: {
+            timestamp: -1
+        }
+    }).fetch();
+
+
+});
+
+Handlebars.registerHelper("getUserOffers", function(id) {
+
+    return Offers.find({
+        userId: id,
+        active: true
+    }, {
+        sort: {
+            timestamp: -1
+        }
+    }).fetch();
+
+
+});
+
 
 Template.home.rendered = function() {
 
@@ -497,6 +574,18 @@ Template.wanted.rendered = function() {
     $('#wantedForm input[name="tags"]').removeData('tagsinput');
     $(".bootstrap-tagsinput").remove();
     $('#wantedForm input[name="tags"]').tagsinput({
+        confirmKeys: [13, 9, 188],
+        maxTags: 20
+    });
+    $(".bootstrap-tagsinput").addClass('form-control');
+
+}
+
+Template.offers.rendered = function() {
+
+    $('#offerForm input[name="tags"]').removeData('tagsinput');
+    $(".bootstrap-tagsinput").remove();
+    $('#offerForm input[name="tags"]').tagsinput({
         confirmKeys: [13, 9, 188],
         maxTags: 20
     });
@@ -1150,8 +1239,33 @@ Template.wanted.events({
         data.tags = $('#wantedForm input[name="tags"]').tagsinput('items');
         data.timestamp = new Date();
         data.userId = Meteor.userId();
+        data.replies = [];
+        data.active = true;
 
-        console.log(data);
+        Wanteds.insert(data);
+        $('#wantedForm input, #wantedForm textarea').val('');
+        $('#wantedModal').modal('hide');
+
+    }
+
+});
+
+Template.offers.events({
+
+    'submit #offerForm': function(e) {
+
+        e.preventDefault();
+
+        data = $('#offerForm').serializeObject();
+        data.tags = $('#offerForm input[name="tags"]').tagsinput('items');
+        data.timestamp = new Date();
+        data.userId = Meteor.userId();
+        data.replies = [];
+        data.active = true;
+
+        Offers.insert(data);
+        $('#offerForm input, #offerForm textarea').val('');
+        $('#offerModal').modal('hide');
 
     }
 
@@ -1258,5 +1372,27 @@ function validateURL(textval) {
         "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
     return urlregex.test(textval);
 }
+
+
+
+// Collection transforms
+
+Wanted = function(doc) {
+    _.extend(this, doc);
+};
+_.extend(Wanted.prototype, {
+    numReplies: function() {
+        return this.replies.length;
+    }
+});
+
+Offer = function(doc) {
+    _.extend(this, doc);
+};
+_.extend(Offer.prototype, {
+    numReplies: function() {
+        return this.replies.length;
+    }
+});
 
 })();

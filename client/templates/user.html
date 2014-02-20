@@ -2,7 +2,40 @@
 	<div class='container'>
 		{{#if user}}
 		<div class='col-md-4'>
-			
+			<h2>Wanteds</h2>
+			<ul class='list-unstyled small'>
+		{{#each getUserWanteds user._id}}
+		<li class='well well-sm'><div class='row'>
+			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-10'>
+				<div style='font-size:2em; font-weight:bold' class='col-md-12'>{{title}}</div>
+				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
+				<div class='col-md-12'>{{body}}</div>
+				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
+{{/each}}</div>
+
+			</div>
+		</div></li>
+		{{/each}}
+	</ul>
+
+			<h2>Offers</h2>
+			<ul class='list-unstyled small'>
+		{{#each getUserOffers user._id}}
+		<li class='well well-sm'><div class='row'>
+			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-10'>
+				<div style='font-size:2em; font-weight:bold' class='col-md-12'>{{title}}</div>
+				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
+				<div class='col-md-12'>{{body}}</div>
+				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
+{{/each}}</div>
+
+			</div>
+		</div></li>
+		{{/each}}
+	</ul>
+
 		</div>
 <div class='col-md-8'>
 	<div class='well text-center'>
