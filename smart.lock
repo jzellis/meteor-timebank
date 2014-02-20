@@ -7,7 +7,8 @@
       "accounts-ui-bootstrap-3": {},
       "handlebars-server": {},
       "timeago": {},
-      "moment": {}
+      "moment": {},
+      "mongodb-aggregation": {}
     },
     "packages": {
       "iron-router": {
@@ -17,8 +18,8 @@
       },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v0.3.7",
-        "commit": "5dd0d142c870647b910be80bc777b96f0dd45e5e"
+        "tag": "v3.1.0-1",
+        "commit": "329dccb08bfc18c635676dea600ac9953162cda9"
       },
       "accounts-ui-bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-accounts-ui-bootstrap-3.git",
@@ -39,6 +40,11 @@
         "git": "https://github.com/acreeger/meteor-moment.git",
         "tag": "v2.5.1",
         "commit": "8c9bc5d3fc96705057737cb9743d555417f6e551"
+      },
+      "mongodb-aggregation": {
+        "git": "https://github.com/jhoxray/meteor-mongo-extensions.git",
+        "tag": "v0.1.71",
+        "commit": "da9661c47b3797cec062005f01f84a4723051438"
       }
     }
   }

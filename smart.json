@@ -5,6 +5,7 @@
     "accounts-ui-bootstrap-3": {},
     "handlebars-server": {},
     "timeago": {},
-    "moment": {}
+    "moment": {},
+    "mongodb-aggregation": {}
   }
 }

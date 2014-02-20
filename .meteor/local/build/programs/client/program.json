@@ -403,11 +403,11 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/packages/bootstrap-3.js?f3cd5092b03e7ea72b7cdef53afadc09f6ea88b8",
+      "url": "/packages/bootstrap-3.js?6bee655b2d7325a1b4b6164f9c4c16a6d980284f",
       "sourceMap": "packages/bootstrap-3.js.map",
-      "sourceMapUrl": "/packages/f3cd5092b03e7ea72b7cdef53afadc09f6ea88b8.map",
-      "size": 254083,
-      "hash": "03e84a855a9401e14bbc5dda3ee7532fb1be9e0b"
+      "sourceMapUrl": "/packages/6bee655b2d7325a1b4b6164f9c4c16a6d980284f.map",
+      "size": 247156,
+      "hash": "e8259674f9ad871a7064df72a5c7e335163d2c56"
     },
     {
       "path": "packages/session.js",
@@ -540,6 +540,28 @@
       "sourceMapUrl": "/packages/daee0e0647771a16cfa6afa14787450e9c9c8ccb.map",
       "size": 305471,
       "hash": "1e0eefb474624f58ff9ce845393921dbeb8b2267"
+    },
+    {
+      "path": "packages/coffeescript.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/packages/coffeescript.js?969f68786bbc68e6cad299e74922a53af3d1404b",
+      "sourceMap": "packages/coffeescript.js.map",
+      "sourceMapUrl": "/packages/969f68786bbc68e6cad299e74922a53af3d1404b.map",
+      "size": 1361,
+      "hash": "6a60fa04fbb92d494989c84d7bc207a93bcd648b"
+    },
+    {
+      "path": "packages/mongodb-aggregation.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/packages/mongodb-aggregation.js?ca0f3a303b6e027c915a187ac5de9230820b5dad",
+      "sourceMap": "packages/mongodb-aggregation.js.map",
+      "sourceMapUrl": "/packages/ca0f3a303b6e027c915a187ac5de9230820b5dad.map",
+      "size": 3288,
+      "hash": "853eba76958057c923bba7de2f7a723e474e9eef"
     },
     {
       "path": "packages/webapp.js",
@@ -737,9 +759,18 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.tagSearch.js?fa26f79a48254598fd2555daec1be743f3930bc1",
-      "size": 921,
-      "hash": "fa26f79a48254598fd2555daec1be743f3930bc1"
+      "url": "/client/templates/template.tagSearch.js?722957493c899aeebfde699f717d715bd000e6b6",
+      "size": 971,
+      "hash": "722957493c899aeebfde699f717d715bd000e6b6"
+    },
+    {
+      "path": "app/client/templates/template.tags.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.tags.js?c5fe5c2333e3c704febaf36241c011651c5b46e9",
+      "size": 105,
+      "hash": "c5fe5c2333e3c704febaf36241c011651c5b46e9"
     },
     {
       "path": "app/client/templates/template.user.js",
@@ -751,13 +782,22 @@
       "hash": "91d1cc1232497c031ad1b4b45c0bfab06dc355d1"
     },
     {
+      "path": "app/client/templates/template.wanted.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.wanted.js?a9823248677e30098e5a989077addd30144fb50f",
+      "size": 1974,
+      "hash": "a9823248677e30098e5a989077addd30144fb50f"
+    },
+    {
       "path": "app/template.timebank.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/template.timebank.js?f6f8284992ca867e4adf2b3139abd264c7574580",
-      "size": 214,
-      "hash": "f6f8284992ca867e4adf2b3139abd264c7574580"
+      "url": "/template.timebank.js?4bc60072d63c94c075cafd5e54df78187dc608e4",
+      "size": 641,
+      "hash": "4bc60072d63c94c075cafd5e54df78187dc608e4"
     },
     {
       "path": "app/client/lib/bootstrap-tagsinput.min.js",
@@ -818,9 +858,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?e84fcc5f7cbcceacf3a56970b5db8c69cbf30c64",
-      "size": 30762,
-      "hash": "e84fcc5f7cbcceacf3a56970b5db8c69cbf30c64"
+      "url": "/client/client.js?32e4e1663982178c23583c659d3668188be8cda0",
+      "size": 31484,
+      "hash": "32e4e1663982178c23583c659d3668188be8cda0"
     },
     {
       "path": "app/timebank.js",
@@ -836,9 +876,9 @@
       "where": "client",
       "type": "css",
       "cacheable": true,
-      "url": "/packages/bootstrap-3/bootstrap-3/css/bootstrap.css?f4e35208554251a5172aa9954abe955e35bdde89",
-      "size": 122848,
-      "hash": "f4e35208554251a5172aa9954abe955e35bdde89"
+      "url": "/packages/bootstrap-3/bootstrap-3/css/bootstrap.css?a2643fd87df816f7077c13c712a0c0aae88c3c5d",
+      "size": 122998,
+      "hash": "a2643fd87df816f7077c13c712a0c0aae88c3c5d"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-override.css",
@@ -969,7 +1009,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "a6b8d5de66d21ce6080649f05ce381fda939c67e"
+      "hash": "6fa735b256dfd79ebe5a8edd46fddeb77f2ac595"
     }
   ]
 }

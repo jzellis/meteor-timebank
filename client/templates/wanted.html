@@ -1,0 +1,44 @@
+<template name='wanted'>
+<div class='container'>
+	<h1>Wanted</h1>
+	<div class='row'>
+		<div class='addWanted btn btn-success' data-toggle="modal" data-target="#wantedModal">Post A Wanted Ad</div>
+	</div>
+	</div>
+
+	<div class="modal fade" id='wantedModal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+    	        <form role='form' id='wantedForm'>
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Post A Wanted Ad</h4>
+      </div>
+      <div class="modal-body">
+        	<fieldset class='form-group'>
+        		<label for='title'>Title</label>
+        		<input class='form-control' name='title' placeholder='Title of your wanted ad'>
+        	</fieldset>
+        	<fieldset class='form-group'>
+        		<textarea class='form-control' name='body' rows='8' placeholder="Tell us what you're looking for"></textarea>
+        	</fieldset>
+        	<fieldset class='form-group'>
+        		<label for='location'>Location (optional)</label>
+        		<input class='form-control' name='location' placeholder='Be as specific as your address or as general as your city or neighborhood.'>
+        	</fieldset>
+        	     <fieldset class='form-group'>
+        		<label for='tags'>Tags (optional)</label>
+        		<input class='form-control' name='tags' placeholder='Add tags for your specific needs.'>
+        	</fieldset>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Post Wanted</button>
+      </div>
+              </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</template>

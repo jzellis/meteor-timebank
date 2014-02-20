@@ -67,6 +67,10 @@ Router.map(function() {
         path: '/signup'
     });
 
+    this.route('wanted', {
+        path: '/wanted'
+    });
+
     this.route('send', {
         path: '/send/:user?/:amount?',
         data: function() {
@@ -126,6 +130,7 @@ Router.map(function() {
             }
         }
     });
+
 
     this.route('tagSearch', {
         path: '/tags/:tag',
@@ -484,6 +489,18 @@ Template.user.rendered = function() {
 
     });
 
+
+}
+
+Template.wanted.rendered = function() {
+
+    $('#wantedForm input[name="tags"]').removeData('tagsinput');
+    $(".bootstrap-tagsinput").remove();
+    $('#wantedForm input[name="tags"]').tagsinput({
+        confirmKeys: [13, 9, 188],
+        maxTags: 20
+    });
+    $(".bootstrap-tagsinput").addClass('form-control');
 
 }
 
@@ -1118,6 +1135,23 @@ Template.admin.events({
 
 
         Meteor.call("updateSettings", settings);
+
+    }
+
+});
+
+Template.wanted.events({
+
+    'submit #wantedForm': function(e) {
+
+        e.preventDefault();
+
+        data = $('#wantedForm').serializeObject();
+        data.tags = $('#wantedForm input[name="tags"]').tagsinput('items');
+        data.timestamp = new Date();
+        data.userId = Meteor.userId();
+
+        console.log(data);
 
     }
 

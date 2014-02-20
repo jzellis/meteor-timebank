@@ -1,3 +1,3 @@
-(function(){Meteor.startup(function(){document.body.appendChild(Spark.render(Template.__define__(null,Package.handlebars.Handlebars.json_ast_to_func([[">","navbar"],"\n\n\t\t\t",["{",[[0,"yield"]]]]))));});
+(function(){Meteor.startup(function(){document.body.appendChild(Spark.render(Template.__define__(null,Package.handlebars.Handlebars.json_ast_to_func([[">","navbar"],"\n\n\t\t\t",["{",[[0,"yield"]]],"\n<script>\n  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n\n  ga('create', 'UA-46330519-3', 'mcred.org');\n  ga('send', 'pageview');\n\n</script>"]))));});
 
 })();
