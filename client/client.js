@@ -164,12 +164,21 @@ Router.map(function() {
                 }
             });
 
+            tagOffers = Offers.find({
+                active: true,
+                tags: {
+                    $regex: this.params.tag,
+                    $options: "i"
+                }
+            });
+
             returned = {
                 tag: this.params.tag
             };
 
             if (tagUsers.count() > 0) returned.users = tagUsers;
             if (tagWanted.count() > 0) returned.wanteds = tagWanted;
+            if (tagOffers.count() > 0) returned.offers = tagOffers;
 
             return returned;
         }

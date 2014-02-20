@@ -53,5 +53,29 @@
 
 	{{/if}}
 </div>
+
+<div class='row'>
+	<h2>Offers</h2>
+	{{#if offers}}
+	<ul class='list-unstyled col-md-6'>
+		{{#each offers}}
+		<li class='well well-sm'><div class='row'>
+			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-10'>
+				<div style='font-size:2em; font-weight:bold' class='col-md-12'>{{title}}</div>
+				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
+				<div class='col-md-12'>{{body}}</div>
+				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
+				<div class='col-md-12'>{{numReplies}} replies</div>
+
+			</div>
+		</div></li>
+		{{/each}}
+	</ul>
+	{{else}}
+		<i>No offers with tag "{{tag}}" found.</i>
+
+	{{/if}}
+</div>
 </div>
 </template>
