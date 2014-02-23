@@ -2,8 +2,40 @@
 <div class='container'>
 			{{#if currentUser}}
 <div class='row'>
+<div class='col-md-4'>
+	<h3>Recent Offers</h3>
+	<div class='row'>
+		<ul class='list-unstyled'>
+		{{#each getOffers}}
+		<li class='well well-sm'><div class='row'>
+			<div class='col-md-2 small' style='text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 2em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-10'>
+				<div style='font-size:1em; font-weight:bold' class='col-md-12'><a href='/offers/{{_id}}'>{{title}}</a></div>
+				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
 
-<div class='col-md-8 col-md-offset-2'>
+			</div>
+		</div></li>
+		{{/each}}
+	</ul>
+	</div>
+	<h3>Recent Wanteds</h3>
+	<div class='row'>
+		<ul class='list-unstyled'>
+		{{#each getWanteds}}
+		<li class='well well-sm'><div class='row'>
+			<div class='col-md-2 small' style='text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 2em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-10'>
+				<div style='font-size:1em; font-weight:bold' class='col-md-12'><a href='/wanted/{{_id}}'>{{title}}</a></div>
+				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
+
+
+			</div>
+		</div></li>
+		{{/each}}
+	</ul>
+	</div>
+</div>
+<div class='col-md-8'>
 	<div class='panel panel-default'>
 		  <div class="panel-body" style='margin:9px'>
 <form role='form' class='form-inline' id='sendForm'>
@@ -65,9 +97,9 @@
 </div>
 </form>
 </div></div>
-</div>
 
-	<div class='col-md-8 col-md-offset-2 small' style='margin-top: 4em;'>
+
+	<div class='small' style='margin-top: 4em;'>
 					{{#if recentTransactions 20}}
 					<h2>Transactions</h2>
 					<div  style='height: 16em; overflow-y: scroll'>
@@ -91,6 +123,7 @@
 	{{> loginPanel}}
 </div>
 			{{/if}}
+</div>
 </div>
 </div>
 </template>

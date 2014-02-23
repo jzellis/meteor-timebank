@@ -84,6 +84,36 @@ Router.map(function() {
         path: '/offers/'
     });
 
+    this.route('wantedSingle', {
+        path: '/wanted/:id',
+        data: function() {
+
+            wanted = Wanteds.findOne({
+                _id: this.params.id
+            });
+
+            return {
+                wanted: wanted
+
+            }
+        }
+    });
+
+    this.route('offerSingle', {
+        path: '/offers/:id',
+        data: function() {
+
+            offer = Offers.findOne({
+                _id: this.params.id
+            });
+
+            return {
+                offer: offer
+
+            }
+        }
+    });
+
     this.route('send', {
         path: '/send/:user?/:amount?',
         data: function() {
@@ -1278,6 +1308,58 @@ Template.offers.events({
 
     }
 
+});
+
+Template.offerSingle.events({
+    'submit #replyForm': function(e, t) {
+        e.preventDefault();
+
+        formdata = $('#replyForm').serializeObject();
+
+        reply = {
+            userId: Meteor.userId(),
+            body: formdata.body,
+            timestamp: new Date()
+
+        }
+
+        Offers.update({
+            _id: t.data.offer._id
+        }, {
+            $push: {
+                replies: reply
+            }
+        });
+
+        $('#replyForm textarea').val('');
+
+    }
+});
+
+Template.wantedSingle.events({
+    'submit #replyForm': function(e, t) {
+        e.preventDefault();
+
+        formdata = $('#replyForm').serializeObject();
+
+        reply = {
+            userId: Meteor.userId(),
+            body: formdata.body,
+            timestamp: new Date()
+
+        }
+
+        Wanteds.update({
+            _id: t.data.wanted._id
+        }, {
+            $push: {
+                replies: reply
+            }
+        });
+
+        $('#replyForm textarea').val('');
+
+    }
 });
 
 
