@@ -944,6 +944,34 @@ Template.user.events({
         }
     },
 
+    'click .markWantedCompleted': function(e) {
+
+        if (confirm("Are you sure you want to mark this as completed?")) {
+            Wanteds.update({
+                _id: $(e.currentTarget).attr('data-id')
+            }, {
+                $set: {
+                    active: false
+                }
+            });
+        }
+
+    },
+
+    'click .markOfferCompleted': function(e) {
+
+        if (confirm("Are you sure you want to mark this as completed?")) {
+            Offers.update({
+                _id: $(e.currentTarget).attr('data-id')
+            }, {
+                $set: {
+                    active: false
+                }
+            });
+        }
+
+    },
+
     'submit #profileForm': function(e) {
         e.preventDefault();
         $('.error').remove();

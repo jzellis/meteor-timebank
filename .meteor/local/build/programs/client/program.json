@@ -795,9 +795,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.user.js?1e5615701920317a375adf24cb47652a95c32e25",
-      "size": 6492,
-      "hash": "1e5615701920317a375adf24cb47652a95c32e25"
+      "url": "/client/templates/template.user.js?b7ff92f236b210190da831cbf0aceab7b8a49ae2",
+      "size": 6971,
+      "hash": "b7ff92f236b210190da831cbf0aceab7b8a49ae2"
     },
     {
       "path": "app/client/templates/template.wanted.js",
@@ -885,9 +885,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?77ca0df2b70c745a9ff18dbcf5ae1aaf8fac8d5c",
-      "size": 35936,
-      "hash": "77ca0df2b70c745a9ff18dbcf5ae1aaf8fac8d5c"
+      "url": "/client/client.js?5bac032407ee3e7852b323c2d4879e8d1e4d89bc",
+      "size": 36608,
+      "hash": "5bac032407ee3e7852b323c2d4879e8d1e4d89bc"
     },
     {
       "path": "app/timebank.js",
@@ -1036,7 +1036,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "17df987afc772832f6b2aed6bca36e23991f95f5"
+      "hash": "ca8feb6bdbd9575b0eb03235a58373ee6e9196b7"
     }
   ]
 }

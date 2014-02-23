@@ -13,7 +13,9 @@
 				<div class='col-md-12'>{{body}}</div>
 				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
 {{/each}}</div>
-
+	{{#if isCurrentUser userId}}
+<div style='padding-top: 2em; text-align:right'>	<button class='markWantedCompleted btn btn-sm btn-danger' data-id="{{_id}}">Mark As Completed</button></div>
+	{{/if}}
 			</div>
 		</div></li>
 		{{/each}}
@@ -30,7 +32,9 @@
 				<div class='col-md-12'>{{body}}</div>
 				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
 {{/each}}</div>
-
+	{{#if isCurrentUser userId}}
+<div style='padding-top: 2em; text-align:right'>	<button class='markOfferCompleted btn btn-sm btn-danger' data-id="{{_id}}">Mark As Completed</button></div>
+	{{/if}}
 			</div>
 		</div></li>
 		{{/each}}
