@@ -1,74 +1,70 @@
 <template name='navbar'>
-<div class="navbar navbar-default" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/">{{#if getImage "siteImage"}}<img src='{{getImage "siteImage"}}' style='height: 1em'>{{/if}} {{getOption "sitename"}}</a>
+  <header>
+<div class='container'>
+  <div class='row'>
+    <div class='col-md-3 brand'>
+      <div class='row'>
+      <a href='/'>{{#if getImage "siteImage"}}
+      <div class='col-md-2'><img src='{{getImage "siteImage"}}' ></div><div class='col-md-10'>
+      {{else}}
+      <div class='col-md-12'>{{/if}} 
+        <div class='title'>
+          {{getOption "sitename"}}
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><form><a class='btn btn-default navbar-btn' href='/'>Send</a></form></li>
-            <li><a href="/wanted/">Wanted</a></li>
-            <li><a href="/offers/">Offers</a></li>
+              <div class='subtitle small'>
+              {{getOption "siteSubtitle"}}
+            </div>
+      </a>
+      </div>
+      </div>
 
-            <li><a href="about">About</a></li>
-          </ul>
-                    <ul class="nav navbar-nav navbar-left">
-<li><form class="navbar-form navbar-right" role="search">
-  <div class="form-group">
-    <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users">
+    </div>
+{{#if currentUser}}
+    <div class='col-md-3 account-info pull-right col-md-offset-1'>
+      <div class='col-md-2'>
+               <img src='{{currentUser.profile.picture}}' class='avatar'>
+      </div>
+      <div class='col-md-10'>
+        <span class='pull-right small logout btn btn-sm btn-link'>Logout</span>
+              <div class='username'><a href='/users/{{currentUser.username}}'>{{currentUser.username}}</a></div>
+              <div class='balance small'>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</div>
+            </div>
+    </div>
+
+{{else}}
+    <div class='col-md-3 login pull-right small'>
+      <form role='form' id='loginForm'>
+      <fieldset>
+<input class='form-control input-sm username' name='username' placeholder='username'>
+<input class='form-control input-sm password' type='password' name='password' placeholder='password'>
+      </fieldset>
+      <div>
+        <a id='loginFacebook' class='btn btn-primary btn-sm' ></i> Login With Facebook</a>
+        <button type='submit' class='btn btn-success btn-sm pull-right'>Login</button>
+      </div>
+    </form>
+    </div>
+{{/if}}
+
+<ul class='menu col-md-5 list-unstyled list-inline'>
+  <li><a href='/transfer/'>Transfer</a></li>
+  <li><a href='/wanted/' class='text-muted'>Wanted</a></li>
+  <li><a href='/offers/' class='text-muted'>Offers</a></li>
+  <li><a href='/about/' class='text-muted'>About</a></li>
+
+  </ul>
+
   </div>
+</div>
+  </header>
+  {{#if currentUser}}
+<div id='searchbar' class='row'>
+<div class='wrapper col-md-12'>
+  <form role="search" class='text-right col-md-11'>
+
+    <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users">
 </form>
-</li>
-</ul>
-
-
-          <ul class="nav navbar-nav navbar-right">
-            {{#if currentUser}}
-<li class='col-md-12' style='padding-top:9px'>
-
-
-    <div class='row'>
-    <div class='col-md-2'>
-      <img src='{{currentUser.profile.picture}}' style='height: 2.25em'>
-    </div>
-    <div class='col-md-10'>
-      <div class='row'>
-        <div class='col-md-12 h4'><a href='/users/{{currentUser.username}}'>{{currentUser.username}}</a></div>
-      </div>
-      <div class='row'>
-        <div class='col-md-9 small'><b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
-        <div class='col-md-3 text-right small logout btn-link'>Logout</div>
-      </div>
-
-
-
-</li>
-
-            {{else}}
-            <li class='dropdown'><a href='#' class="dropdown-toggle" data-toggle="dropdown">
-              Signup/Login <b class="caret"></b></a>
-              <ul class="dropdown-menu" style='padding: 1em'>
-          <li><a id='loginFacebook' class='btn btn-primary' style='color:white'><i class='fa fa-facebook-square'></i> Login With Facebook</a></li>
-          <li class='divider'></li>
-
-          <li><form role='form' id='loginForm'><fieldset class='form-group'><input type='text' name='username' class='form-control' placeholder='Username/Email' style='margin-bottom: .5em'>
-          <input type='password' name='password' class='form-control' placeholder='Password'>
-          </fieldset><button type='submit' class='form-control btn-success'>Login</button></form>          </li>
-          <li class='divider'></li>
-          <li style='text-align:center'><b><a href='/signup'>Signup</a></b></li>
-
-        </ul>
-              </li>
-              {{/if}}
-          </ul>
-
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+</div>
+</div>
+{{/if}}
 </template>

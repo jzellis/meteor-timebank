@@ -1,39 +1,41 @@
-<template name='wantedSingle'>
+<template name='wantedFull'>
 	<div class='container'>
 		<div class='col-md-8 col-md-offset-2'>
 			{{#with wanted}}		
 				<div class='row'>
-					<div class='col-md-2' style-'text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height:2em'><br>{{username}}</a>{{/with}}</div>
+					<div class='col-md-2' style-'text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' ><br>{{username}}</a>{{/with}}</div>
 					<div class='col-md-10'>
-						<div style='font-size: 2em; font-weight:bold'>{{title}}</div>
-						<div class='small'>{{formatDate timestamp}}</div>
-						<hr>
-						<div class='body'>{{body}}</div>
-										<div>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
+						<div >{{title}}</div>
+						<div class='small text-muted'>{{#if location}}<a href="http://maps.google.com?q={{location}}" target='_new' class='text-muted'><i class="fa fa-map-marker"></i> {{location}}</a> - {{/if}}{{formatDate timestamp}}</div>
+						<br>
+						<div class='body'>{{{nl2br body}}}</div>
+												<br>
+										<div><i class="fa fa-tags" title='Tags'></i> {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
 
 				<div>
-					{{numReplies}} Replies
+					<h3>{{numReplies}} Replies</h3>
 				</div>
-
+				<hr>
 				{{#each replies}}
 								<div class='row'>
-					<div class='col-md-1'>
+					<div class='col-md-1 text-center'>
 						{{#with getUserById userId}}
-						<img src='{{profile.picture}}' style='height: 2em'><br>{{username}}
+						<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' ><br>{{username}}</a>
 						{{/with}}
 					</div>
 					<div class='col-md-11'>
-						{{body}}
+						{{{nl2br body}}}
 					</div>
 					<div class='col-md-12 text-right small text-muted'>{{formatDate timestamp}}</div>
 				</div>
+				<hr>
 				{{/each}}
 				<form class='well well-sm' role='form' id='replyForm' name='replyForm'>
 					<h3>Leave A Reply</h3>
 				<div class='row'>
-					<div class='col-md-1'>
+					<div class='col-md-1 text-center'>
 						{{#with currentUser}}
-						<img src='{{profile.picture}}' style='height: 2em'><br>{{username}}
+						<img src='{{profile.picture}}' class='avatar' ><br>{{username}}
 						{{/with}}
 					</div>
 					<div class='col-md-11'>
@@ -41,7 +43,7 @@
 					</div>
 				</div>
 				<br>
-				<div style='text-align:right'><button class='btn' type='submit pull-right'>Post Reply</button></div>
+				<div >Post Reply</button></div>
 
 				</form>
 

@@ -1,4 +1,12 @@
-(function(){Transactions = new Meteor.Collection("transactions");
+(function(){  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46330519-3', 'mcred.org');
+  ga('send', 'pageview');
+
+Transactions = new Meteor.Collection("transactions");
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
@@ -37,6 +45,10 @@ Router.map(function() {
 
     this.route('completeProfile', {
         path: '/completeProfile' // match the root path
+    });
+
+    this.route('transfer', {
+        path: '/transfer' // match the root path
     });
 
     this.route('loginThingy', {
@@ -84,7 +96,7 @@ Router.map(function() {
         path: '/offers/'
     });
 
-    this.route('wantedSingle', {
+    this.route('wantedFull', {
         path: '/wanted/:id',
         data: function() {
 
@@ -99,7 +111,7 @@ Router.map(function() {
         }
     });
 
-    this.route('offerSingle', {
+    this.route('offerFull', {
         path: '/offers/:id',
         data: function() {
 
@@ -184,6 +196,7 @@ Router.map(function() {
                     $regex: this.params.tag,
                     $options: "i"
                 }
+                
             });
 
             tagWanted = Wanteds.find({
@@ -264,8 +277,20 @@ Handlebars.registerHelper("formatAmount", function(amount) {
     return amount.toFixed(2);
 });
 
+Handlebars.registerHelper("nl2br", function(str) {
+    return nl2br(str);
+});
+
+Handlebars.registerHelper("trimWords", function(str, num, ellipsis) {
+    return trim_words(str, num, ellipsis);
+});
+
 Handlebars.registerHelper("formatDate", function(timestamp) {
     return moment(timestamp).format('LLL');
+});
+
+Handlebars.registerHelper("relativeTime", function(timestamp) {
+    return moment(timestamp).fromNow();
 });
 
 Handlebars.registerHelper("recentUsers", function() {
@@ -411,7 +436,7 @@ Handlebars.registerHelper("getOption", function(name) {
         name: name
     });
 
-    if (theOption) return theOption.value;
+    if (theOption) return nl2br(theOption.value);
 
 
 });
@@ -428,28 +453,30 @@ Handlebars.registerHelper("recentTransactions", function(num) {
 
 });
 
-Handlebars.registerHelper("getWanteds", function() {
+Handlebars.registerHelper("getWanteds", function(num) {
+options = {sort: {
+            timestamp: -1
+        }
+    };
+
 
     return Wanteds.find({
         active: true
-    }, {
-        sort: {
-            timestamp: -1
-        }
-    }).fetch();
+    }, options).fetch();
 
 
 });
 
-Handlebars.registerHelper("getOffers", function() {
+Handlebars.registerHelper("getOffers", function(num) {
+
+options = {sort: {
+            timestamp: -1
+        }
+    };
 
     return Offers.find({
         active: true
-    }, {
-        sort: {
-            timestamp: -1
-        }
-    }).fetch();
+    }, options).fetch();
 
 
 });
@@ -485,57 +512,17 @@ Handlebars.registerHelper("getUserOffers", function(id) {
 
 Template.home.rendered = function() {
 
-
-    $('#sendForm .userSearch').typeahead({
-        minLength: 3,
-        highlight: true,
-    }, {
-        displayKey: 'user',
-        source: function(query, cb) {
-
-
-            cb(Meteor.users.find({
-                $or: [{
-                    username: {
-                        $regex: query,
-                        $options: "i"
-                    }
-                }, {
-                    "profile.name": {
-                        $regex: query,
-                        $options: "i"
-                    }
-                }, {
-                    "emails.0.address": {
-                        $regex: query,
-                        $options: "i"
-                    }
-                }]
-            }).map(function(user, index, cursor) {
-                return user;
-            }));
-
-
-        },
-        templates: {
-            suggestion: function(user) {
-                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
-                return Template.autocompleteSuggestion(user);
-            }
-        }
-    });
-
-    $('#sendForm .userSearch').on('typeahead:selected', function(object, data, name) {
-        html = "<div class='row'><div class='col-md-2'><img src='" + data.profile.picture + "' style='height: 2.25em'></div><div class='col-md-10'><div class='row'><div class='col-md-12 h4'>" + data.username + "</div></div><div class='row'><div class='col-md-6 small'><b>" + Options.findOne({
-            name: "currencyAbbr"
-        }).value + " " + data.profile.balance + "</b></div><div id='changeUser' class='col-md-6 text-right small change btn-link'>Change</div></div></div><input type='hidden' name='userTwoId' value='" + data._id + "'>";
-        $('.userTwo').html(html);
+$('.carousel-inner .item:first').addClass('active');
 
 
 
-    });
 
 
+}
+
+Template.transferForm.rendered = function(){
+
+ initializeUserSearchTypeahead();
 
 
 }
@@ -641,6 +628,24 @@ Template.home.events({
 
     },
 
+
+    'click .logout': function() {
+        Meteor.logout();
+    }
+
+    
+
+});
+
+Template.transferForm.events({
+
+
+ 'change #toFrom' : function(e){
+
+        $('#sendForm button[type="submit"]').text($(e.currentTarget).val());
+
+    },
+
     'submit #sendForm': function(e) {
         e.preventDefault();
         $.pnotify.defaults.history = false;
@@ -740,14 +745,13 @@ Template.home.events({
         }
     },
 
-    'click .logout': function() {
-        Meteor.logout();
+    'click #changeUser': function() {
+        $('#userTwo').html("<input class='form-control userSearch input-sm' placeholder='Search Users'>");
+
+        initializeUserSearchTypeahead();
+
     },
 
-    'click #changeUser': function() {
-        $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
-
-    }
 
 });
 
@@ -1338,7 +1342,7 @@ Template.offers.events({
 
 });
 
-Template.offerSingle.events({
+Template.offerFull.events({
     'submit #replyForm': function(e, t) {
         e.preventDefault();
 
@@ -1364,7 +1368,7 @@ Template.offerSingle.events({
     }
 });
 
-Template.wantedSingle.events({
+Template.wantedFull.events({
     'submit #replyForm': function(e, t) {
         e.preventDefault();
 
@@ -1513,5 +1517,71 @@ _.extend(Offer.prototype, {
         return this.replies.length;
     }
 });
+
+function nl2br(str) {
+    return str.replace(/\n/g, '<br />');
+}
+
+function trim_words(theString, numWords, ellipsis) {
+    expString = theString.split(/\s+/, numWords);
+    theNewString = expString.join(" ");
+    if (theNewString.length < theString.length && typeof(ellipsis) != 'undefined') theNewString += ellipsis;
+    return theNewString;
+}
+
+function initializeUserSearchTypeahead(){
+
+   $('#sendForm .userSearch').typeahead({
+        minLength: 3,
+        highlight: true,
+    }, {
+        displayKey: 'user',
+        source: function(query, cb) {
+
+
+            cb(Meteor.users.find({
+                $or: [{
+                    username: {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "profile.name": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "emails.0.address": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }]
+            }).map(function(user, index, cursor) {
+                return user;
+            }));
+
+
+        },
+        templates: {
+            suggestion: function(user) {
+                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
+                return Template.autocompleteSuggestion(user);
+            }
+        }
+    });
+
+    $('#sendForm .userSearch').on('typeahead:selected', function(object, data, name) {
+        html = "<div class='col-md-3'>";
+
+        if(data.profile.picture) html += "<img src='" + data.profile.picture + "' class='avatar'>";
+
+        html +="</div><div class='col-md-9'><div><a href='/users/" + data.username + "' target='_new'>" + data.username + "</a></div><div>" + Options.findOne({name: "currencyAbbr"}).value + " " + data.profile.balance + "</div><div id='changeUser' class='text-right change text-primary faux-link'>Change</div></div><input type='hidden' name='userTwoId' value='" + data._id + "'>";
+        $('#userTwo').html(html);
+
+
+
+    });
+
+}
 
 })();

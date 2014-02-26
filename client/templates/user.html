@@ -6,15 +6,15 @@
 			<ul class='list-unstyled small'>
 		{{#each getUserWanteds user._id}}
 		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' ><br> {{username}}</a>{{/with}}</div>
 			<div class='col-md-10'>
-				<div style='font-size:2em; font-weight:bold' class='col-md-12'>{{title}}</div>
+				<div >{{title}}</div>
 				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
 				<div class='col-md-12'>{{body}}</div>
 				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
 {{/each}}</div>
 	{{#if isCurrentUser userId}}
-<div style='padding-top: 2em; text-align:right'>	<button class='markWantedCompleted btn btn-sm btn-danger' data-id="{{_id}}">Mark As Completed</button></div>
+<div  data-id="{{_id}}">Mark As Completed</button></div>
 	{{/if}}
 			</div>
 		</div></li>
@@ -25,15 +25,15 @@
 			<ul class='list-unstyled small'>
 		{{#each getUserOffers user._id}}
 		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
+			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' ><br> {{username}}</a>{{/with}}</div>
 			<div class='col-md-10'>
-				<div style='font-size:2em; font-weight:bold' class='col-md-12'>{{title}}</div>
+				<div >{{title}}</div>
 				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
 				<div class='col-md-12'>{{body}}</div>
 				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
 {{/each}}</div>
 	{{#if isCurrentUser userId}}
-<div style='padding-top: 2em; text-align:right'>	<button class='markOfferCompleted btn btn-sm btn-danger' data-id="{{_id}}">Mark As Completed</button></div>
+<div  data-id="{{_id}}">Mark As Completed</button></div>
 	{{/if}}
 			</div>
 		</div></li>
@@ -45,7 +45,7 @@
 	<div class='well text-center'>
 		<div class='row'>
 {{#if isCurrentUser user._id}}<form role='form' name='profileForm' id='profileForm'>{{/if}}
-{{#if user.profile.picture}}<img src='{{user.profile.picture}}' style='height: 4em'>{{/if}}<br>
+{{#if user.profile.picture}}<img src='{{user.profile.picture}}' >{{/if}}<br>
 				<div class='h1'>{{user.username}}</div>
 
 			</div>
@@ -61,7 +61,7 @@
 
 
 				</div>
-				<div class='row' style='margin-bottom: 1em'>
+				<div class='row' >
 					{{#if isCurrentUser user._id}}
 					{{#constant}}
 					<div>
@@ -73,7 +73,7 @@
 					{{else}}
 					<b>Tags:</b> 
 					{{#each user.profile.tags}}
-					<span class='label label-primary'><a href='/tags/{{urlEncode this}}' style='color:white'>{{this}}</a></span>
+					<span class='label label-primary'><a href='/tags/{{urlEncode this}}' >{{this}}</a></span>
 					{{/each}}
 					{{/if}}
 				</div>
@@ -92,7 +92,6 @@
 {{/unless}}
 {{#if isCurrentUser user._id}}</form>{{/if}}
 	</div>
-
 	<div class='row'>
 		<h3>Transactions</h3>
 			{{#if getUserTransactions user._id}}

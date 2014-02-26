@@ -1,0 +1,44 @@
+<template name='transferForm'>
+	<form role='form' class='form-inline panel panel-default' id='sendForm'>
+		<div class='panel-body'>
+<div class='col-md-4 well well-sm small' id='userOne'>
+	<div class='col-md-3'><img src='{{currentUser.profile.picture}}' class='avatar'></div>
+	<div class='col-md-9 text-muted'>
+		<div>{{currentUser.username}}</div>
+		<div>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</div>
+		<div class='small'>&nbsp;</div>
+	</div>
+</div>
+
+<div class='col-md-4 text-center'>
+		<select id='toFrom' name='toFrom' class='form-control input-sm'>
+			<option value='send'>Send To</option>
+			<option value='request'>Request From</option>
+		</select>
+</div>
+
+<div class='col-md-4 well well-sm small' id='userTwo'>
+		<input class='form-control userSearch input-sm' placeholder='Search Users'>
+
+</div>
+
+<fieldset class='col-md-12 form-group'>
+<div class="col-md-12 input-group">
+  <span class="input-group-addon">For</span>
+  <input type="text" class="form-control description" name='description' placeholder="Description, e.g. hours of lawn mowing.">
+</div>
+</fieldset>
+<fieldset class='col-md-12 form-group'>
+
+		<div class="input-group">
+		  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
+		  <input type="text" name='amount' class="form-control amount" placeholder="Amount (must be a whole number)">
+		</div>
+</fieldset>
+<div class='col-md-12 text-right'>		  
+	<button type='submit' class='form-control btn btn-primary'>Send</button>
+</div>
+
+</div>
+</form>
+</template>

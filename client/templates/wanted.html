@@ -7,16 +7,9 @@
 	<div class='row'>
 		<ul class='list-unstyled col-md-6'>
 		{{#each getWanteds}}
-		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 4em'><br> {{username}}</a>{{/with}}</div>
-			<div class='col-md-10'>
-				<div style='font-size:2em; font-weight:bold' class='col-md-12'><a href='/wanted/{{_id}}'>{{title}}</a></div>
-				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
-				<div class='col-md-12'>{{body}}</div>
-				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
-
-			</div>
-		</div></li>
+		<li class='well well-sm'>
+			{{> wantedSingle}}
+</li>
 		{{/each}}
 	</ul>
 	</div>
@@ -32,21 +25,8 @@
         <h4 class="modal-title">Post A Wanted Ad</h4>
       </div>
       <div class="modal-body">
-        	<fieldset class='form-group'>
-        		<label for='title'>Title</label>
-        		<input class='form-control' name='title' placeholder='Title of your wanted ad'>
-        	</fieldset>
-        	<fieldset class='form-group'>
-        		<textarea class='form-control' name='body' rows='8' placeholder="Tell us what you're looking for"></textarea>
-        	</fieldset>
-        	<fieldset class='form-group'>
-        		<label for='location'>Location (optional)</label>
-        		<input class='form-control' name='location' placeholder='Be as specific as your address or as general as your city or neighborhood.'>
-        	</fieldset>
-        	     <fieldset class='form-group'>
-        		<label for='tags'>Tags (optional)</label>
-        		<input class='form-control' name='tags' placeholder='Add tags for your specific needs.'>
-        	</fieldset>
+        	
+ 		{{> wantedForm}}
 
       </div>
       <div class="modal-footer">

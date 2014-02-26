@@ -1,129 +1,79 @@
 <template name="home">
+{{#if currentUser}}
 <div class='container'>
-			{{#if currentUser}}
-<div class='row'>
-<div class='col-md-4'>
-	<h3>Recent Offers</h3>
-	<div class='row'>
+	<div class='col-md-5 offersAndWanteds'>
+		<h2><a href='/offers/' class='text-muted'><i class="fa fa-chevron-circle-right"></i> Recent Offers</a></h2>
+		<ul class='list-unstyled offerList'>
+			{{#each getOffers}}
+			<li class='panel panel-default offer'>
+				<div class='panel-body'>
+				{{> offerSingleSmall}}
+			</div>
+			</li>
+
+			{{/each}}
+		</ul>
+
+		<h2><a href='/wanted/' class='text-muted'><i class="fa fa-chevron-circle-left"></i> Recent Wanteds</a></h2>
+		<ul class='list-unstyled wantedList'>
+			{{#each getWanteds}}
+			<li class='panel panel-default wanted'>
+				<div class='panel-body'>
+				{{> wantedSingleSmall}}
+			</div>
+			</li>
+
+			{{/each}}
+		</ul>
+</div>
+<div class='col-md-6 col-md-offset-1'>
+	<h2 class='text-muted'><i class="fa fa-heart"></i> Transfer {{getOption "currencyAbbr"}}</h2>
+	<div class='transferForm'>
+	{{> transferForm}}
+	</div>
+	<div class='recentTransactions'>
+		<h2 class='text-muted'><i class="fa fa-list"></i> Recent Transactions</h2>
 		<ul class='list-unstyled'>
-		{{#each getOffers}}
-		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2 small' style='text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 2em'><br> {{username}}</a>{{/with}}</div>
-			<div class='col-md-10'>
-				<div style='font-size:1em; font-weight:bold' class='col-md-12'><a href='/offers/{{_id}}'>{{title}}</a></div>
-				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
-
-			</div>
-		</div></li>
-		{{/each}}
-	</ul>
-	</div>
-	<h3>Recent Wanteds</h3>
-	<div class='row'>
-		<ul class='list-unstyled'>
-		{{#each getWanteds}}
-		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2 small' style='text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' style='height: 2em'><br> {{username}}</a>{{/with}}</div>
-			<div class='col-md-10'>
-				<div style='font-size:1em; font-weight:bold' class='col-md-12'><a href='/wanted/{{_id}}'>{{title}}</a></div>
-				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
-
-
-			</div>
-		</div></li>
-		{{/each}}
-	</ul>
+			{{#each recentTransactions 20}}
+			<li>{{#with getUserById sender}}<a href='/users/{{username}}'><b>{{username}}</b></a>{{/with}} sent {{#with getUserById recipient}}<a href='/users/{{username}}'><b>{{username}}</b></a>{{/with}} {{getOption "currencyAbbr"}} <b>{{amount}}</b> {{#if description}}for &quot;{{description}}&quot; {{/if}}{{relativeTime timestamp}}.</li>
+			{{/each}}
+		</ul>
 	</div>
 </div>
-<div class='col-md-8'>
-	<div class='panel panel-default'>
-		  <div class="panel-body" style='margin:9px'>
-<form role='form' class='form-inline' id='sendForm'>
-<div class='row'>
-	<div class='col-md-5 well well-sm userOne'>
 
-		<div class='row'>
-		<div class='col-md-2'>
-			<img src='{{currentUser.profile.picture}}' style='height: 2.25em'>
-		</div>
-		<div class='col-md-10'>
-			<div class='row'>
-				<div class='col-md-12 h4'>{{currentUser.username}}</div>
-			</div>
-			<div class='row'>
-				<div class='col-md-6 small'><b>{{getOption "currencyAbbr"}} {{currentUser.profile.balance}}</b></div>
-				<div class='col-md-6 text-right small logout btn-link'>Not You?</div>
-			</div>
-
-
-		</div>
-
-	</div>
-
-	</div>
-	<div class='col-md-2 text-center' style='padding:9px'>
-		<select id='toFrom' name='toFrom' class='form-control input-sm'>
-			<option value='send'>Send To</option>
-			<option value='request'>Request From</option>
-		</select>
-	</div>
-	<div class='col-md-5 well well-sm userTwo'>
-		<input class='form-control userSearch' placeholder='Search Users'>
-	</div>
-</div>
-<div class='row' style='padding-bottom: 9px'>
-	<div class='col-md-12'>
-<div class="input-group">
-  <span class="input-group-addon">For</span>
-  <input type="text" class="form-control description" name='description' placeholder="Description, e.g. hours of lawn mowing.">
-</div>
-</div>
-	</div>
-<div class='row'>
-	<div class='col-md-4'>
-		<div class="input-group">
-		  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
-		  <input type="text" name='amount' class="form-control amount" placeholder="Amount">
-		</div>
-	</div>
-	<div class='col-md-4'>
-
-		  <!-- <input type="password" class="form-control password" placeholder="Your password"> -->
-	</div>
-	<div class='col-md-4'>
-
-		  <button type='submit' class='form-control btn btn-primary'>Send</button>
-	</div>
-</div>
-</form>
-</div></div>
-
-
-	<div class='small' style='margin-top: 4em;'>
-					{{#if recentTransactions 20}}
-					<h2>Transactions</h2>
-					<div  style='height: 16em; overflow-y: scroll'>
-	<table class='table table-striped transactionsTable'>
-		<thead><tr><td></td><td>Sender</td><td>Recipient</td><td>Amount ({{getOption "currencyAbbr"}})</td><td>Description</td><td>Date</td></tr></thead>
-		<tbody>
-	{{#each getMyTransactions}}
-	<tr class='{{transactionType}}'>
-	<td>{{#if isSender}}<i class='fa fa-chevron-circle-right'></i>{{/if}}{{#if isRecipient}}<i class='fa fa-chevron-circle-left'></i>{{/if}}<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
-	</tr>
-	{{/each}}
-</tbody>
-	</table>
-</div>
+	</div><!-- /container -->
 {{else}}
-<i>No transactions yet!</i>
+	<div class='col-md-8 col-md-offset-2'>
+	<div class="carousel c-fade slide" data-ride="carousel" data-interval='2500' data-wrap="true" data-pause="false">
+  <div class="carousel-inner">
+  	{{#each recentTransactions 20}}
+    <div class="item transaction">
+
+			<div class='well well-sm text-center'>
+					<div class='col-md-12'>
+						<div class='col-md-2 col-md-offset-4 thumb'>
+						{{#with getUserById sender}}<img src='{{profile.picture}}' class='col-md-12'>{{/with}} 
+						</div>						
+						<div class='col-md-2 thumb'>
+						{{#with getUserById recipient}}<img src='{{profile.picture}}' class='col-md-12'>{{/with}}
+						</div>
+					</div>
+				{{#with getUserById sender}}{{username}}{{/with}} sent {{#with getUserById recipient}}{{username}}{{/with}} {{getOption "currencyAbbr"}} {{amount}} {{#if description}}for &quot;{{description}}&quot; {{/if}}{{relativeTime timestamp}}.
+
+			</div>
+
+    </div>
+	{{/each}}
+  </div>
+
+</div>
+
+
+	<hr>
+	<div class='description lead col-md-12'>{{{getOption "description"}}}</div>
+	<div class='lead text-center col-md-12'><b><a href='/signup'>Join {{getOption "sitename"}} today!</a></b></div>
+
+
+</div>
 {{/if}}
-	</div>
-		{{else}}
-		<div class='col-md-4 col-md-offset-4 well well-sm'>
-	{{> loginPanel}}
-</div>
-			{{/if}}
-</div>
-</div>
-</div>
 </template>

@@ -1,0 +1,11 @@
+<template name="transfer">
+		<div class='container'>
+		{{#if currentUser}}
+		<div class='col-md-8 col-md-offset-2'>
+	{{>transferForm}}
+</div>
+	{{else}}
+	<h2>You must be logged in to do this.</h2>
+	{{/if}}
+</div>
+</template>
