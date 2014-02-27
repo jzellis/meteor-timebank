@@ -12,27 +12,38 @@
 
 <div class='col-md-4 text-center'>
 		<select id='toFrom' name='toFrom' class='form-control input-sm'>
-			<option value='send'>Send To</option>
-			<option value='request'>Request From</option>
+			<option value='send' {{#if send}}selected='selected'{{/if}}>Send To</option>
+			<option value='request' {{#if request}}selected='selected'{{/if}}>Request From</option>
 		</select>
 </div>
 
 <div class='col-md-4 well well-sm small' id='userTwo'>
+	{{#if recipient}}
+		{{#with recipient}}
+	<div class='col-md-3'><img src='{{profile.picture}}' class='avatar'></div>
+	<div class='col-md-9'>
+		<div>{{username}}</div>
+		<div>{{getOption "currencyAbbr"}} {{profile.balance}}</div>
+		<div class='small'>&nbsp;</div>
+	</div>
+	<input type='hidden' name='userTwoId' value='{{_id}}'>
+	{{/with}}
+	{{else}}
 		<input class='form-control userSearch input-sm' placeholder='Search Users'>
-
+	{{/if}}
 </div>
 
 <fieldset class='col-md-12 form-group'>
 <div class="col-md-12 input-group">
   <span class="input-group-addon">For</span>
-  <input type="text" class="form-control description" name='description' placeholder="Description, e.g. hours of lawn mowing.">
+  <input type="text" class="form-control description" name='description' placeholder="Description, e.g. hours of lawn mowing." {{#if description}}value='{{description}}'{{/if}}>
 </div>
 </fieldset>
 <fieldset class='col-md-12 form-group'>
 
 		<div class="input-group">
 		  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
-		  <input type="text" name='amount' class="form-control amount" placeholder="Amount (must be a whole number)">
+		  <input type="text" name='amount' class="form-control amount" placeholder="Amount (must be a whole number)" {{#if amount}}value='{{amount}}'{{/if}}>
 		</div>
 </fieldset>
 <div class='col-md-12 text-right'>		  

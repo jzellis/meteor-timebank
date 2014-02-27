@@ -126,8 +126,8 @@ Router.map(function() {
         }
     });
 
-    this.route('send', {
-        path: '/send/:user?/:amount?',
+    this.route('transfer', {
+        path: '/send/:user?/:amount?/:description?',
         data: function() {
 
             recipient = Meteor.users.findOne({
@@ -139,15 +139,17 @@ Router.map(function() {
             });
 
             return {
+                send: true,
                 recipient: recipient,
-                amount: this.params.amount
+                amount: this.params.amount,
+                description: this.params.description
 
             }
         }
     });
 
-    this.route('request', {
-        path: '/request/:user?/:amount?',
+    this.route('transfer', {
+        path: '/request/:user?/:amount?/:description?',
         data: function() {
 
             recipient = Meteor.users.findOne({
@@ -159,8 +161,10 @@ Router.map(function() {
             });
 
             return {
+                request: true,
                 recipient: recipient,
-                amount: this.params.amount
+                amount: this.params.amount,
+                description: this.params.description
 
             }
         }
@@ -436,7 +440,7 @@ Handlebars.registerHelper("getOption", function(name) {
         name: name
     });
 
-    if (theOption) return nl2br(theOption.value);
+    if (theOption && theOption.value.length > 0) return nl2br(theOption.value);
 
 
 });
@@ -1347,7 +1351,7 @@ Template.offerFull.events({
         e.preventDefault();
 
         formdata = $('#replyForm').serializeObject();
-
+        if(formdata.body !=""){
         reply = {
             userId: Meteor.userId(),
             body: formdata.body,
@@ -1364,7 +1368,7 @@ Template.offerFull.events({
         });
 
         $('#replyForm textarea').val('');
-
+    }
     }
 });
 
@@ -1373,6 +1377,7 @@ Template.wantedFull.events({
         e.preventDefault();
 
         formdata = $('#replyForm').serializeObject();
+        if(formdata.body !=""){
 
         reply = {
             userId: Meteor.userId(),
@@ -1390,7 +1395,7 @@ Template.wantedFull.events({
         });
 
         $('#replyForm textarea').val('');
-
+}
     }
 });
 

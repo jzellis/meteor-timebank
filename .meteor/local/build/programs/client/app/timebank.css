@@ -188,3 +188,11 @@ border-radius: 6px;
 	border-bottom: 1px solid #eee;
 }
 
+.tags{margin-bottom: 1em;}
+
+.tags a, .tags a:hover, .tags a:visited{
+	color: white;
+}
+
+
+

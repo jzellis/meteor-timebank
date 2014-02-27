@@ -813,18 +813,18 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.transferForm.js?3b5c8550dd09aef7e4f2b7f906dbe399d23d8846",
-      "size": 1755,
-      "hash": "3b5c8550dd09aef7e4f2b7f906dbe399d23d8846"
+      "url": "/client/templates/template.transferForm.js?3745e171e5604520dc14b7eb018122cf1a5106e3",
+      "size": 2508,
+      "hash": "3745e171e5604520dc14b7eb018122cf1a5106e3"
     },
     {
       "path": "app/client/templates/template.user.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.user.js?00832ba17f40350d11f1d9117602ca55d5710eaf",
-      "size": 6550,
-      "hash": "00832ba17f40350d11f1d9117602ca55d5710eaf"
+      "url": "/client/templates/template.user.js?d30c9494c51f3ace18395cdbf24df7a4e82ea96e",
+      "size": 6554,
+      "hash": "d30c9494c51f3ace18395cdbf24df7a4e82ea96e"
     },
     {
       "path": "app/client/templates/template.wanted-templates.js",
@@ -930,9 +930,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?aececd77cb2505d7336ce2624c6b8ed40dc835ec",
-      "size": 38164,
-      "hash": "aececd77cb2505d7336ce2624c6b8ed40dc835ec"
+      "url": "/client/client.js?53d70f5799b6721e41d7177f6ad5a348cbf1f101",
+      "size": 38463,
+      "hash": "53d70f5799b6721e41d7177f6ad5a348cbf1f101"
     },
     {
       "path": "app/timebank.js",
@@ -1020,9 +1020,9 @@
       "where": "client",
       "type": "css",
       "cacheable": true,
-      "url": "/timebank.css?8173e2eba8ae5ab56efef8ef24a856c1f9cf4a2e",
-      "size": 2485,
-      "hash": "8173e2eba8ae5ab56efef8ef24a856c1f9cf4a2e"
+      "url": "/timebank.css?795821f9a0ef09f9d5b7f0b78c76670705d091fc",
+      "size": 2574,
+      "hash": "795821f9a0ef09f9d5b7f0b78c76670705d091fc"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/fonts/glyphicons-halflings-regular.eot",
@@ -1081,7 +1081,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "5a79dffd9008d0917d687ed7143b47f88a1cbd86"
+      "hash": "b70b67298f1450f8c75f3979fdda2c2f45b8518d"
     }
   ]
 }
