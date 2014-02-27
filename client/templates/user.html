@@ -5,38 +5,17 @@
 			<h2>Wanteds</h2>
 			<ul class='list-unstyled small'>
 		{{#each getUserWanteds user._id}}
-		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' ><br> {{username}}</a>{{/with}}</div>
-			<div class='col-md-10'>
-				<div >{{title}}</div>
-				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
-				<div class='col-md-12'>{{body}}</div>
-				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
-{{/each}}</div>
-	{{#if isCurrentUser userId}}
-<div  data-id="{{_id}}">Mark As Completed</button></div>
-	{{/if}}
-			</div>
-		</div></li>
+		<li class='well well-sm'>
+			{{> wantedSingleSmall}} </li>
 		{{/each}}
 	</ul>
 
 			<h2>Offers</h2>
 			<ul class='list-unstyled small'>
 		{{#each getUserOffers user._id}}
-		<li class='well well-sm'><div class='row'>
-			<div class='col-md-2'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' ><br> {{username}}</a>{{/with}}</div>
-			<div class='col-md-10'>
-				<div >{{title}}</div>
-				<div class='col-md-12 small'>{{formatDate timestamp}}</div>
-				<div class='col-md-12'>{{body}}</div>
-				<div class='col-md-12'>Tags: {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> 
-{{/each}}</div>
-	{{#if isCurrentUser userId}}
-<div  data-id="{{_id}}">Mark As Completed</button></div>
-	{{/if}}
-			</div>
-		</div></li>
+		<li class='well well-sm'>
+			{{> offerSingleSmall}}
+			</li>
 		{{/each}}
 	</ul>
 

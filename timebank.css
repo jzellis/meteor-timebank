@@ -38,9 +38,6 @@ body{
 
 /* General */
 
-img.avatar{
-	height: 1em;
-}
 .tt-dropdown-menu{
 	background: white;
 	width: 100%;
@@ -195,4 +192,6 @@ border-radius: 6px;
 }
 
 
-
+.wanted img.avatar, .offer img.avatar{
+	width: 100%;
+}
