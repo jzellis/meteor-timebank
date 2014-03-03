@@ -630,11 +630,6 @@ Template.home.events({
             console.log(error);
         })
 
-    },
-
-
-    'click .logout': function() {
-        Meteor.logout();
     }
 
     
