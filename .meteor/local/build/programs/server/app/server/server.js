@@ -24,7 +24,7 @@ Accounts.onCreateUser(function(options, user) {
                 url: '',
                 bio: '',
                 createdAt: new Date(),
-                balance: 0.00,
+                balance: 0,
                 favorites: [],
             };
             // options.profile.name = user.services.facebook.name;
@@ -42,21 +42,12 @@ Accounts.onCreateUser(function(options, user) {
 
         user.profile = options.profile;
     }
+
     return user;
 });
 
 Meteor.startup(function() {
 
-    // Meteor.users.update({
-    //     _id: "dfGHhi5Hp7qFqJ4vL"
-    // }, {
-    //     $set: {
-    //         emails: [{
-    //             address: "jzellis@gmail.com",
-    //             verified: true
-    //         }]
-    //     }
-    // });
 
     Meteor.users.find({}).forEach(function(user) {
 
@@ -86,6 +77,89 @@ Meteor.startup(function() {
 
 
 Meteor.methods({
+
+    redeemUnclaimedTime: function(){
+
+        message = {transactions : []};
+
+            Transactions.find({recipientEmail: Meteor.user().emails[0].address, complete: false}).forEach(function(transaction){
+
+        console.log(transaction);
+
+        sender = Meteor.users.findOne({_id: transaction.sender});
+
+            newSenderBalance = parseFloat(sender.balance) - parseFloat(transaction.amount);
+            Meteor.users.update({_id: sender._id}, {$set: {"profile.balance" : newSenderBalance}});
+
+            recipientBalance = Meteor.user().profile.balance;
+            newRecipientBalance = parseFloat(recipientBalance) + parseFloat(transaction.amount);
+            console.log(newRecipientBalance);
+            Meteor.users.update({_id: Meteor.userId()}, {$set: {"profile.balance" : newRecipientBalance}});
+
+
+
+            Transactions.update({_id: transaction._id}, {$set: {recipient: Meteor.userId(), complete: true}});
+
+            message.transactions.push(transaction);
+
+
+
+    });
+
+            // return message;
+
+
+    },
+
+    sendTime: function(transaction){
+
+        response = {};
+
+        if(transaction.recipient){
+
+            recipient = Meteor.users.findOne({_id: transaction.recipient});
+
+
+
+        }else if(transaction.recipientEmail){
+
+            recipient = Meteor.users.findOne({"emails.0.address" : transaction.recipientEmail});
+            if(recipient) transaction.recipient = recipient._id;
+
+        }
+
+
+//If there's a known recipient, complete the transaction
+        if(recipient){
+            response.recipient = recipient;
+
+            senderBalance = Meteor.users.findOne({_id: Meteor.userId()}).profile.balance;
+            newSenderBalance = parseFloat(senderBalance) - parseFloat(transaction.amount);
+            Meteor.users.update({_id: Meteor.userId()}, {$set: {"profile.balance" : newSenderBalance}});
+
+            recipientBalance = Meteor.users.findOne({_id: recipient._id}).profile.balance;
+            newRecipientBalance = parseFloat(recipientBalance) + parseFloat(transaction.amount);
+            Meteor.users.update({_id: recipient._id}, {$set: {"profile.balance" : newRecipientBalance}});
+
+            transaction.complete = true;
+
+            response.message = "You sent " + recipient.username + " " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ".";
+
+        }else{
+                transaction.complete = false;
+            mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! You can redeem this by creating an account at " + Meteor.absoluteUrl();
+            Email.send({to: transaction.recipientEmail, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
+
+            response.message = "An email has been sent to " + transaction.recipientEmail + " letting them know you've sent them " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ". Once they create an account the amount will be automatically added to their balance.";
+        }
+
+        response.transactionId = Transactions.insert(transaction);
+
+        return response;
+
+    },
+
+
 
     sendRequest: function(requestId) {
 

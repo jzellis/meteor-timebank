@@ -275,7 +275,13 @@ $(document).ready(function() {
 });
 
 
-
+Deps.autorun(function(){
+  if(Meteor.userId()){
+    Meteor.call("redeemUnclaimedTime", function(e,d){
+        console.log(d);
+    });
+  }
+});
 
 Handlebars.registerHelper("formatAmount", function(amount) {
     return amount.toFixed(2);
@@ -329,7 +335,7 @@ Handlebars.registerHelper("getMyTransactions", function() {
             sender: Meteor.userId()
         }, {
             recipient: Meteor.userId()
-        }]
+        }], complete: true
     }, {
         sort: {
             timestamp: -1
@@ -368,7 +374,7 @@ Handlebars.registerHelper("getUserTransactions", function(userId) {
             sender: userId
         }, {
             recipient: userId
-        }]
+        }], complete: true
     }, {
         sort: {
             $natural: 1
@@ -447,7 +453,7 @@ Handlebars.registerHelper("getOption", function(name) {
 
 Handlebars.registerHelper("recentTransactions", function(num) {
 
-    return Transactions.find({}, {
+    return Transactions.find({complete:true}, {
         sort: {
             timestamp: -1
         },
@@ -684,7 +690,7 @@ Template.transferForm.events({
                     $.pnotify(erroropts);
                     break;
 
-                case typeof(data.userTwoId) == "undefined":
+                case typeof(data.userTwoId) == "undefined" && data.email == '':
                     erroropts.title = "No Recipient Specified";
                     erroropts.text = "You must choose a recipient.";
                     $.pnotify(erroropts);
@@ -696,25 +702,40 @@ Template.transferForm.events({
 
                         transaction = {
                             sender: Meteor.userId(),
-                            recipient: data.userTwoId,
                             amount: data.amount,
                             description: data.description,
                             timestamp: new Date()
                         };
 
-                        Transactions.insert(transaction);
+                        if(data.email){
+                            transaction.recipientEmail = data.email;
+                        }
 
-                        recipient = Meteor.users.findOne({
-                            _id: transaction.recipient
+                        if(data.userTwoId){
+                            transaction.recipient = data.userTwoId;
+                        }
+
+                        Meteor.call("sendTime", transaction, function(e,r){
+
+                            $('#transferMessage').html(r.message);
+                            $('#transferMessage').removeClass("hidden");
+
+
                         });
 
+                        // Transactions.insert(transaction);
 
-                        newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+                        // recipient = Meteor.users.findOne({
+                        //     _id: transaction.recipient
+                        // });
 
-                        Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
 
-                            // window.location.href = '/';
-                        });
+                        // newBalance = parseFloat(Meteor.user().profile.balance) - parseFloat(transaction.amount);
+
+                        // Meteor.call("updateBalance", newBalance, transaction, function(error, success) {
+
+                        //     // window.location.href = '/';
+                        // });
                     } else {
 
                         request = {

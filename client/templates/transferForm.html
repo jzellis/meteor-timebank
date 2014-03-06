@@ -29,7 +29,7 @@
 	<input type='hidden' name='userTwoId' value='{{_id}}'>
 	{{/with}}
 	{{else}}
-		<input class='form-control userSearch input-sm' placeholder='Search Users'>
+		<input name='email' class='form-control userSearch input-sm' placeholder='Search Users'>
 	{{/if}}
 </div>
 
@@ -52,4 +52,6 @@
 
 </div>
 </form>
+<div id='transferMessage' class='bg-success hidden'></div>
+
 </template>
