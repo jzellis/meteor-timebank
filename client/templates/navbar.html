@@ -4,10 +4,15 @@
   <div class='row'>
     <div class='col-md-3 brand'>
       <div class='row'>
-      <a href='/'>{{#if getImage "siteImage"}}
-      <div class='col-md-2'><img src='{{getImage "siteImage"}}' ></div><div class='col-md-10'>
-      {{else}}
-      <div class='col-md-12'>{{/if}} 
+      <a href='/'>
+        <!-- {{#if getImage "siteImage"}} -->
+      <div class='col-md-2'>
+        <!-- <img src='{{getImage "siteImage"}}' > -->
+        <img src='/img/logo.png'>
+      </div><div class='col-md-10'>
+      <!-- {{else}} -->
+<!--       <div class='col-md-12'>
+        {{/if}}  -->
         <div class='title'>
           {{getOption "sitename"}}
         </div>

@@ -62,6 +62,18 @@ Meteor.startup(function() {
             });
         }
 
+        if(!user.profile.picture){
+
+                        Meteor.users.update({
+                _id: user._id
+            }, {
+                $set: {
+                    "profile.picture": "/img/default_avatar.png"
+                }
+            });
+
+        }
+
     });
 
 

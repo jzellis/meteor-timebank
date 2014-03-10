@@ -276,7 +276,7 @@ $(document).ready(function() {
 
 
 Deps.autorun(function(){
-  if(Meteor.userId()){
+  if(Meteor.user()){
     Meteor.call("redeemUnclaimedTime", function(e,d){
         console.log(d);
     });
