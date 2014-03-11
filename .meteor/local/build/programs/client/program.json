@@ -588,9 +588,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.about.js?39894d25b4df26ad78766686cb3d7ea51c570923",
-      "size": 467,
-      "hash": "39894d25b4df26ad78766686cb3d7ea51c570923"
+      "url": "/client/templates/template.about.js?04dd902b8775cad4e9da71235aa61a2a9104299c",
+      "size": 455,
+      "hash": "04dd902b8775cad4e9da71235aa61a2a9104299c"
     },
     {
       "path": "app/client/templates/template.account.js",
@@ -651,9 +651,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.home.js?76bbf12e8dfbca2bf4cb4a3c1056bd9df9c31c82",
-      "size": 3601,
-      "hash": "76bbf12e8dfbca2bf4cb4a3c1056bd9df9c31c82"
+      "url": "/client/templates/template.home.js?65b0c5c08a3342908dca1f3aa22f9d20b1f769c1",
+      "size": 3613,
+      "hash": "65b0c5c08a3342908dca1f3aa22f9d20b1f769c1"
     },
     {
       "path": "app/client/templates/template.loading.js",
@@ -723,9 +723,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.offer.js?706916bf94ad45ee0248b6e456a0c160a4e3b31d",
-      "size": 1565,
-      "hash": "706916bf94ad45ee0248b6e456a0c160a4e3b31d"
+      "url": "/client/templates/template.offer.js?9ba8d883a86570f9c7c89ebaa1b82a7e6238e0b2",
+      "size": 1566,
+      "hash": "9ba8d883a86570f9c7c89ebaa1b82a7e6238e0b2"
     },
     {
       "path": "app/client/templates/template.offerSingle.js",
@@ -813,9 +813,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.transfer.js?1db55118152b5c5d69525d270db29e781229ac6f",
-      "size": 324,
-      "hash": "1db55118152b5c5d69525d270db29e781229ac6f"
+      "url": "/client/templates/template.transfer.js?508faec4c56145cff3f44a1f805c166ddc3831a4",
+      "size": 512,
+      "hash": "508faec4c56145cff3f44a1f805c166ddc3831a4"
     },
     {
       "path": "app/client/templates/template.transferForm.js",
@@ -1117,7 +1117,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "d494c28a8b6f4801306f1d5769159e95d2337a80"
+      "hash": "f633512acf1191ac72b1dd491b5c7ff0ff23188a"
     }
   ]
 }
