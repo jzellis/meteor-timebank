@@ -624,9 +624,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.autocompleteSuggestion.js?be7f7fcb3484bbe13f4a12dd973c8cf69f0024bf",
-      "size": 422,
-      "hash": "be7f7fcb3484bbe13f4a12dd973c8cf69f0024bf"
+      "url": "/client/templates/template.autocompleteSuggestion.js?0edb5e4861f497e7a134406549372d4a66df3afd",
+      "size": 428,
+      "hash": "0edb5e4861f497e7a134406549372d4a66df3afd"
     },
     {
       "path": "app/client/templates/template.completeProfile.js",
@@ -638,13 +638,22 @@
       "hash": "161b4b1875b92821100bff9631f91b10c1c765f3"
     },
     {
+      "path": "app/client/templates/template.errorModal.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.errorModal.js?c9fb595524f5ce2a5cfae2c062c20020e9b9c5b2",
+      "size": 752,
+      "hash": "c9fb595524f5ce2a5cfae2c062c20020e9b9c5b2"
+    },
+    {
       "path": "app/client/templates/template.home.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.home.js?ee14e6561d7fd6fd608e723572884acc381fb8d4",
-      "size": 3498,
-      "hash": "ee14e6561d7fd6fd608e723572884acc381fb8d4"
+      "url": "/client/templates/template.home.js?76bbf12e8dfbca2bf4cb4a3c1056bd9df9c31c82",
+      "size": 3601,
+      "hash": "76bbf12e8dfbca2bf4cb4a3c1056bd9df9c31c82"
     },
     {
       "path": "app/client/templates/template.loading.js",
@@ -678,9 +687,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.navbar.js?0ed29bc26ebce251151793f269ddbbb66c53101d",
-      "size": 2694,
-      "hash": "0ed29bc26ebce251151793f269ddbbb66c53101d"
+      "url": "/client/templates/template.navbar.js?ac0f4698bd80628145601092aac6998759577a11",
+      "size": 2753,
+      "hash": "ac0f4698bd80628145601092aac6998759577a11"
     },
     {
       "path": "app/client/templates/template.notFound.js",
@@ -705,27 +714,27 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.offer-templates.js?0035a957292c8095a602ff8c4027be399ecb84d0",
-      "size": 2518,
-      "hash": "0035a957292c8095a602ff8c4027be399ecb84d0"
+      "url": "/client/templates/template.offer-templates.js?dc8eb386a929cf06045b158af30c00094a6896e1",
+      "size": 2629,
+      "hash": "dc8eb386a929cf06045b158af30c00094a6896e1"
     },
     {
       "path": "app/client/templates/template.offer.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.offer.js?053d44dcecc06a43741f9acb9a4d348d595826c2",
-      "size": 2193,
-      "hash": "053d44dcecc06a43741f9acb9a4d348d595826c2"
+      "url": "/client/templates/template.offer.js?706916bf94ad45ee0248b6e456a0c160a4e3b31d",
+      "size": 1565,
+      "hash": "706916bf94ad45ee0248b6e456a0c160a4e3b31d"
     },
     {
       "path": "app/client/templates/template.offerSingle.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.offerSingle.js?760964f49cead7ee1f657eb43e2095bafd90a0cb",
-      "size": 2683,
-      "hash": "760964f49cead7ee1f657eb43e2095bafd90a0cb"
+      "url": "/client/templates/template.offerSingle.js?e62da08a05a00603cbafd0275358071c21fc4c7c",
+      "size": 3869,
+      "hash": "e62da08a05a00603cbafd0275358071c21fc4c7c"
     },
     {
       "path": "app/client/templates/template.recentTransactions.js",
@@ -813,9 +822,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.transferForm.js?d6c2858b732b29241a15e62e0425ca4f63632cc6",
-      "size": 2611,
-      "hash": "d6c2858b732b29241a15e62e0425ca4f63632cc6"
+      "url": "/client/templates/template.transferForm.js?a2229da4ec3a90e9be58263bb4f97d71cbd60473",
+      "size": 2923,
+      "hash": "a2229da4ec3a90e9be58263bb4f97d71cbd60473"
     },
     {
       "path": "app/client/templates/template.user.js",
@@ -831,18 +840,18 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.wanted-templates.js?4e50896d42b7cd79475d0717e7ca8f6285888ec8",
-      "size": 2516,
-      "hash": "4e50896d42b7cd79475d0717e7ca8f6285888ec8"
+      "url": "/client/templates/template.wanted-templates.js?9836f3f736ce2b8fef5a518017ab6043b0efb04f",
+      "size": 2497,
+      "hash": "9836f3f736ce2b8fef5a518017ab6043b0efb04f"
     },
     {
       "path": "app/client/templates/template.wanted.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.wanted.js?06458503dae1b6d6a3c33c3062a20163c1778593",
-      "size": 1356,
-      "hash": "06458503dae1b6d6a3c33c3062a20163c1778593"
+      "url": "/client/templates/template.wanted.js?81556b479249e321100e70f8b142709012de9aa0",
+      "size": 1577,
+      "hash": "81556b479249e321100e70f8b142709012de9aa0"
     },
     {
       "path": "app/client/templates/template.wantedForm.js",
@@ -858,18 +867,18 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.wantedSingle.js?a060fc19ab0f4132817fc307e464f2e1efed51de",
-      "size": 2703,
-      "hash": "a060fc19ab0f4132817fc307e464f2e1efed51de"
+      "url": "/client/templates/template.wantedSingle.js?54510e4dc735aa488cdf8606c3bf6069d5bddd90",
+      "size": 3873,
+      "hash": "54510e4dc735aa488cdf8606c3bf6069d5bddd90"
     },
     {
       "path": "app/template.timebank.js",
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/template.timebank.js?f6f8284992ca867e4adf2b3139abd264c7574580",
-      "size": 214,
-      "hash": "f6f8284992ca867e4adf2b3139abd264c7574580"
+      "url": "/template.timebank.js?81a740ff504b69db5bc63d2982d97542162b9979",
+      "size": 387,
+      "hash": "81a740ff504b69db5bc63d2982d97542162b9979"
     },
     {
       "path": "app/client/lib/bootstrap-tagsinput.min.js",
@@ -930,9 +939,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/client.js?eb2e65d03c185b0a8472e551427148b7c3e93489",
-      "size": 39091,
-      "hash": "eb2e65d03c185b0a8472e551427148b7c3e93489"
+      "url": "/client/client.js?55c8c5c728eb63cb8e548602b799bf1069f02646",
+      "size": 39798,
+      "hash": "55c8c5c728eb63cb8e548602b799bf1069f02646"
     },
     {
       "path": "app/timebank.js",
@@ -1020,9 +1029,9 @@
       "where": "client",
       "type": "css",
       "cacheable": true,
-      "url": "/timebank.css?a67601f4bb8e2af95c1dd31fcfc691c550d53d26",
-      "size": 2599,
-      "hash": "a67601f4bb8e2af95c1dd31fcfc691c550d53d26"
+      "url": "/timebank.css?ea2e547ffb37e9eeebbee2415b3a2a0c29d602cb",
+      "size": 8806,
+      "hash": "ea2e547ffb37e9eeebbee2415b3a2a0c29d602cb"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/fonts/glyphicons-halflings-regular.eot",
@@ -1059,6 +1068,15 @@
       "url": "/packages/bootstrap-3/bootstrap-3/fonts/glyphicons-halflings-regular.woff",
       "size": 23292,
       "hash": "c6ea7b1a5bb16b160cc9b8a02f6f6371b5ef7b73"
+    },
+    {
+      "path": "app/img/bg.jpg",
+      "where": "client",
+      "type": "asset",
+      "cacheable": false,
+      "url": "/img/bg.jpg",
+      "size": 146156,
+      "hash": "64f4c478d4f1d04054ee09a0d262ffa3a1f403f9"
     },
     {
       "path": "app/img/bg.png",
@@ -1099,7 +1117,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "a7b287cb4d7549a47658213cfa01ddd498dabd88"
+      "hash": "d494c28a8b6f4801306f1d5769159e95d2337a80"
     }
   ]
 }

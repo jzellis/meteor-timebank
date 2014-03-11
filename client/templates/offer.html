@@ -1,45 +1,39 @@
 <template name='offers'>
 <div class='container'>
+  <div class='offer-list col-md-8 col-md-offset-2 panel panel-default'>
+    <div class='panel-body'>
+  <div class='row'>
+      <h1 class='col-md-6'><i class="fa fa-chevron-circle-left"></i> Offers</h1><div class='col-md-6 text-right'><span class='addOffer btn btn-sm btn-success' data-toggle="modal" data-target="#offerModal"><i class='fa fa-plus-circle'></i> Post An Offer</span></div> 
+  </div>
+  <hr>
+  <div class='row'>
+    <ul class='list-unstyled'>
+    {{#each getOffers}}
+    <li>
 
-	<div class='row'>
-			<span class='h1'>Offers <span class='addWanted btn btn-sm btn-success' data-toggle="modal" data-target="#offerModal">Post An Offer</span></span> 
-	</div>
-	<div class='row'>
-		<ul class='list-unstyled col-md-6'>
-		{{#each getOffers}}
-		<li class='well well-sm'>
-    {{> offerSingle}}  
-    </li>
-		{{/each}}
-	</ul>
-	</div>
-	</div>
+      {{> offerSingle}}
 
-	<div class="modal fade" id='offerModal'>
+</li>
+<hr>
+    {{/each}}
+  </ul>
+  </div>
+</div>
+</div>
+  </div>
+
+  <div class="modal fade" id='offerModal'>
   <div class="modal-dialog">
     <div class="modal-content">
-    	        <form role='form' id='offerForm'>
+              <form role='form' id='offerForm'>
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">Post An Offer</h4>
       </div>
       <div class="modal-body">
-        	<fieldset class='form-group'>
-        		<label for='title'>Title</label>
-        		<input class='form-control' name='title' placeholder='Title of your offer'>
-        	</fieldset>
-        	<fieldset class='form-group'>
-        		<textarea class='form-control' name='body' rows='8' placeholder="Tell us what you're offering"></textarea>
-        	</fieldset>
-        	<fieldset class='form-group'>
-        		<label for='location'>Location (optional)</label>
-        		<input class='form-control' name='location' placeholder='Be as specific as your address or as general as your city or neighborhood.'>
-        	</fieldset>
-        	     <fieldset class='form-group'>
-        		<label for='tags'>Tags (optional)</label>
-        		<input class='form-control' name='tags' placeholder='Add tags for your specific skills.'>
-        	</fieldset>
+          
+    {{> wantedForm}}
 
       </div>
       <div class="modal-footer">

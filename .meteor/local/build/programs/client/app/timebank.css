@@ -3,14 +3,201 @@
 body{
 	padding-bottom: 100px;
 	font-weight: 300;
+	background: url(img/bg.jpg);
+	background-size: 100%, auto;
+	background-position: bottom center;
+	background-attachment: fixed;
 }
 
 .faux-link{
 	cursor:pointer;
 }
 
+header{
+	background: white;
+	margin-bottom: 3em;
+}
+
+h1,h2,h3,h4,h5,h6{
+	font-weight: 300;
+	line-height: 1em;
+	margin: 0;
+}
+
 
 /* Tricks */
+
+.twitter-typeahead {
+  width: 100%;
+  position: relative;
+  display:block !important;
+}
+.twitter-typeahead .tt-input,
+.twitter-typeahead .tt-hint {
+  margin: 0;
+  width: 100%;
+  color: #555555;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+.has-warning .twitter-typeahead .tt-input,
+.has-warning .twitter-typeahead .tt-hint {
+  border-color: #c09853;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.has-error .twitter-typeahead .tt-input,
+.has-error .twitter-typeahead .tt-hint {
+  border-color: #b94a48;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.has-success .twitter-typeahead .tt-input,
+.has-success .twitter-typeahead .tt-hint {
+  border-color: #468847;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.twitter-typeahead .tt-input:focus,
+.twitter-typeahead .tt-hint:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.has-warning .twitter-typeahead .tt-input:focus,
+.has-warning .twitter-typeahead .tt-hint:focus {
+  border-color: #a47e3c;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #dbc59e;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #dbc59e;
+}
+.has-error .twitter-typeahead .tt-input:focus,
+.has-error .twitter-typeahead .tt-hint:focus {
+  border-color: #953b39;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+}
+.has-success .twitter-typeahead .tt-input:focus,
+.has-success .twitter-typeahead .tt-hint:focus {
+  border-color: #356635;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
+}
+.twitter-typeahead .tt-hint {
+  color: #a1a1a1;
+  z-index: 1;
+  border: 1px solid transparent;
+}
+.twitter-typeahead .tt-input {
+  z-index: 2;
+}
+.twitter-typeahead .tt-input,
+.twitter-typeahead .tt-hint {
+  height: 30px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+}
+.twitter-typeahead .input-sm.tt-input,
+.twitter-typeahead .hint-sm.tt-hint {
+    border-radius: 3px;
+}
+.twitter-typeahead .input-lg.tt-input,
+.twitter-typeahead .hint-lg.tt-hint {
+    border-radius: 6px;
+}
+.input-group .twitter-typeahead:first-child .tt-input,
+.input-group .twitter-typeahead:first-child .tt-hint {
+  border-radius: 4px 0 0 4px !important;
+}
+.input-group .twitter-typeahead:last-child .tt-input,
+.input-group .twitter-typeahead:last-child .tt-hint {
+  border-radius: 0 4px 4px 0 !important;
+}
+.input-group.input-group-sm .twitter-typeahead:first-child .tt-input,
+.input-group.input-group-sm .twitter-typeahead:first-child .tt-hint {
+  border-radius: 3px 0 0 3px !important;
+}
+.input-group.input-group-sm .twitter-typeahead:last-child .tt-input,
+.input-group.input-group-sm .twitter-typeahead:last-child .tt-hint {
+  border-radius: 0 3px 3px 0 !important;
+}
+.input-sm.tt-input,
+.hint-sm.tt-hint,
+.input-group.input-group-sm .tt-input,
+.input-group.input-group-sm .tt-hint {
+  height: 30px;
+  padding: 5px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.input-group.input-group-lg .twitter-typeahead:first-child .tt-input,
+.input-group.input-group-lg .twitter-typeahead:first-child .tt-hint {
+  border-radius: 6px 0 0 6px !important;
+}
+.input-group.input-group-lg .twitter-typeahead:last-child .tt-input,
+.input-group.input-group-lg .twitter-typeahead:last-child .tt-hint {
+  border-radius: 0 6px 6px 0 !important;
+}
+.input-lg.tt-input,
+.hint-lg.tt-hint,
+.input-group.input-group-lg .tt-input,
+.input-group.input-group-lg .tt-hint {
+  height: 45px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+}
+.tt-dropdown-menu {
+  width: 100%;
+  min-width: 160px;
+  margin-top: 2px;
+  padding: 5px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+}
+.input-group .tt-dropdown-menu{
+	margin-top: 2em;
+}
+.tt-suggestion {
+  display: block;
+  padding: 3px 20px;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0081c2;
+  background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
+  background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
+  background-image: -o-linear-gradient(top, #0088cc, #0077b3);
+  background-image: linear-gradient(to bottom, #0088cc, #0077b3);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+.tt-suggestion.tt-cursor a {
+  color: #fff;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 
 .carousel.c-fade .item {
   -webkit-transition: opacity 1s ease-in-out;
@@ -63,8 +250,9 @@ header{
 
 
 
-header .brand img.avatar{
-	margin-right: 1em;
+header .brand img{
+	display: inline-block;
+	margin-right: 1em !important;
 }
 
 header .brand .title{
@@ -93,7 +281,6 @@ header .brand img{
 }
 
 header .account-info{
-	border-left: 1px solid #eee;
 		padding-bottom: 2em;
 }
 
@@ -127,8 +314,11 @@ header .menu a, header.menu a:hover{
 	text-decoration: none;
 }
 
-#searchbar .wrapper{
-	background: #ccc;
+#searchbar{
+	background: #bbdeff;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #ccc;
 }
 
 .carousel{
@@ -160,7 +350,7 @@ border-radius: 6px;
 }
 
 #sendForm{
-	background: #d9edf7;
+	background: #fff;
 }
 
 #sendForm img.avatar{
@@ -179,7 +369,7 @@ border-radius: 6px;
 	cursor: pointer;
 }
 
-.recentTransactions li{
+.recentTransactions li, .offerList li, .wantedList li{
 	padding-top: 1em;
 	padding-bottom: 1em;
 	border-bottom: 1px solid #eee;
@@ -193,5 +383,21 @@ border-radius: 6px;
 
 
 .wanted img.avatar, .offer img.avatar{
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.wanted-single, .offer-single{
+	margin-top: 3em;
+}
+
+.wanted-single .title, .offer-single .title, .wanted-md .title, .offer-md .title{
+	font-size: 2em;
+}
+
+#status{
+	z-index: 99999;
+	position: absolute;
 	width: 100%;
+	padding: 1em;
 }

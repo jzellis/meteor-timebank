@@ -1,56 +1,93 @@
 <template name='offerFull'>
-	<div class='container offer'>
-		<div class='col-md-8 col-md-offset-2'>
-			{{#with offer}}		
-				<div class='row'>
-					<div class='col-md-2' style-'text-align:center'>{{#with getUserById userId}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' ><br>{{username}}</a>{{/with}}</div>
-					<div class='col-md-10'>
-						<div>{{title}}</div>
-						<div class='small text-muted'>{{#if location}}<a href="http://maps.google.com?q={{location}}" target='_new' class='text-muted'><i class="fa fa-map-marker"></i> {{location}}</a> - {{/if}}{{formatDate timestamp}}</div>
+	{{#with offer}}
+	  <div class='container offer offer-single'>
+	    <div class='col-md-8 col-md-offset-2'>
+		      <div class='panel panel-default'>
+		        <div class='panel-body'>
+		        	<div class='row'>
+		        		<div class='col-md-2'>
+		        			{{#with getUserById userId}}
+		        			<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a>
+		        			{{/with}}
+		        		</div><!-- /avatar -->
 
-						<div class='body'>{{{nl2br body}}}</div>
-												<br>
-										<div><i class="fa fa-tags" title='Tags'></i> {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
+		        		<div class='col-md-10'>
+		        			<div class='title'>{{title}}</div>
+		        			<div class='text-muted'>Posted by {{#with getUserById userId}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</div>
+							<div class='text-muted'> {{#if location}}<a href='http://maps.google.com?q={{location}}' target='_new'><i class="fa fa-map-marker"></i> {{location}}</a> {{/if}}on <a href=''>{{formatDate timestamp}} <i class='fa fa-link'></i></a></div>
+							<div>
+                <i class="fa fa-tags" title='Tags'>
+                </i>
+                {{#each tags}}
+                <a href='/tags/{{this}}' class='label label-default'>
+                  {{this}}
+                </a>&nbsp;
+                {{/each}}
+              </div>
+							<hr>
+							<div class='body'>{{{nl2br body}}}</div>
+		        		</div>
 
-				<div>
-					<h3>{{numReplies}} Replies</h3>
-				</div>
-				<hr>
-				{{#each replies}}
-								<div class='row'>
-					<div class='col-md-1 text-center'>
-						{{#with getUserById userId}}
-						<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' ><br>{{username}}</a>
-						{{/with}}
-					</div>
-					<div class='col-md-11'>
-						{{{nl2br body}}}
-					</div>
-					<div class='col-md-12 text-right small text-muted'>{{formatDate timestamp}}</div>
-				</div>
-				<hr>
-				{{/each}}
-				<form class='well well-sm' role='form' id='replyForm' name='replyForm'>
-					<h3>Leave A Reply</h3>
-				<div class='row'>
-					<div class='col-md-1 text-center'>
-						{{#with currentUser}}
-						<img src='{{profile.picture}}' class='avatar' ><br>{{username}}
-						{{/with}}
-					</div>
-					<div class='col-md-11'>
-						<textarea class='form-control' name='body' rows='4'></textarea>
-					</div>
-				</div>
-				<br>
-				<div class='text-right'><button type='submit' class='btn btn-primary'>Post Reply</button></div>
+		        	</div>
+		        </div>
+		    </div><!-- /panel -->
+		    			<div class='panel panel-default'>
+				<div class='panel-body'>
+		<h3>{{numReplies}} Replies</h3>
 
-				</form>
-
+		{{#each replies}}
+		<hr>
+			<div class='reply'>
+					<div class='row'>
+		        		<div class='col-md-1 col-md-offset-1'>
+		        			{{#with getUserById userId}}
+		        			<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a>
+		        			{{/with}}
+		        		</div><!-- /avatar -->
+			        		<div class='col-md-10'>
+							{{#with getUserById userId}}
+		        			<b><a href='/users/{{username}}'>{{username}}</a></b>
+		        			{{/with}} {{{nl2br body}}}
+							</div>
+							<div class='col-md-12 text-right small text-muted'>{{relativeTime timestamp}}</div>
 					</div>
-				</div>
 
-			{{/with}}
+</div>
+		{{/each}}
+
+<!-- Reply form -->
+
+			<div class='' style='margin-top: 2em'>
+				<form role='form' id='replyForm' name='replyForm'>
+	            <h3>
+	              Leave A Reply
+	            </h3>
+	            <div class='row'>
+	              <div class='col-md-1 text-center'>
+	                {{#with currentUser}}
+	                <img src='{{profile.picture}}' class='avatar' >
+	                <br>
+	                {{username}}
+	                {{/with}}
+	              </div>
+	              <div class='col-md-11'>
+	                <textarea class='form-control' name='body' rows='4'>
+	                </textarea>
+	              </div>
+	            </div>
+	            <br>
+	            <div class='text-right'>
+	              <button type='submit' class='btn btn-primary'>
+	                Post Reply
+	              </button>
+	            </div>
+	            
+	          </form>
+			</div>
 		</div>
 </div>
+
+		</div>
+	</div>
+	{{/with}}
 </template>

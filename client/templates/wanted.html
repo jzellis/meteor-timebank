@@ -1,18 +1,25 @@
 <template name='wanted'>
 <div class='container'>
-
+  <div class='wanted-list col-md-8 col-md-offset-2 panel panel-default'>
+    <div class='panel-body'>
+  <div class='row'>
+      <h1 class='col-md-6'><i class="fa fa-chevron-circle-left"></i> Wanted</h1><div class='col-md-6 text-right'><span class='addWanted btn btn-sm btn-success' data-toggle="modal" data-target="#wantedModal"><i class='fa fa-plus-circle'></i> Post A Wanted</span></div> 
+  </div>
+  <hr>
 	<div class='row'>
-			<span class='h1'>Wanted <span class='addWanted btn btn-sm btn-success' data-toggle="modal" data-target="#wantedModal">Post A Wanted Ad</span></span> 
-	</div>
-	<div class='row'>
-		<ul class='list-unstyled col-md-6'>
+		<ul class='list-unstyled'>
 		{{#each getWanteds}}
-		<li class='well well-sm'>
+		<li>
+
 			{{> wantedSingle}}
+
 </li>
+<hr>
 		{{/each}}
 	</ul>
 	</div>
+</div>
+</div>
 	</div>
 
 	<div class="modal fade" id='wantedModal'>

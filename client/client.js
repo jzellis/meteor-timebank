@@ -267,6 +267,10 @@ $(document).ready(function() {
         }).value);
     }
 
+    $('#status .close').on('click',function(){
+        $('#status').slideUp();
+    });
+
     $('.change').on('click', function() {
         console.log('hello');
         $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
@@ -717,8 +721,7 @@ Template.transferForm.events({
 
                         Meteor.call("sendTime", transaction, function(e,r){
 
-                            $('#transferMessage').html(r.message);
-                            $('#transferMessage').removeClass("hidden");
+                            displayStatus(r.message);
 
 
                         });
@@ -756,7 +759,11 @@ Template.transferForm.events({
 
                     }
 
-                    $('#sendForm input[type="text"]').val('');
+                            $('#userTwo').html("<fieldset><div class='input-group'><span class='input-group-addon'>To</span><input name='email' class='form-control userSearch' placeholder='Search Users'></div></fieldset>");
+
+        initializeUserSearchTypeahead();
+
+                    $('#sendForm input[type="text"],#sendForm input[type="email"]').val('');
 
                     break;
             }
@@ -766,7 +773,7 @@ Template.transferForm.events({
     },
 
     'click #changeUser': function() {
-        $('#userTwo').html("<input class='form-control userSearch input-sm' placeholder='Search Users'>");
+        $('#userTwo').html("<fieldset><div class='input-group'><span class='input-group-addon'>To</span><input name='email' class='form-control userSearch' placeholder='Search Users'></div></fieldset>");
 
         initializeUserSearchTypeahead();
 
@@ -1539,6 +1546,22 @@ _.extend(Offer.prototype, {
     }
 });
 
+// Function
+
+function displayStatus(msg){
+
+$('#status .body').html(msg);
+$('#status').slideDown();
+setTimeout(function(){$('#status').slideUp()},5000);
+
+}
+
+function displayError(title,msg){
+
+    Template.errorModal({data: {title:title, body: msg}});
+
+}
+
 function nl2br(str) {
     return str.replace(/\n/g, '<br />');
 }
@@ -1592,11 +1615,11 @@ function initializeUserSearchTypeahead(){
     });
 
     $('#sendForm .userSearch').on('typeahead:selected', function(object, data, name) {
-        html = "<div class='col-md-3'>";
+        html = "<div class='well well-sm col-md-4 col-md-offset-4'><div class='col-md-3'>";
 
         if(data.profile.picture) html += "<img src='" + data.profile.picture + "' class='avatar'>";
 
-        html +="</div><div class='col-md-9'><div><a href='/users/" + data.username + "' target='_new'>" + data.username + "</a></div><div>" + Options.findOne({name: "currencyAbbr"}).value + " " + data.profile.balance + "</div><div id='changeUser' class='text-right change text-primary faux-link'>Change</div></div><input type='hidden' name='userTwoId' value='" + data._id + "'>";
+        html +="</div><div class='col-md-9'><div><a href='/users/" + data.username + "' target='_new'>" + data.username + "</a></div><div>" + Options.findOne({name: "currencyAbbr"}).value + " " + data.profile.balance + "</div><div id='changeUser' class='text-right change text-primary faux-link'>Change</div></div><input type='hidden' name='userTwoId' value='" + data._id + "'></div>";
         $('#userTwo').html(html);
 
 

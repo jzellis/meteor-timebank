@@ -1,47 +1,64 @@
 <template name="home">
-{{#if currentUser}}
-<div class='container'>
-	<div class='col-md-5 offersAndWanteds'>
-		<h2><a href='/offers/' class='text-muted'><i class="fa fa-chevron-circle-right"></i> Recent Offers</a></h2>
-		<ul class='list-unstyled offerList'>
-			{{#each getOffers}}
-			<li class='panel panel-default offer'>
-				<div class='panel-body'>
+	{{#if currentUser}}
+<div class='container margin-top'>
+	<div class='row'> <!-- send form -->
+		<div class='col-md-8 col-md-offset-2 panel panel-default'>
+			<div class='panel-body'>
+			<h2><i class='fa fa-heart' style='color: #f00'></i> Send {{getOption "currencyAbbr"}}</h2>
+			{{> transferForm}}
+		</div>
+	</div>
+	</div><!-- /send form -->
+
+<div class='row' style='margin-top: 3em'>
+				<div class='col-md-5 col-md-offset-1'>
+					<div class='panel panel-default'>
+									<div class='panel-body'>
+						<div class='row'>
+				<h3 class='col-md-6'><i class="fa fa-chevron-circle-left" style='color: #0c0'></i> Offers</h3>
+				<div class='col-md-6 text-right'><a class='btn btn-sm btn-success' href='/wanted/post'><i class='fa fa-plus-circle'></i> Post An Offer</a></div>
+						</div>
+
+
+				<ul class='list-unstyled offerList'>
+				{{#each getOffers}}
+				<li class='offer'>
+
 				{{> offerSingleSmall}}
+
+				</li>
+
+				{{/each}}
+				</ul>
+				</div>
 			</div>
-			</li>
+				</div>
 
-			{{/each}}
-		</ul>
+<div class='col-md-5'>
+					<div class='panel panel-default'>
+					<div class='panel-body'>
+						<div class='row'>
+				<h3 class='col-md-6'><i class="fa fa-chevron-circle-left" style='color: #0c0'></i> Wanted</h3>
+				<div class='col-md-6 text-right'><a class='btn btn-sm btn-success' href='/wanted/post'><i class='fa fa-plus-circle'></i> Post A Wanted</a></div>
+						</div>
 
-		<h2><a href='/wanted/' class='text-muted'><i class="fa fa-chevron-circle-left"></i> Recent Wanteds</a></h2>
-		<ul class='list-unstyled wantedList'>
-			{{#each getWanteds}}
-			<li class='panel panel-default wanted'>
-				<div class='panel-body'>
+				<ul class='list-unstyled wantedList'>
+				{{#each getWanteds}}
+				<li class='wanted'>
+
 				{{> wantedSingleSmall}}
+
+				</li>
+
+				{{/each}}
+				</ul>
+				</div>
 			</div>
-			</li>
+				</div>
 
-			{{/each}}
-		</ul>
-</div>
-<div class='col-md-6 col-md-offset-1'>
-	<h2 class='text-muted'><i class="fa fa-heart"></i> Transfer {{getOption "currencyAbbr"}}</h2>
-	<div class='transferForm'>
-	{{> transferForm}}
-	</div>
-	<div class='recentTransactions'>
-		<h2 class='text-muted'><i class="fa fa-list"></i> Recent Transactions</h2>
-		<ul class='list-unstyled'>
-			{{#each recentTransactions 20}}
-			<li>{{#with getUserById sender}}<a href='/users/{{username}}'><b>{{username}}</b></a>{{/with}} sent {{#with getUserById recipient}}<a href='/users/{{username}}'><b>{{username}}</b></a>{{/with}} {{getOption "currencyAbbr"}} <b>{{amount}}</b> {{#if description}}for &quot;{{description}}&quot; {{/if}}{{relativeTime timestamp}}.</li>
-			{{/each}}
-		</ul>
-	</div>
 </div>
 
-	</div><!-- /container -->
+</div> <!-- /container -->
 {{else}}
 	<div class='col-md-8 col-md-offset-2'>
 	<div class="carousel c-fade slide" data-ride="carousel" data-interval='2500' data-wrap="true" data-pause="false">
@@ -49,7 +66,8 @@
   	{{#each recentTransactions 20}}
     <div class="item transaction">
 
-			<div class='well well-sm text-center'>
+			<div class='panel panel-default text-center'>
+				<div class='panel-body'>
 					<div class='col-md-12'>
 						<div class='col-md-2 col-md-offset-4 thumb'>
 						{{#with getUserById sender}}<img src='{{profile.picture}}' class='col-md-12'>{{/with}} 
@@ -61,19 +79,18 @@
 				{{#with getUserById sender}}{{username}}{{/with}} sent {{#with getUserById recipient}}{{username}}{{/with}} {{getOption "currencyAbbr"}} {{amount}} {{#if description}}for &quot;{{description}}&quot; {{/if}}{{relativeTime timestamp}}.
 
 			</div>
-
+</div>
     </div>
 	{{/each}}
   </div>
 
 </div>
-
-
-	<hr>
+<div class='panel panel-default'>
+	<div class='panel-body'>
 	<div class='description lead col-md-12'>{{{getOption "description"}}}</div>
 	<div class='lead text-center col-md-12'><b><a href='/signup'>Join {{getOption "sitename"}} today!</a></b></div>
-
-
 </div>
-{{/if}}
+</div>
+
+	{{/if}}
 </template>

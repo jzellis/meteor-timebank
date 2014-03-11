@@ -1,8 +1,9 @@
 <template name='navbar'>
+
   <header>
 <div class='container'>
   <div class='row'>
-    <div class='col-md-3 brand'>
+    <div class='col-md-4 brand'>
       <div class='row'>
       <a href='/'>
         <!-- {{#if getImage "siteImage"}} -->
@@ -25,7 +26,7 @@
 
     </div>
 {{#if currentUser}}
-    <div class='col-md-3 account-info pull-right col-md-offset-1'>
+    <div class='col-md-3 account-info well well-sm pull-right col-md-offset-1'>
       <div class='col-md-2'>
                <img src='{{currentUser.profile.picture}}' class='avatar'>
       </div>
@@ -37,7 +38,7 @@
     </div>
 
 {{else}}
-    <div class='col-md-3 login pull-right small'>
+    <div class='col-md-3 login well well-sm pull-right small'>
       <form role='form' id='loginForm'>
       <fieldset>
 <input class='form-control input-sm username' name='username' placeholder='username'>
@@ -51,7 +52,7 @@
     </div>
 {{/if}}
 
-<ul class='menu col-md-5 list-unstyled list-inline'>
+<ul class='menu col-md-4 list-unstyled list-inline'>
   <li><a href='/transfer/'>Transfer</a></li>
   <li><a href='/wanted/' class='text-muted'>Wanted</a></li>
   <li><a href='/offers/' class='text-muted'>Offers</a></li>
@@ -61,15 +62,20 @@
 
   </div>
 </div>
-  </header>
   {{#if currentUser}}
-<div id='searchbar' class='row'>
-<div class='wrapper col-md-12'>
-  <form role="search" class='text-right col-md-11'>
+<div id='searchbar'>
+  <div class='container'>
+  <div class='row'>
+
+  <form role="search" class='text-right col-md-3 col-md-offset-9'>
 
     <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users">
 </form>
+
+</div>
 </div>
 </div>
 {{/if}}
+  </header>
+
 </template>
