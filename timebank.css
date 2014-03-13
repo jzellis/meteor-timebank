@@ -1,12 +1,31 @@
 /* CSS declarations go here */
-
+html{
+  height: 100%;
+}
 body{
+  height: 100%;
+
 	padding-bottom: 100px;
 	font-weight: 300;
-	background: url(img/bg.jpg);
+/*	background: url(img/bg.jpg);
 	background-size: 100%, auto;
 	background-position: bottom center;
-	background-attachment: fixed;
+	background-attachment: fixed;*/
+
+/*Gradient*/
+
+background: #f2f5f6;
+background: -moz-linear-gradient(top,  #f2f5f6 0%, #e3eaed 37%, #c8d7dc 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2f5f6), color-stop(37%,#e3eaed), color-stop(100%,#c8d7dc));
+background: -webkit-linear-gradient(top,  #f2f5f6 0%,#e3eaed 37%,#c8d7dc 100%);
+background: -o-linear-gradient(top,  #f2f5f6 0%,#e3eaed 37%,#c8d7dc 100%);
+background: -ms-linear-gradient(top,  #f2f5f6 0%,#e3eaed 37%,#c8d7dc 100%);
+background: linear-gradient(to bottom,  #f2f5f6 0%,#e3eaed 37%,#c8d7dc 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=0 );
+
+  background-repeat: no-repeat;
+background-attachment: fixed;
+
 }
 
 .faux-link{
@@ -15,7 +34,11 @@ body{
 
 header{
 	background: white;
-	margin-bottom: 3em;
+    margin-bottom: 3em;
+}
+
+#navbar{
+margin-bottom: 0;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -249,69 +272,16 @@ header{
 }
 
 
-
-header .brand img{
-	display: inline-block;
-	margin-right: 1em !important;
-}
-
-header .brand .title{
-	display: inline-block;
-font-size: 24px;
-line-height: 24px;
-}
-
-header .brand .subtitle{
-	margin-top: .5em;
-}
-
-header .brand a{
-	text-decoration: none;
-	color: inherit;
-}
-
-header .brand a:hover{
-	text-decoration: none
-}
-
-header .brand img{
-	height: 36px;
-	vertical-align: middle
+ul.transactions li{
+  border-bottom: 1px solid #eee;
+  padding-top: 1em;
+  padding-bottom: 1em;
 
 }
 
-header .account-info{
-		padding-bottom: 2em;
-}
 
-header .account-info img.avatar{
-	height: 48px;
-}
-
-header .account-info .username{
-	font-weight: bold;
-	font-size: 1.5em;
-}
-
-header .account-info .balance{
-	font-weight: bold;
-}
-
-header .login{
-	margin-top: -1.5em;
-	padding-bottom: .5em;
-}
-
-header .login fieldset{
-	margin-bottom: 4px;
-}
-
-header .menu{
-}
-
-
-header .menu a, header.menu a:hover{
-	text-decoration: none;
+#navbar img.avatar{
+  max-height: 24px;
 }
 
 #searchbar{

@@ -258,10 +258,10 @@
       "path": "app/server/templates/handlebars.sendRequestEmail.js"
     },
     {
-      "path": "app/server/server.js"
+      "path": "app/timebank.js"
     },
     {
-      "path": "app/timebank.js"
+      "path": "app/server/main.js"
     }
   ]
 }

@@ -1,0 +1,3 @@
+(function(){Template.__define__("errorModal",Package.handlebars.Handlebars.json_ast_to_func(["<div class=\"modal fade\" id='error'>\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n        <h4 class=\"modal-title\">",["{",[[0,"title"]]],"</h4>\n      </div>\n      <div class=\"modal-body\">\n        ",["{",[[0,"body"]]],"\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\">OK</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->"]));
+
+})();

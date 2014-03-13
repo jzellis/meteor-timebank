@@ -1,0 +1,32 @@
+<template name='loginModal'>
+	             <form role='form' id='loginForm'>
+<div class="modal fade" id='loginModal'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Login</h4>
+      </div>
+      <div class="modal-body">
+
+      <fieldset>
+      	<label for='username'>Username</label>
+<input class='form-control username' name='username' placeholder='username'>
+      </fieldset>
+      <fieldset>
+      	<label for='password'>Password</label>
+<input class='form-control password' type='password' name='password' placeholder='password'>
+	</fieldset>
+
+      </div>
+      <div class="modal-footer">
+      	        <a class='small' href='/signup'>Signup</a>
+
+<button id='loginFacebook' class='btn btn-primary btn-sm' ></i> Login With Facebook</button>
+        <button type='submit' class='btn btn-success btn-sm'>Login</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+</template>

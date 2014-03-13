@@ -1,19 +1,47 @@
 <template name='navbar'>
+<div id='navbar' class='navbar navbar-default'>
+  <div class='container'>
+<ul class="nav navbar-nav">
+  <a href='/'class='navbar-brand'>
+    <img src='/img/logo.png' style='height: 24px'> {{getOption "sitename"}}
 
-  <header>
+  </a>
+  {{#if currentUser}}<li><a href='/transfer/'>Transfer</a></li>{{/if}}
+  <li><a href='/wanted/' class='text-muted'>Wanted</a></li>
+  <li><a href='/offers/' class='text-muted'>Offers</a></li>
+  <li><a href='/about/' class='text-muted'>About</a></li>
+</ul>
+  <form role="search" class='navbar-form navbar-left'>
+
+    <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users" length="20">
+</form>
+{{#if currentUser}}
+<div class="navbar-text navbar-right small text-muted">
+
+    <img src='{{currentUser.profile.picture}}' class='avatar'> {{currentUser.username}} | <b>Balance:</b> {{getOption "currencyAbbr"}} {{currentUser.profile.balance}} | <a class='logout'><i class='fa fa-unlock-alt'></i> Logout</a>
+
+</div>
+{{else}}
+<div class='navbar-text navbar-right small'>
+  <a class='btn btn-default btn-xs'data-toggle="modal" data-target="#loginModal">Login</a>
+  <a href='/signup' class='btn btn-default btn-xs'>Signup</a>
+
+</div>
+{{/if}}
+</div>
+</div>
+<!--
+ <header>
+
 <div class='container'>
   <div class='row'>
     <div class='col-md-4 brand'>
       <div class='row'>
       <a href='/'>
-        <!-- {{#if getImage "siteImage"}} -->
       <div class='col-md-2'>
-        <!-- <img src='{{getImage "siteImage"}}' > -->
         <img src='/img/logo.png'>
       </div><div class='col-md-10'>
-      <!-- {{else}} -->
-<!--       <div class='col-md-12'>
-        {{/if}}  -->
+
         <div class='title'>
           {{getOption "sitename"}}
         </div>
@@ -52,30 +80,11 @@
     </div>
 {{/if}}
 
-<ul class='menu col-md-4 list-unstyled list-inline'>
-  <li><a href='/transfer/'>Transfer</a></li>
-  <li><a href='/wanted/' class='text-muted'>Wanted</a></li>
-  <li><a href='/offers/' class='text-muted'>Offers</a></li>
-  <li><a href='/about/' class='text-muted'>About</a></li>
 
-  </ul>
 
   </div>
-</div>
-  {{#if currentUser}}
-<div id='searchbar'>
-  <div class='container'>
-  <div class='row'>
+</div> 
 
-  <form role="search" class='text-right col-md-3 col-md-offset-9'>
-
-    <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users">
-</form>
-
-</div>
-</div>
-</div>
-{{/if}}
-  </header>
+  </header> -->
 
 </template>
