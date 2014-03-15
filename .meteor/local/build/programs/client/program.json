@@ -696,9 +696,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.loginModal.js?770991088b52e75faaee8b918c5e603485fb3c6c",
-      "size": 1232,
-      "hash": "770991088b52e75faaee8b918c5e603485fb3c6c"
+      "url": "/client/templates/template.loginModal.js?95baf0673f283843fb2f07462a65a96f039caae0",
+      "size": 1236,
+      "hash": "95baf0673f283843fb2f07462a65a96f039caae0"
     },
     {
       "path": "app/client/templates/template.loginPanel.js",
@@ -1171,7 +1171,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "fa85fa96e013c34acff4368b0bbde45cef826d17"
+      "hash": "3a2e461e3e643590074af4b4ae1eefe20139b151"
     }
   ]
 }
