@@ -339,7 +339,7 @@ fieldset{
 	cursor: pointer;
 }
 
-.recentTransactions li, .offerList li, .wantedList li{
+.recentTransactions li, .offerList li, .wantedList li, .groupList li{
 	padding-top: 1em;
 	padding-bottom: 1em;
 	border-bottom: 1px solid #eee;

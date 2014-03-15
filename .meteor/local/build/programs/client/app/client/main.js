@@ -74,23 +74,32 @@ Router.map(function () {
         path: '/stats' // match the root path
     });
 
-    // this.route('group', {
-    //     path: '/groups/:id',
-    //     data: function () {
+    this.route('groups', {
+        path: '/groups' // match the root path
+    });
 
-    //         group = Groups.findOne({
-    //             _id: this.params.id
-    //         });
+    this.route('group', {
+        path: '/groups/:id',
+        data: function () {
 
-    //         return {
-    //             group: group
+            group = Meteor.users.findOne({$or: [{
+                    _id: this.params.id
+                }, {
+                    username: this.params.id
+                }]
+            });
 
-    //         }
-    //     }
-    // });
+            return {
+                group: group
+
+            }
+        }
+    });
+
+
 
     this.route('groupCreate', {
-        path: '/groups/create' // match the root path
+        path: '/create/group' // match the root path
     });
 
     this.route('admin', {
@@ -367,6 +376,18 @@ return Meteor.users.find({"profile.members" : Meteor.userId()}).fetch();
 
 });
 
+Handlebars.registerHelper("getGroups", function(){
+
+return Meteor.users.find({"profile.group" : true}).fetch();
+
+});
+
+Handlebars.registerHelper("count", function(thing){
+
+return thing.length;
+
+});
+
 
 Handlebars.registerHelper("getMyTransactions", function () {
 
@@ -408,24 +429,24 @@ Handlebars.registerHelper("getTotalTime", function () {
 
 });
 
-Handlebars.registerHelper("getUserTransactions", function (userId) {
+Handlebars.registerHelper("getUserTransactions", function (uId) {
 
     transactions = [];
 
     Transactions.find({
         $or: [{
-            sender: userId
+            sender: uId
         }, {
-            recipient: userId
+            recipient: uId
         }],
         complete: true
     }, {
         sort: {
-            $natural: 1
+            timestamp: 0
         }
     }).forEach(function (transaction) {
 
-        if (transaction.sender == userId) {
+        if (transaction.sender == uId) {
             transaction.transactionType = 'sender';
             transaction.isSender = true;
         } else {
@@ -1569,6 +1590,7 @@ Template.groupCreate.events({
 
 Meteor.call("createNewUser",group, function(e,id){
     serverUploadUserAvatar($('#avatar'),id);
+    Router.go("/groups");
 })
 
 

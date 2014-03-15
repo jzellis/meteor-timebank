@@ -1,0 +1,36 @@
+<template name="groups">
+	<div class='container'>
+		<div class='col-md-9'>
+			<div class='panel panel-default'>
+				<div class='panel-heading'>
+					<h2 class='col-md-6'>Groups</h2>
+					<div class='col-md-6 text-right'>
+						<a href='/create/group' class='btn btn-sm btn-primary'><i class='fa fa-plus-circle'></i> Create A Group</a>
+					</div>
+					<div class='clearfix'></div>
+				</div>
+				<div class='panel-body'>
+					<ul class='list-unstyled groupList'>
+						{{#each getGroups}}
+						<li>
+							<div class='col-md-1'>
+								<a href='/groups/{{_id}}'><img src='{{profile.picture}}' class='avatar' style='height: 2em'></a>
+							</div>
+							<div class='col-md-11'>
+							<h4><a href='/groups/{{_id}}'><b>{{profile.name}}</b></a></h4>
+							<div class='small text-muted'>{{#if profile.location}}<a class='text-muted' href='http://maps.google.com?q={{profile.location}}' target='_new'><i class="fa fa-map-marker"></i> {{profile.location}}</a> |  {{/if}}Created {{relativeTime profile.createdAt}} | {{count profile.members}} members</div>
+							{{#if profile.url}}<div><a href='{{profile.url}}' target='_new'><i class='fa fa-link'></i> {{profile.url}}</a></div>{{/if}}
+							<div class='col-md-11'>{{{nl2br profile.bio}}}</div>
+
+							</div>
+							<div class='clearfix'></div>
+						</li>
+
+						{{/each}}
+					</ul>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

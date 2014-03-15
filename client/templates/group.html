@@ -5,6 +5,36 @@
 			<div class='panel panel-default'>
 				<h2 class='panel-heading'>{{profile.name}}</h2>
 				<div class='panel-body'>
+					<div class='row'>
+						<div class='col-md-2'>
+							<img src='{{profile.picture}}' class='avatar' style='max-width: 100%'>
+						</div>
+						<div class='col-md-10'>
+							<div class='text-muted'>{{#if profile.location}}<a class='text-muted' href='http://maps.google.com?q={{profile.location}}' target='_new'><i class="fa fa-map-marker"></i> {{profile.location}}</a> |  {{/if}}Created {{relativeTime profile.createdAt}} | {{count profile.members}} members</div>
+							{{#if profile.url}}<div><a href='{{profile.url}}' target='_new'><i class='fa fa-link'></i> {{profile.url}}</a></div>{{/if}}
+							<br><div class='col-md-11'>{{{nl2br profile.bio}}}</div>
+							<div class='clearfix'></div>
+							<hr>
+							<h4>Members</h4><br>
+							<ul class='list-unstyled list-inline memberList col-md-12'>
+
+								{{#each profile.members}}
+								{{#with getUserById this}}
+								<li class='well well-sm col-md-3 text-center'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' style='max-height: 128px'><br>{{username}}</a></li>
+								{{/with}}
+								{{/each}}
+							</ul>
+							<hr>
+							<h4>Transactions</h4>
+							<br>
+							<ul class='list-unstyled col-md-12 transactionList'>
+								{{#each getUserTransactions _id}}
+								<li>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}} sent {{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}} {{getOption "currencyAbbr"}} {{amount}} {{#if description}}for &quot;{{description}}&quot; {{/if}}{{relativeTime timestamp}}.
+								</li>
+								{{/each}}
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
