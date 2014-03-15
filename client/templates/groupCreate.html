@@ -1,0 +1,59 @@
+<template name='groupCreate'>
+	<div class='container'>
+		<div class='col-md-9'>
+			<div class='panel panel-default'>
+				<h2 class='panel-heading'>Create Group</h2>
+				<div class='panel-body'>
+					<form role='form' id='groupForm'>
+						<fieldset>
+							<label for='name'>Group Name</label>
+							<input class='form-control' name='name'>
+						</fieldset>
+						<fieldset>
+							<label for='username'>Group Username/Slug</label>
+							<input class='form-control' name='username'>
+						</fieldset>
+						<fieldset>
+							<label for='password'>Group Password</label>
+							<input type='password' class='form-control' name='password'>
+						</fieldset>
+						<fieldset>
+							<label for='picture'>Group Image/Avatar</label>
+							<input type='file' name='avatar' class='form-control' id='avatar'>
+						</fieldset>
+						<fieldset>
+							<label for='description'>Group Description</label>
+							<textarea class='form-control' name='description' rows='4'></textarea>
+						</fieldset>
+						<fieldset>
+							<label for='location'>Group URL (optional)</label>
+							<input class='form-control' name='url'>
+						</fieldset>	
+						<fieldset>
+							<label for='location'>Group Location (optional)</label>
+							<input class='form-control' name='location'>
+						</fieldset>	
+						<hr>
+						<h3>Members</h3>
+						<fieldset>
+							<label>Add Members</label>
+						<input class='form-control' id='userLookup' placeholder="Type a username or email to search, and click on a user to add">
+						</fieldset>
+						<ul class='list-inline container' id='memberList'>
+							<li class='well well-sm col-md-2 text-center'>
+								{{#with currentUser}}
+								<img src='{{profile.picture}}' class='avatar' style='max-height: 64px'><br>{{username}}
+								<input type='hidden' name='members[]' value='{{_id}}'>
+								{{/with}}
+							</li>
+						</ul>	
+						<div class='clearfix'></div>
+						<fieldset class='text-right'>
+							<button type='submit' class='btn btn-primary'>Create Group</button>
+						</fieldset>	
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>

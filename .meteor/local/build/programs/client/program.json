@@ -647,6 +647,24 @@
       "hash": "c9fb595524f5ce2a5cfae2c062c20020e9b9c5b2"
     },
     {
+      "path": "app/client/templates/template.group.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.group.js?7b2574a939ea8b3b117227485555cb3323bb6845",
+      "size": 394,
+      "hash": "7b2574a939ea8b3b117227485555cb3323bb6845"
+    },
+    {
+      "path": "app/client/templates/template.groupCreate.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/templates/template.groupCreate.js?905d275c06315e7fc019c3ce7ecb66b9df1a1167",
+      "size": 2609,
+      "hash": "905d275c06315e7fc019c3ce7ecb66b9df1a1167"
+    },
+    {
       "path": "app/client/templates/template.home.js",
       "where": "client",
       "type": "js",
@@ -831,9 +849,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.transferForm.js?a2229da4ec3a90e9be58263bb4f97d71cbd60473",
-      "size": 2923,
-      "hash": "a2229da4ec3a90e9be58263bb4f97d71cbd60473"
+      "url": "/client/templates/template.transferForm.js?27427293684fd81d3c7f89de528ca7ff79b24370",
+      "size": 4041,
+      "hash": "27427293684fd81d3c7f89de528ca7ff79b24370"
     },
     {
       "path": "app/client/templates/template.user.js",
@@ -888,6 +906,15 @@
       "url": "/template.timebank.js?18bf7815b696688a37b19cb0f7b989b41a75c609",
       "size": 421,
       "hash": "18bf7815b696688a37b19cb0f7b989b41a75c609"
+    },
+    {
+      "path": "app/client/lib/bootstrap-select.min.js",
+      "where": "client",
+      "type": "js",
+      "cacheable": true,
+      "url": "/client/lib/bootstrap-select.min.js?ffd6ee751f01bf1faa725e1baf878ce701971882",
+      "size": 20993,
+      "hash": "ffd6ee751f01bf1faa725e1baf878ce701971882"
     },
     {
       "path": "app/client/lib/bootstrap-tagsinput.min.js",
@@ -957,9 +984,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/main.js?363bef1510efa5b3dce1268a1cb4ac06944bb3b0",
-      "size": 40096,
-      "hash": "363bef1510efa5b3dce1268a1cb4ac06944bb3b0"
+      "url": "/client/main.js?e3500ab31717ce665a6d00879a3394e1e1b2a108",
+      "size": 44044,
+      "hash": "e3500ab31717ce665a6d00879a3394e1e1b2a108"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/css/bootstrap.css",
@@ -1016,6 +1043,15 @@
       "hash": "7b6e74d628e59311774e7b3409bdc3686e70e788"
     },
     {
+      "path": "app/client/css/bootstrap-select.min.css",
+      "where": "client",
+      "type": "css",
+      "cacheable": true,
+      "url": "/client/css/bootstrap-select.min.css?383289395050e2d90c32264f8da4296222c0fead",
+      "size": 5665,
+      "hash": "383289395050e2d90c32264f8da4296222c0fead"
+    },
+    {
       "path": "app/client/css/bootstrap-tagsinput.css",
       "where": "client",
       "type": "css",
@@ -1038,9 +1074,9 @@
       "where": "client",
       "type": "css",
       "cacheable": true,
-      "url": "/timebank.css?e9248d6fa7dab2a1a2310e7693fcf556c9b13b9d",
-      "size": 8967,
-      "hash": "e9248d6fa7dab2a1a2310e7693fcf556c9b13b9d"
+      "url": "/timebank.css?630bf963a5dbd297a361e0b486055b90e5e68b30",
+      "size": 8969,
+      "hash": "630bf963a5dbd297a361e0b486055b90e5e68b30"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/fonts/glyphicons-halflings-regular.eot",
@@ -1126,7 +1162,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "523adc139d84259653309e814f302771d91643b5"
+      "hash": "e994631d6397000f205528312941d3db6b658f58"
     }
   ]
 }

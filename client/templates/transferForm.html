@@ -18,10 +18,23 @@
 </div>
  -->
 <fieldset class='form-group col-md-12'>
- 		<select id='toFrom' name='toFrom' class='form-control input-sm'>
-			<option value='send'>Send To</option>
-			<option value='request'>Request From</option>
+	<div class='col-md-6'><select class='selectpicker form-control input-sm' id='senderId' name='senderId'>
+		<optgroup label="My Account">
+		<option data-content="<img src='{{currentUser.profile.picture}}' style='height:1em'> {{currentUser.username}} <b>Balance: {{currentUser.profile.balance}}</b>" value='{{currentUser._id}}'>{{currentUser.username}} Balance: {{currentUser.profile.balance}}</option>
+	</optgroup>
+		<optgroup label="My Groups">
+		{{#each myGroups}}
+		<option data-content="<img src='{{profile.picture}}' style='height:1em'> {{profile.name}} <b>Balance: {{profile.balance}}</b>"value='{{_id}}'>{{username}} Balance: {{profile.balance}}</option>
+		{{/each}}
+	</optgroup>
+	</select>
+</div>
+<div class='col-md-6'>
+ 		<select id='toFrom' name='toFrom' class='selectpicker form-control input-sm'>
+			<option data-content="<i class='fa fa-arrow-right'></i> Send To" value='send'>Send To</option>
+			<option  data-content="<i class='fa fa-arrow-left'></i> Request From" value='request'>Request From</option>
 		</select>
+	</div>
 	</fieldset>
 <div class='col-md-12 small' id='userTwo'>
 	{{#if recipient}}

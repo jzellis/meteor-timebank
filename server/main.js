@@ -1,5 +1,6 @@
 // users are created by Meteor itself -- see documentation
 Transactions = new Meteor.Collection("transactions");
+Groups = new Meteor.Collection("groups");
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
@@ -49,6 +50,8 @@ Accounts.onCreateUser(function(options, user) {
 });
 
 Meteor.startup(function() {
+
+// Meteor.users.remove({"profile.group" : true});
 
 
     Meteor.users.find({}).forEach(function(user) {
@@ -146,13 +149,7 @@ Meteor.methods({
         if(recipient){
             response.recipient = recipient;
 
-            senderBalance = Meteor.users.findOne({_id: Meteor.userId()}).profile.balance;
-            newSenderBalance = parseFloat(senderBalance) - parseFloat(transaction.amount);
-            Meteor.users.update({_id: Meteor.userId()}, {$set: {"profile.balance" : newSenderBalance}});
-
-            recipientBalance = Meteor.users.findOne({_id: recipient._id}).profile.balance;
-            newRecipientBalance = parseFloat(recipientBalance) + parseFloat(transaction.amount);
-            Meteor.users.update({_id: recipient._id}, {$set: {"profile.balance" : newRecipientBalance}});
+            transferBalance(transaction.sender, transaction.recipient,transaction.amount);
 
             transaction.complete = true;
 
@@ -260,6 +257,10 @@ Meteor.methods({
 
     },
 
+    updateUserAvatar: function(id,img){
+        Meteor.users.update({_id: id}, {$set: {"profile.picture":img}});
+    },
+
     toggleAdmin: function(userId) {
         if (Meteor.user().profile.isAdmin) {
             user = Meteor.users.findOne({
@@ -284,6 +285,10 @@ Meteor.methods({
 
             }
         }
+    },
+
+    createNewUser: function(user){
+        return Accounts.createUser(user);
     },
 
     deleteUser: function(userId) {
@@ -313,27 +318,30 @@ Meteor.methods({
 
     updateBalance: function(balance, transaction) {
 
-        Meteor.users.update({
-            _id: Meteor.userId()
-        }, {
-            $set: {
-                "profile.balance": balance
-            }
-        });
-
-        recipient = Meteor.users.findOne({
-            _id: transaction.recipient
-        });
-        newRecipientBalance = parseFloat(recipient.profile.balance) + parseFloat(transaction.amount);
-
-        Meteor.users.update({
-            _id: recipient._id
-        }, {
-            $set: {
-                "profile.balance": newRecipientBalance
-            }
-        });
+        transferBalance(transaction.sender, transaction.recipient,amount);
 
     }
 
 });
+
+
+
+// Functions
+
+transferBalance = function(senderId,recipientId,amount){
+
+    response = true;
+    sender = Meteor.users.findOne({_id: senderId});
+    recipient = Meteor.users.findOne({_id: recipientId});
+    newSenderBalance = parseFloat(sender.profile.balance) - parseFloat(amount);
+    newRecipientBalance = parseFloat(sender.profile.balance) + parseFloat(amount);
+    Meteor.users.update({_id: senderId}, {$set: {"profile.balance" : newSenderBalance}}, function(e,num){
+        if(e) response = e;
+    });
+    Meteor.users.update({_id: recipientId}, {$set: {"profile.balance" : newRecipientBalance}}, function(e,num){
+        if(e) response = e;
+    });
+
+    return response;
+
+}

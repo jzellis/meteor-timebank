@@ -24,6 +24,7 @@ Transactions = new Meteor.Collection("transactions");
 Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
+Groups = new Meteor.Collection("groups");
 
 // This allows transforms on these collections, see below.
 
@@ -71,6 +72,25 @@ Router.map(function () {
 
     this.route('stats', {
         path: '/stats' // match the root path
+    });
+
+    // this.route('group', {
+    //     path: '/groups/:id',
+    //     data: function () {
+
+    //         group = Groups.findOne({
+    //             _id: this.params.id
+    //         });
+
+    //         return {
+    //             group: group
+
+    //         }
+    //     }
+    // });
+
+    this.route('groupCreate', {
+        path: '/groups/create' // match the root path
     });
 
     this.route('admin', {
@@ -284,6 +304,8 @@ $(document).ready(function () {
         $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
     });
 
+    
+
 });
 
 
@@ -337,6 +359,12 @@ Handlebars.registerHelper("getUsers", function () {
 
 Handlebars.registerHelper("userCount", function () {
     return Meteor.users.find().count();
+});
+
+Handlebars.registerHelper("myGroups", function(){
+
+return Meteor.users.find({"profile.members" : Meteor.userId()}).fetch();
+
 });
 
 
@@ -553,6 +581,8 @@ Template.home.rendered = function () {
 Template.transferForm.rendered = function () {
 
     initializeUserSearchTypeahead();
+    setTimeout(function(){$('.selectpicker').selectpicker({showContent: true})}, 100);
+
 
 
 }
@@ -649,6 +679,56 @@ Template.offers.rendered = function () {
 
 }
 
+Template.groupCreate.rendered = function(){
+
+    $('#userLookup').typeahead({
+        minLength: 3,
+        highlight: true,
+    }, {
+        displayKey: 'user',
+        source: function (query, cb) {
+
+
+            cb(Meteor.users.find({
+                $or: [{
+                    username: {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "profile.name": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "emails.0.address": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }]
+            }).map(function (user, index, cursor) {
+                return user;
+            }));
+
+
+        },
+        templates: {
+            suggestion: function (user) {
+                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
+                return Template.autocompleteSuggestion(user);
+            }
+        }
+    });
+
+    $('#userLookup').on('typeahead:selected', function (object, data, name) {
+        html = "<li class='well well-sm text-center col-md-2'><img src='" + data.profile.picture + "' style='max-height:64px'><br>" + data.username + "<input type='hidden' name='members[]' value='" + data._id + "'></li>";
+        $('#memberList').append(html);
+    })
+
+
+}
+
+
 Template.home.events({
     'click .loginFacebook': function (e) {
 
@@ -721,7 +801,7 @@ Template.transferForm.events({
                 if (data.toFrom == "send") {
 
                     transaction = {
-                        sender: Meteor.userId(),
+                        sender: data.senderId,
                         amount: data.amount,
                         description: data.description,
                         timestamp: new Date()
@@ -758,7 +838,7 @@ Template.transferForm.events({
                 } else {
 
                     request = {
-                        sender: Meteor.userId(),
+                        sender: data.senderId,
                         recipient: data.userTwoId,
                         amount: data.amount,
                         description: data.description,
@@ -1454,6 +1534,50 @@ Template.wantedFull.events({
 });
 
 
+Template.groupCreate.events({
+
+    'blur input[name="name"]' : function(e){
+
+        $('input[name="username"]').val(slugify($(e.currentTarget).val()));
+
+    },
+
+'submit form' : function(e){
+    e.preventDefault();
+
+    data = $('#groupForm').serializeObject();
+    members = [];
+    $('input[name="members[]"]').each(function(){
+        members.push(this.value);
+    });
+
+    group = {
+        username: data.username,
+        password: data.password,
+        profile: {
+            name: data.name,
+            location: data.location,
+            createdBy: Meteor.userId(),
+            bio: data.description,
+            url: data.url,
+            members: members,
+            createdAt: new Date(),
+            balance: 0,
+            group: true
+        }
+    }
+
+Meteor.call("createNewUser",group, function(e,id){
+    serverUploadUserAvatar($('#avatar'),id);
+})
+
+
+
+}
+
+});
+
+
 // My functions
 
 isInt = function (n) {
@@ -1518,6 +1642,26 @@ uploadUserAvatar = function (field, userId, callback) {
                     "profile.picture": e.target.result
                 }
             });
+        }
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('This file is too large');
+    }
+
+}
+
+serverUploadUserAvatar = function (field, userId, callback) {
+    file = field[0].files[0];
+
+    if (file.size < 4000000) {
+        var reader = new FileReader();
+
+
+        reader.onload = function (e) {
+
+            Meteor.call("updateUserAvatar",userId,e.target.result);
+
         }
 
         reader.readAsDataURL(file);
@@ -1609,6 +1753,16 @@ function trim_words(theString, numWords, ellipsis) {
     theNewString = expString.join(" ");
     if (theNewString.length < theString.length && typeof (ellipsis) != 'undefined') theNewString += ellipsis;
     return theNewString;
+}
+
+function slugify(text)
+{
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')             // Trim - from start of text
+    .replace(/-+$/, '');            // Trim - from end of text
 }
 
 function initializeUserSearchTypeahead() {

@@ -38,7 +38,7 @@ header{
 }
 
 #navbar{
-margin-bottom: 0;
+margin-bottom: 3em
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -327,8 +327,8 @@ border-radius: 6px;
 	height: 3em;
 }
 
-#sendForm fieldset{
-	margin-bottom: 1em;
+fieldset{
+	margin-bottom: 1em !important;
 }
 
 #sendForm button[type="submit"]{
