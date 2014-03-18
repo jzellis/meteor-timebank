@@ -20,7 +20,7 @@
 {{#if currentUser}}
 <div class="navbar-text navbar-right small text-muted">
 
-    <img src='{{currentUser.profile.picture}}' class='avatar'> {{currentUser.username}} | <b>Balance:</b> {{getOption "currencyAbbr"}} {{currentUser.profile.balance}} | <a class='logout'><i class='fa fa-unlock-alt'></i> Logout</a>
+    <a href='/users/{{currentUser.username}}' title='My profile'><img src='{{currentUser.profile.picture}}' class='avatar'></a> <a href='/users/{{currentUser.username}}' title='My profile'>{{currentUser.username}}</a> | <b>Balance:</b> {{getOption "currencyAbbr"}} {{currentUser.profile.balance}} | <a class='logout'><i class='fa fa-unlock-alt'></i> Logout</a>
 
 </div>
 {{else}}

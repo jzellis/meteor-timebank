@@ -837,7 +837,7 @@ Template.transferForm.events({
                     }
 
                     Meteor.call("sendTime", transaction, function (e, r) {
-
+                            console.log(r);
                         displayStatus(r.message);
 
 
@@ -971,11 +971,9 @@ Template.account.events({
 Template.navbar.events({
     'click #logout': function (e) {
         Meteor.logout();
-        window.location.href = '/';
     },
     'click .logout': function () {
         Meteor.logout();
-        window.location.href = '/';
 
     },
     'click #loginFacebook': function () {

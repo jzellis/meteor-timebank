@@ -723,9 +723,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.navbar.js?774c4519f19f97ca42977ee309d3e785cb1aa6e3",
-      "size": 3360,
-      "hash": "774c4519f19f97ca42977ee309d3e785cb1aa6e3"
+      "url": "/client/templates/template.navbar.js?8c57bd5854baa31013397252e62d93b37bdf19b7",
+      "size": 3522,
+      "hash": "8c57bd5854baa31013397252e62d93b37bdf19b7"
     },
     {
       "path": "app/client/templates/template.notFound.js",
@@ -993,9 +993,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/main.js?6d2ca3ab523c89e6ac8e328dcf6d28ba5783eb1c",
-      "size": 44410,
-      "hash": "6d2ca3ab523c89e6ac8e328dcf6d28ba5783eb1c"
+      "url": "/client/main.js?b2195951248b94c062e3d13b8cfdf668e8fcca0f",
+      "size": 44381,
+      "hash": "b2195951248b94c062e3d13b8cfdf668e8fcca0f"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/css/bootstrap.css",
@@ -1171,7 +1171,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "3a2e461e3e643590074af4b4ae1eefe20139b151"
+      "hash": "6e45a1949ccc7da2b9ec4a2ce7c0c941c75df281"
     }
   ]
 }
