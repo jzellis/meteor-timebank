@@ -1415,6 +1415,10 @@ Template.admin.events({
         settings = [{
                 name: "sitename",
                 value: $('#siteName').val()
+            },
+            {
+                name: "siteURL",
+                value: $('#siteURL').val()
             }, {
                 name: "description",
                 value: $('#siteDescription').val()

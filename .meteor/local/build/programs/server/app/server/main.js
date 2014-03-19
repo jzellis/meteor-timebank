@@ -161,7 +161,7 @@ Meteor.methods({
 
         }else{
                 transaction.complete = false;
-            mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! You can redeem this by creating an account at " + Meteor.absoluteUrl();
+            mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! You can redeem this by creating an account at " + Options.findOne({name: "siteURL"}).value;
             Email.send({to: transaction.recipientEmail, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
 
             response.message = "An email has been sent to " + transaction.recipientEmail + " letting them know you've sent them " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ". Once they create an account the amount will be automatically added to their balance.";
@@ -199,7 +199,7 @@ Meteor.methods({
             recipient: recipient,
             sender: sender,
             request: request,
-            server: Meteor.absoluteUrl(),
+            server: Options.findOne({name: "siteURL"}).value,
             siteName: Options.findOne({
                 name: "sitename"
             }).value,
