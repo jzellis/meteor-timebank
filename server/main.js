@@ -337,15 +337,21 @@ Meteor.methods({
 
 transferBalance = function(senderId,recipientId,amount){
 
+    console.log(amount);
+
     response = true;
     sender = Meteor.users.findOne({_id: senderId});
     recipient = Meteor.users.findOne({_id: recipientId});
     newSenderBalance = parseFloat(sender.profile.balance) - parseFloat(amount);
-    newRecipientBalance = parseFloat(sender.profile.balance) + parseFloat(amount);
-    Meteor.users.update({_id: senderId}, {$set: {"profile.balance" : newSenderBalance}}, function(e,num){
+    newRecipientBalance = parseFloat(recipient.profile.balance) + parseFloat(amount);
+
+    console.log("Sender balance: " + newSenderBalance);
+    console.log("Recipient balance: " + newSenderBalance);
+
+    Meteor.users.update({_id: senderId}, {$set: {"profile.balance" : parseFloat(newSenderBalance)}}, function(e,num){
         if(e) response = e;
     });
-    Meteor.users.update({_id: recipientId}, {$set: {"profile.balance" : newRecipientBalance}}, function(e,num){
+    Meteor.users.update({_id: recipientId}, {$set: {"profile.balance" : parseFloat(newRecipientBalance)}}, function(e,num){
         if(e) response = e;
     });
 
