@@ -325,6 +325,10 @@ Deps.autorun(function () {
             if (d) console.log(d);
         });
     }
+
+
+
+
 });
 
 
@@ -1405,6 +1409,22 @@ Template.admin.events({
         e.preventDefault();
         if (confirm("Are you sure you want to do this?")) {
             Meteor.call("deleteUser", $(e.currentTarget).val());
+        }
+    },
+
+    'click #calculateBalance' : function(e){
+        e.preventDefault();
+        if(confirm("Are you sure you want to do this?")){
+
+Meteor.call("recalculateBalances", function(){
+
+alert("Balances have been recalculated!");
+
+});
+
+
+
+
         }
     },
 

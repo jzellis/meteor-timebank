@@ -615,9 +615,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.admin.js?10ab0de73111eaa2c7be530c3daf69e9d3802275",
-      "size": 6729,
-      "hash": "10ab0de73111eaa2c7be530c3daf69e9d3802275"
+      "url": "/client/templates/template.admin.js?203518bb48832e860df442caf4879171a261625b",
+      "size": 6817,
+      "hash": "203518bb48832e860df442caf4879171a261625b"
     },
     {
       "path": "app/client/templates/template.autocompleteSuggestion.js",
@@ -993,9 +993,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/main.js?e9d0e827f64550f0020a0f6040dfc90a6db2d136",
-      "size": 44486,
-      "hash": "e9d0e827f64550f0020a0f6040dfc90a6db2d136"
+      "url": "/client/main.js?5acc49e74dcc25f4e0b3350c144a7015fd974afc",
+      "size": 44740,
+      "hash": "5acc49e74dcc25f4e0b3350c144a7015fd974afc"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/css/bootstrap.css",
@@ -1171,7 +1171,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "0ecca8ca0948f2417854e76811da01e926feb641"
+      "hash": "0c30028638f2cd229ebf860a9b619d90643731c0"
     }
   ]
 }

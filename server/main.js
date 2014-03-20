@@ -176,6 +176,35 @@ Meteor.methods({
 
     },
 
+    recalculateBalances: function(){
+
+            Meteor.users.find({}).forEach(function(user){
+
+total = 0;
+
+line = user.username;
+
+Transactions.find({recipient: user._id, complete:true}).forEach(function(trans){
+
+    total = parseFloat(total + parseFloat(trans.amount));
+
+
+});
+
+Transactions.find({sender: user._id, complete:true}).forEach(function(trans){
+
+    total = parseFloat(total - parseFloat(trans.amount));
+
+});
+
+Meteor.users.update({_id: user._id}, {$set: {"profile.balance" : total}});
+// console.log(user.username + ": " + total);
+
+});
+
+
+    },
+
 
 
     sendRequest: function(requestId) {
