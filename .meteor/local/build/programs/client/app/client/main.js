@@ -71,7 +71,10 @@ Router.map(function () {
     });
 
     this.route('stats', {
-        path: '/stats' // match the root path
+        path: '/stats',
+        data: function(){
+            return {rankings: rankUsers(20)}
+        }
     });
 
     this.route('groups', {
@@ -1863,6 +1866,115 @@ function initializeUserSearchTypeahead() {
 
 
     });
+
+}
+
+function sortObject(obj) {
+    var arr = [];
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            arr.push({
+                'key': prop,
+                'value': obj[prop]
+            });
+        }
+    }
+    arr.sort(function(a, b) { return a.value - b.value; });
+    //arr.sort(function(a, b) { a.value.toLowerCase().localeCompare(b.value.toLowerCase()); }); //use this to sort as strings
+    return arr; // returns array
+}
+
+
+
+
+rankUsers = function(numResults){
+
+    sent = [];
+received = [];
+total = [];
+rankings = {};
+
+Meteor.users.find({}).forEach(function(usr){
+
+sent.push({id: usr._id, amount: 0});
+received.push({id: usr._id, amount: 0});
+total.push({id: usr._id, amount: 0});
+
+
+});
+
+Transactions.find().forEach(function(t){
+
+for(i = 0; i < sent.length; i++){
+    if(sent[i].id == t.sender) sent[i].amount = parseFloat(sent[i].amount + parseFloat(t.amount));
+}
+
+for(i = 0; i < received.length; i++){
+    if(received[i].id == t.recipient) received[i].amount = parseFloat(received[i].amount + parseFloat(t.amount));
+}
+
+for(i = 0; i < total.length; i++){
+    if(total[i].id == t.recipient || total[i].id == t.sender) total[i].amount++;
+}
+
+});
+
+sent.sort(function(a,b){
+
+if(a.amount > b.amount) return -1;
+if(a.amount < b.amount) return 1;
+return 0;
+
+});
+
+
+
+received.sort(function(a,b){
+
+if(a.amount > b.amount) return -1;
+if(a.amount < b.amount) return 1;
+return 0;
+
+});
+
+
+
+total.sort(function(a,b){
+
+if(a.amount > b.amount) return -1;
+if(a.amount < b.amount) return 1;
+return 0;
+
+});
+
+for(i = 0; i < sent.length; i++){
+    if(sent[i].amount == 0) sent.splice(i--,1);
+}
+
+for(i = 0; i < received.length; i++){
+    if(received[i].amount === 0) received.splice(i--,1);
+}
+
+for(i = 0; i < total.length; i++){
+    if(total[i].amount === 0) total.splice(i--,1);
+}
+
+
+
+if(typeof numResults != 'undefined'){
+
+if(sent.length > numResults) sent.length = numResults
+if(received.length > numResults) received.length = numResults
+if(total.length > numResults) total.length = numResults
+
+}
+
+rankings.sent = sent;
+rankings.received = received;
+rankings.total = total;
+return rankings;
+
+
 
 }
 

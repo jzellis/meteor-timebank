@@ -9,7 +9,7 @@
 				<div class='small text-muted'> {{#if location}}<a class='text-muted' href='http://maps.google.com?q={{location}}' target='_new'><i class="fa fa-map-marker"></i> {{location}}</a> - {{/if}}{{formatDate timestamp}}</div>
 				<div class='col-md-12'>{{{nl2br body}}}</div>
 				<div class='col-md-12'><i class="fa fa-tags" title='Tags'></i> {{#each tags}}<a href='/tags/{{this}}' class='label label-default'>{{this}}</a> {{/each}}</div>
-								<div class='text-right small'><a href='/offer/{{_id}}#replies'>{{numReplies}} replies</a></div>
+								<div class='text-right small'><a href='/offer/{{_id}}'>{{numReplies}} replies</a></div>
 
 			</div>
 		</div>
@@ -25,7 +25,7 @@
 				<div class='small'>Posted by {{#with getUserById userId}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</div>
 				<div class='small text-muted'>{{#if location}}<a class='text-muted' href='http://maps.google.com?q={{location}}' target='_new'><i class="fa fa-map-marker"></i> {{location}}</a> - {{/if}}{{formatDate timestamp}}</div>
 				<div class='col-md-12 small'>{{{trimWords body 32 "..."}}}</div>
-								<div class='text-right small'><a href='/offer/{{_id}}#replies'>{{numReplies}} replies</a></div>
+								<div class='text-right small'><a href='/offer/{{_id}}'>{{numReplies}} replies</a></div>
 
 
 			</div>

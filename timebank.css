@@ -248,6 +248,10 @@ h1,h2,h3,h4,h5,h6{
 
 /* General */
 
+img.avatar{
+max-height: 2em;
+}
+
 .tt-dropdown-menu{
 	background: white;
 	width: 100%;
@@ -370,4 +374,8 @@ fieldset{
 	position: absolute;
 	width: 100%;
 	padding: 1em;
+}
+
+.stats ol li{
+  margin-bottom: 1em;
 }

@@ -1,2 +1,37 @@
 <template name='stats'>
+	<div class='container stats'>
+		<div class='col-md-8'>
+			<div class='panel panel-default'>
+			<h2 class='panel-heading'>Leaderboard</h2>
+			<div class='panel-body'>
+				<div class='col-md-4'>
+					<h3>Most Sent</h3>
+					<ol>
+						{{#each rankings.sent}}
+							
+							<li>{{#with getUserById id}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'> {{username}}</a>{{/with}} - {{getOption "currencyAbbr"}}{{amount}}</li>
+							
+						{{/each}}
+					</ol>
+				</div>
+				<div class='col-md-4'>
+					<h3>Most Received</h3>
+					<ol>
+						{{#each rankings.received}}
+							<li>{{#with getUserById id}}<a href='/users/{{username}}'>{{username}}</a>{{/with}} - {{getOption "currencyAbbr"}}{{amount}}</li>
+						{{/each}}
+					</ol>
+				</div>
+				<div class='col-md-4'>
+					<h3>Total Transactions</h3>
+					<ol>
+						{{#each rankings.total}}
+							<li>{{#with getUserById id}}<a href='/users/{{username}}'>{{username}}</a>{{/with}} - {{amount}}</li>
+						{{/each}}
+					</ol>
+				</div>
+			</div>
+		</div>
+		</div>
+	</div>
 </template>
