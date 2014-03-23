@@ -73,7 +73,10 @@ Router.map(function () {
     this.route('stats', {
         path: '/stats',
         data: function(){
-            return {rankings: rankUsers(20)}
+            return {
+                rankings: rankUsers(20),
+                usage: usageData(30)
+            }
         }
     });
 
@@ -615,6 +618,37 @@ Template.transferForm.rendered = function () {
 
 }
 
+Template.stats.rendered = function(){
+
+
+usage = usageData(30);
+
+totalWidth = $('#chartWrapper').width();
+
+text = "<svg id='usageChart' width='" + totalWidth + "' height='200'>";
+
+for(i = 0; i < usage.length; i++){
+
+text += "<g transform='translate(" + parseInt(i * (totalWidth / 30)) + ",0)'>";
+if(usage[i].num > 0){
+text += "<rect width='" + parseInt((totalWidth / 30)) + "' height='" + parseInt(20 * usage[i].num) + "'></rect>";
+text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='" + parseInt(20 * usage[i].num - 10) + "' dy='.35em'>" + usage[i].num + "</text>";
+}else{
+text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='10' dy='.35em' style='fill:black'>" + usage[i].num + "</text>";
+ 
+}
+text += "</g>";
+// usage += text;
+
+}
+
+text += "</svg>";
+
+$('#chartWrapper').html(text);
+
+
+}
+
 
 Template.navbar.rendered = function () {
 
@@ -843,9 +877,9 @@ Template.transferForm.events({
                         transaction.recipient = data.userTwoId;
                     }
 
-                    Meteor.call("sendTime", transaction, function (e, r) {
-                            console.log(r);
-                        displayStatus(r.message);
+                    Meteor.call("sendTime", transaction, function (e, response) {
+                            console.log(response);
+                        displayStatus(response.message);
 
 
                     });
@@ -1949,18 +1983,18 @@ return 0;
 
 for(i = 0; i < sent.length; i++){
     if(sent[i].amount == 0) sent.splice(i--,1);
-    sent[i].num = i + 1;
+    if (i < sent.length - 1) sent[i].num = i + 1;
 }
 
 for(i = 0; i < received.length; i++){
     if(received[i].amount === 0) received.splice(i--,1);
-    received[i].num = i + 1;
+        if (i < received.length - 1)received[i].num = i + 1;
 
 }
 
 for(i = 0; i < total.length; i++){
     if(total[i].amount === 0) total.splice(i--,1);
-        total[i].num = i + 1;
+            if (i < total.length - 1)total[i].num = i + 1;
 
 }
 
@@ -1980,5 +2014,41 @@ rankings.total = total;
 return rankings;
 
 
+
+}
+
+usageData = function(days){
+
+if(typeof days == "undefined") days = 30;
+
+calendar = [];
+
+for(i = 0; i < days; i++){
+
+thisDay = new Date();
+thisDay.setHours(0,0,0,0);
+thisDay.setDate(thisDay.getDate() - i);
+calendar.push({day: thisDay, num: 0});
+
+}
+
+for(i = 0; i < calendar.length; i++){
+
+    startDate = new Date(calendar[i].day);
+    startDate.setDate(startDate.getDate() + 1);
+    prevDate = new Date(calendar[i].day);
+
+
+Transactions.find({timestamp: {$gte: prevDate, $lte: startDate}}).forEach(function(t){
+    
+calendar[i].num++;
+
+});
+
+calendar[i].day = moment(calendar[i].day).format('MMMM Do YYYY');
+
+}
+
+return calendar;
 
 }

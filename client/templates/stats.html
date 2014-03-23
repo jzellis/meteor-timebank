@@ -1,10 +1,33 @@
 <template name='stats'>
+	<style>/*
+
+	#usageChart{
+		background: #66F;
+	}
+	#usageChart rect{
+		fill: #33F;
+	}
+
+		#usageChart text{
+		fill: white;
+		text-anchor: end;
+	}*/
+	</style>
 	<div class='container stats'>
-		<div class='col-md-8'>
+<!-- 		<div class='col-md-12'>
+			<div class='panel panel-default'>
+			<h2 class='panel-heading'>Usage</h2>
+			<div class='panel-body'>
+			<div id='chartWrapper'>
+			</div>
+			</div>
+		</div>
+		</div> -->
+		<div class='col-md-12'>
 			<div class='panel panel-default'>
 			<h2 class='panel-heading'>Leaderboard</h2>
 			<div class='panel-body'>
-				<div class='col-md-12'>
+				<div class='col-md-4'>
 					<h3>Most Sent</h3>
 					<table class='table table-striped'>
 						<thead>
@@ -19,7 +42,7 @@
 					</tbody>
 					</table>
 				</div>
-				<div class='col-md-12'>
+				<div class='col-md-4'>
 					<h3>Most Received</h3>
 					<table class='table table-striped'>
 						<thead>
@@ -35,7 +58,7 @@
 					</tbody>
 					</table>
 				</div>
-				<div class='col-md-12'>
+				<div class='col-md-4'>
 					<h3>Total Transactions</h3>
 					<table class='table table-striped'>
 						<thead>

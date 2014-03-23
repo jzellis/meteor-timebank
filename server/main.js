@@ -129,7 +129,7 @@ Meteor.methods({
 
     sendTime: function(transaction){
 
-        response = {};
+        message = {message:"Hello"};
 
         if(transaction.recipient){
 
@@ -147,31 +147,30 @@ Meteor.methods({
 
 //If there's a known recipient, complete the transaction
         if(recipient){
-            response.recipient = recipient;
+            message.recipient = recipient;
 
             transferBalance(transaction.sender, transaction.recipient,transaction.amount);
 
             transaction.complete = true;
 
-            response.message = "You sent " + recipient.username + " " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ".";
+            message.message = "You sent " + recipient.username + " " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!";
 
-        response.transactionId = Transactions.insert(transaction);
+        message.transactionId = Transactions.insert(transaction);
 
-        return response;
 
         }else{
                 transaction.complete = false;
             mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! You can redeem this by creating an account at " + Options.findOne({name: "siteURL"}).value;
             Email.send({to: transaction.recipientEmail, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
 
-            response.message = "An email has been sent to " + transaction.recipientEmail + " letting them know you've sent them " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ". Once they create an account the amount will be automatically added to their balance.";
+            message.message = "An email has been sent to " + transaction.recipientEmail + " letting them know you've sent them " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + ". Once they create an account the amount will be automatically added to their balance.";
 
-        response.transactionId = Transactions.insert(transaction);
+        message.transactionId = Transactions.insert(transaction);
 
-        return response;
 
         }
 
+        return message;
 
 
     },
