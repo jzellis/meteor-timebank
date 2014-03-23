@@ -1949,14 +1949,19 @@ return 0;
 
 for(i = 0; i < sent.length; i++){
     if(sent[i].amount == 0) sent.splice(i--,1);
+    sent[i].num = i + 1;
 }
 
 for(i = 0; i < received.length; i++){
     if(received[i].amount === 0) received.splice(i--,1);
+    received[i].num = i + 1;
+
 }
 
 for(i = 0; i < total.length; i++){
     if(total[i].amount === 0) total.splice(i--,1);
+        total[i].num = i + 1;
+
 }
 
 

@@ -4,30 +4,52 @@
 			<div class='panel panel-default'>
 			<h2 class='panel-heading'>Leaderboard</h2>
 			<div class='panel-body'>
-				<div class='col-md-4'>
+				<div class='col-md-12'>
 					<h3>Most Sent</h3>
-					<ol>
+					<table class='table table-striped'>
+						<thead>
+							<tr><th>#</th><th colspan='2'>User</th><th>Amount ({{getOption "currencyAbbr"}})</th></tr>
+						</thead>
+						<tbody>
 						{{#each rankings.sent}}
 							
-							<li>{{#with getUserById id}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'> {{username}}</a>{{/with}} - {{getOption "currencyAbbr"}}{{amount}}</li>
+							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
 							
 						{{/each}}
-					</ol>
+					</tbody>
+					</table>
 				</div>
-				<div class='col-md-4'>
+				<div class='col-md-12'>
 					<h3>Most Received</h3>
-					<ol>
+					<table class='table table-striped'>
+						<thead>
+							<tr><th>#</th><th colspan='2'>User</th><th>Amount ({{getOption "currencyAbbr"}})</th></tr>
+
+						</thead>
+						<tbody>
 						{{#each rankings.received}}
-							<li>{{#with getUserById id}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'> {{username}}</a>{{/with}} - {{getOption "currencyAbbr"}}{{amount}}</li>
+							
+							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
+							
 						{{/each}}
-					</ol>
+					</tbody>
+					</table>
 				</div>
-				<div class='col-md-4'>
+				<div class='col-md-12'>
 					<h3>Total Transactions</h3>
-					<ol>
+					<table class='table table-striped'>
+						<thead>
+							<tr><th>#</th><th colspan='2'>User</th><th># Transactions</th></tr>
+
+						</thead>
+						<tbody>
 						{{#each rankings.total}}
-							<li>{{#with getUserById id}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'> {{username}}</a>{{/with}} - {{amount}}</li>						{{/each}}
-					</ol>
+							
+							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
+							
+						{{/each}}
+					</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
