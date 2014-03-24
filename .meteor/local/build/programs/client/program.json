@@ -651,9 +651,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.group.js?d221fd40612fb385f96d47217a0269b713bf5a02",
-      "size": 2733,
-      "hash": "d221fd40612fb385f96d47217a0269b713bf5a02"
+      "url": "/client/templates/template.group.js?36f61b9620ca694d4c36f8650c8006b37873c384",
+      "size": 6409,
+      "hash": "36f61b9620ca694d4c36f8650c8006b37873c384"
     },
     {
       "path": "app/client/templates/template.groupCreate.js",
@@ -993,9 +993,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/main.js?5321bea6191c30f04e2256cd857e217f23ae41a4",
-      "size": 48604,
-      "hash": "5321bea6191c30f04e2256cd857e217f23ae41a4"
+      "url": "/client/main.js?41d0aae90e784bf0c9dc633df51ebd2d3e8c4bc5",
+      "size": 51690,
+      "hash": "41d0aae90e784bf0c9dc633df51ebd2d3e8c4bc5"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/css/bootstrap.css",
@@ -1171,7 +1171,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "98671286f1f1d5de236289b70b45e212c2e0a587"
+      "hash": "3d0c5eb65af94ff396b2d083f22987de11ca9404"
     }
   ]
 }

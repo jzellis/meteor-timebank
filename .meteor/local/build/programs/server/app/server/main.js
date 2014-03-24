@@ -292,6 +292,35 @@ Meteor.users.update({_id: user._id}, {$set: {"profile.balance" : total}});
 
     },
 
+    updateGroupProfile: function(id,item) {
+
+        Meteor.users.update({
+            _id: id
+        }, {
+            $set: {
+                username: item.username,
+                "profile.name" : item.name,
+                "profile.location": item.location,
+                "profile.bio": item.bio,
+                "profile.url": item.url            }
+        });
+
+    },
+
+    removeGroupMember: function(gId,uId){
+
+        Meteor.users.update({_id: gId}, {$pull: {"profile.members": uId}});
+
+    },
+
+    addGroupMembers: function(gId,uIds){
+
+        Meteor.users.update({_id: gId}, {
+            $addToSet: {"profile.members" : {$each: uIds}}
+        });
+
+    },
+
     updateUserAvatar: function(id,img){
         Meteor.users.update({_id: id}, {$set: {"profile.picture":img}});
     },

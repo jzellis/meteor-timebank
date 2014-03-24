@@ -319,6 +319,12 @@ $(document).ready(function () {
         $('#userTwo').html("<input class='form-control userSearch' placeholder='Search Users'>");
     });
 
+        $(document.body).on('click', '#newUserList .remove', function(e){
+
+        $(this).parent().remove();
+
+    });
+
     
 
 });
@@ -598,6 +604,18 @@ Handlebars.registerHelper("getUserOffers", function (id) {
 
 });
 
+Handlebars.registerHelper("currentUserIsMember", function(id){
+
+if(Meteor.users.findOne({_id: id, "profile.members" : Meteor.userId()})){ return true;}else{return false}
+
+});
+
+Handlebars.registerHelper("userIsMember", function(id,uId){
+
+if(Meteor.users.findOne({_id: id, "profile.members" : uId})){ return true;}else{return false}
+
+});
+
 
 
 Template.home.rendered = function () {
@@ -618,36 +636,36 @@ Template.transferForm.rendered = function () {
 
 }
 
-Template.stats.rendered = function(){
+// Template.stats.rendered = function(){
 
 
-usage = usageData(30);
+// usage = usageData(30);
 
-totalWidth = $('#chartWrapper').width();
+// totalWidth = $('#chartWrapper').width();
 
-text = "<svg id='usageChart' width='" + totalWidth + "' height='200'>";
+// text = "<svg id='usageChart' width='" + totalWidth + "' height='200'>";
 
-for(i = 0; i < usage.length; i++){
+// for(i = 0; i < usage.length; i++){
 
-text += "<g transform='translate(" + parseInt(i * (totalWidth / 30)) + ",0)'>";
-if(usage[i].num > 0){
-text += "<rect width='" + parseInt((totalWidth / 30)) + "' height='" + parseInt(20 * usage[i].num) + "'></rect>";
-text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='" + parseInt(20 * usage[i].num - 10) + "' dy='.35em'>" + usage[i].num + "</text>";
-}else{
-text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='10' dy='.35em' style='fill:black'>" + usage[i].num + "</text>";
+// text += "<g transform='translate(" + parseInt(i * (totalWidth / 30)) + ",0)'>";
+// if(usage[i].num > 0){
+// text += "<rect width='" + parseInt((totalWidth / 30)) + "' height='" + parseInt(20 * usage[i].num) + "'></rect>";
+// text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='" + parseInt(20 * usage[i].num - 10) + "' dy='.35em'>" + usage[i].num + "</text>";
+// }else{
+// text += "<text x='" + parseInt((totalWidth / 30)) * .5 + "' y='10' dy='.35em' style='fill:black'>" + usage[i].num + "</text>";
  
-}
-text += "</g>";
-// usage += text;
+// }
+// text += "</g>";
+// // usage += text;
 
-}
+// }
 
-text += "</svg>";
+// text += "</svg>";
 
-$('#chartWrapper').html(text);
+// $('#chartWrapper').html(text);
 
 
-}
+// }
 
 
 Template.navbar.rendered = function () {
@@ -786,6 +804,61 @@ Template.groupCreate.rendered = function(){
         html = "<li class='well well-sm text-center col-md-2'><img src='" + data.profile.picture + "' style='max-height:64px'><br>" + data.username + "<input type='hidden' name='members[]' value='" + data._id + "'></li>";
         $('#memberList').append(html);
     })
+
+
+}
+
+Template.group.rendered = function(){
+
+$('#userLookup').typeahead({
+        minLength: 3,
+        highlight: true,
+    }, {
+        displayKey: 'user',
+        source: function (query, cb) {
+
+
+            cb(Meteor.users.find({
+                $or: [{
+                    username: {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "profile.name": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }, {
+                    "emails.0.address": {
+                        $regex: query,
+                        $options: "i"
+                    }
+                }]
+            }).map(function (user, index, cursor) {
+                return user;
+            }));
+
+
+        },
+        templates: {
+            suggestion: function (user) {
+                // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
+                return Template.autocompleteSuggestion(user);
+            }
+        }
+    });
+
+    $('#userLookup').on('typeahead:selected', function (object, data, name) {
+        html = "<li data-id='" + data._id + "'><img src='" + data.profile.picture + "' style='max-height:1em'> " + data.username + "<span class='pull-right small remove faux-link'>Remove</span></li>";
+    
+        $('#newUserList').append(html);
+
+
+
+    })
+
+
 
 
 }
@@ -1653,6 +1726,46 @@ Meteor.call("createNewUser",group, function(e,id){
 })
 
 
+
+}
+
+});
+
+Template.group.events({
+
+'click .removeMember' : function(e){
+    e.preventDefault();
+    if(confirm("Are you sure you want to remove this member?")){
+
+    Meteor.call("removeGroupMember", $(e.currentTarget).attr('data-gid'), $(e.currentTarget).attr('data-uid'));
+
+    }
+},
+
+'submit #groupForm form' : function(e){
+    e.preventDefault();
+    data = $('#groupForm form').serializeObject();
+    Meteor.call("updateGroupProfile", data.id, data, function(e,r){
+
+        if($('input[name="picture"]')[0].files.length > 0) serverUploadUserAvatar($('input[name="picture"]'),data.id);
+        $('#groupForm').modal('hide')
+
+    });
+
+},
+
+'click #addMembersButton' : function(e){
+    e.preventDefault();
+    newUsers = [];
+    $('#newUserList li').each(function(i){
+        newUsers.push($(this).attr('data-id'));
+    });
+
+gId = $('#groupId').val();
+
+Meteor.call("addGroupMembers", gId, newUsers);
+$('#newUserList').html();
+$('#addMember').modal('hide');
 
 }
 

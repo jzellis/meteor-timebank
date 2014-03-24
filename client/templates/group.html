@@ -3,11 +3,12 @@
 	<div class='container'>
 		<div class='col-md-9'>
 			<div class='panel panel-default'>
-				<h2 class='panel-heading'>{{profile.name}}</h2>
+				
+				<h2 class='panel-heading'>{{profile.name}} {{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right'data-toggle="modal" data-target="#groupForm">Edit Group Info</span>{{/if}}</h2>
 				<div class='panel-body'>
 					<div class='row'>
 						<div class='col-md-2'>
-							<img src='{{profile.picture}}' class='avatar' style='max-width: 100%'>
+							<img src='{{profile.picture}}' style='max-width: 100%'><br>
 						</div>
 						<div class='col-md-10'>
 							<div class='text-muted'>{{#if profile.location}}<a class='text-muted' href='http://maps.google.com?q={{profile.location}}' target='_new'><i class="fa fa-map-marker"></i> {{profile.location}}</a> |  {{/if}}Created {{relativeTime profile.createdAt}} | {{count profile.members}} members</div>
@@ -15,13 +16,15 @@
 							<br><div class='col-md-11'>{{{nl2br profile.bio}}}</div>
 							<div class='clearfix'></div>
 							<hr>
-							<h4>Members</h4><br>
+							<h4>Members{{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right'data-toggle="modal" data-target="#addMember">Add Members</span>{{/if}}</h4><br>
 							<ul class='list-unstyled list-inline memberList col-md-12'>
 
 								{{#each profile.members}}
-								{{#with getUserById this}}
-								<li class='well well-sm col-md-3 text-center'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' style='max-height: 128px'><br>{{username}}</a></li>
-								{{/with}}
+
+								<li class='well well-sm col-md-3 text-center'>{{#with getUserById this}}<a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar' style='max-height: 128px; max-width: 100%'><br>{{username}}</a>{{/with}}
+								{{#if currentUserIsMember ../_id}}<br><button class='btn btn-small btn-danger removeMember' data-uid='{{this}}' data-gid='{{../../_id}}'>Remove</button>{{/if}}
+								</li>
+
 								{{/each}}
 							</ul>
 							<hr>
@@ -39,5 +42,75 @@
 			</div>
 		</div>
 	</div>
+	{{#if currentUserIsMember _id}}
+	<div class="modal fade" id='groupForm'>
+		<form role='form'>
+			<input type='hidden' name='id' value='{{_id}}'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Edit Group Info</h4>
+      </div>
+      <div class="modal-body">
+        <fieldset>
+        	<label for='name'>Group Name</label>
+        	<input class='input-lg form-control' name='name' value='{{profile.name}}'>
+        </fieldset>
+        <fieldset>
+        	<label for='username'>Group Slug</label>
+        	<input class='form-control' name='username' value='{{username}}'>
+        </fieldset>
+        <fieldset>
+        	<div style='width: 100%'><label for='picture'>Picture</label></div>
+        	<div class='col-md-3'><img src='{{profile.picture}}' style='max-width: 100%'></div>
+        	<div class='col-md-9'><input type='file' class='form-control' name='picture'></div>
+        </fieldset>
+        <fieldset>
+        	<label for='bio'>Group Description</label>
+        	<textarea class='form-control' name='bio' rows='4'>{{{profile.bio}}}</textarea>
+        </fieldset>
+        <fieldset>
+        	<label for='url'>Group URL</label>
+        	<input class='form-control' name='url' value='{{profile.url}}'>
+        </fieldset>
+        <fieldset>
+        	<label for='location'>Group Location</label>
+        	<input class='form-control' name='location' value='{{profile.location}}'>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <span class="btn btn-default" data-dismiss="modal">Close</span>
+        <button type="submit" class="btn btn-primary">Update Group Info</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</form>
+</div><!-- /.modal -->
+
+	<div class="modal fade" id='addMember'>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Add Members</h4>
+      </div>
+      <div class="modal-body">
+      	<input type='hidden' id='groupId' value='{{_id}}'>
+      	<ul class='list-unstyled' id='newUserList'>
+      	</ul>
+        <fieldset>
+        <input class='form-control memberSearch' id='userLookup' placeholder='Search users'>
+    </fieldset>
+      </div>
+      <div class="modal-footer">
+        <span class="btn btn-default" data-dismiss="modal">Close</span>
+        <button type="button" class="btn btn-primary" id='addMembersButton'>Add Members</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+	{{/if}}
 	{{/with}}
 </template>
