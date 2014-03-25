@@ -255,6 +255,9 @@
       "path": "packages/global-imports.js"
     },
     {
+      "path": "app/server/templates/handlebars.receiveNotification.js"
+    },
+    {
       "path": "app/server/templates/handlebars.requestNotification.js"
     },
     {

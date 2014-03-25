@@ -174,8 +174,25 @@ Meteor.methods({
 
 
         Notifications.insert(
-            {userId: recipient._id,
+            {userId: sender._id,
             message: msg,
+            read: false,
+            timestamp: new Date()
+        });
+
+        msgTwo = Handlebars.templates['receiveNotification']({
+            recipient: recipient,
+            sender: sender,
+            request: transaction,
+            currencyAbbr: Options.findOne({
+                name: "currencyAbbr"
+            }).value
+        });
+
+
+        Notifications.insert(
+            {userId: recipient._id,
+            message: msgTwo,
             read: false,
             timestamp: new Date()
         });
