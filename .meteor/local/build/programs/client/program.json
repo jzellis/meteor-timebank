@@ -723,9 +723,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.navbar.js?0aed37b84068524fbfd56293c90676a2f1346693",
-      "size": 3581,
-      "hash": "0aed37b84068524fbfd56293c90676a2f1346693"
+      "url": "/client/templates/template.navbar.js?9c52a3efeca8b9c833b7f67f649d39aa4b356a27",
+      "size": 4473,
+      "hash": "9c52a3efeca8b9c833b7f67f649d39aa4b356a27"
     },
     {
       "path": "app/client/templates/template.notFound.js",
@@ -993,9 +993,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/main.js?41d0aae90e784bf0c9dc633df51ebd2d3e8c4bc5",
-      "size": 51690,
-      "hash": "41d0aae90e784bf0c9dc633df51ebd2d3e8c4bc5"
+      "url": "/client/main.js?88289f2e678e210b2b5dca67f574c0e5b537669e",
+      "size": 52964,
+      "hash": "88289f2e678e210b2b5dca67f574c0e5b537669e"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/css/bootstrap.css",
@@ -1083,9 +1083,9 @@
       "where": "client",
       "type": "css",
       "cacheable": true,
-      "url": "/timebank.css?004c623f9ac1fc415f2d18f01cad1a4ed008819d",
-      "size": 9055,
-      "hash": "004c623f9ac1fc415f2d18f01cad1a4ed008819d"
+      "url": "/timebank.css?b916299dc1a47043c24d3247b7ddfce7f5a443bd",
+      "size": 9164,
+      "hash": "b916299dc1a47043c24d3247b7ddfce7f5a443bd"
     },
     {
       "path": "packages/bootstrap-3/bootstrap-3/fonts/glyphicons-halflings-regular.eot",
@@ -1171,7 +1171,7 @@
     {
       "path": "app.html",
       "where": "internal",
-      "hash": "3d0c5eb65af94ff396b2d083f22987de11ca9404"
+      "hash": "c20b8b69a8e6519ee685ee9e1d3dd11bc6b51ce9"
     }
   ]
 }

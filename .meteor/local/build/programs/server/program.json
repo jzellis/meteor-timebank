@@ -255,6 +255,12 @@
       "path": "packages/global-imports.js"
     },
     {
+      "path": "app/server/templates/handlebars.requestNotification.js"
+    },
+    {
+      "path": "app/server/templates/handlebars.sendNotification.js"
+    },
+    {
       "path": "app/server/templates/handlebars.sendRequestEmail.js"
     },
     {

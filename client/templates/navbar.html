@@ -19,9 +19,22 @@
     <input type="text" class="input-sm form-control" id='navbarSearch' placeholder="Search Users" length="20">
 </form>
 {{#if currentUser}}
-<div class="navbar-text navbar-right small text-muted">
+<div id='userProfile' class="navbar-text navbar-right small text-muted">
 
-    <a href='/users/{{currentUser.username}}' title='My profile'><img src='{{currentUser.profile.picture}}' class='avatar'></a> <a href='/users/{{currentUser.username}}' title='My profile'>{{currentUser.username}}</a> | <b>Balance:</b> {{getOption "currencyAbbr"}} {{currentUser.profile.balance}} | <a class='logout'><i class='fa fa-unlock-alt'></i> Logout</a>
+    <a href='/users/{{currentUser.username}}' title='My profile'><img src='{{currentUser.profile.picture}}' class='avatar'></a> <a href='/users/{{currentUser.username}}' title='My profile'>{{currentUser.username}}</a> | <b>Balance:</b> {{getOption "currencyAbbr"}} {{currentUser.profile.balance}} | 
+    <span class="dropdown" id='notificationWrapper'>
+  <a class='text-muted' style='text-decoration: none' id="notificationIcon" role="button" data-toggle="dropdown" data-target="notificationList">
+    <i class='fa fa-bell'> </i> <span class='label label-danger'>{{myUnreadNotificationsCount}}</span>
+  </a>
+
+
+  <ul class="dropdown-menu col-md-8 list-unstyled" id='notificationList' role="menu" aria-labelledby="notificationIcon">
+  {{#each myNotifications 10}}
+  <li data-id='{{_id}}' class='small col-md-12 {{#if read}}read{{else}}unread{{/if}}'><div>{{message}}</div><div class='small text-muted pull-right'>{{relativeTime timestamp}}</div><hr></li>
+  {{/each}}
+  <!-- <div class='text-center small'>Show all notifications</div> -->
+  </ul>
+</span> | <a class='logout'><i class='fa fa-unlock-alt'></i> Logout</a>
 
 </div>
 {{else}}

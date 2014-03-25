@@ -6,6 +6,7 @@ Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
 Wanteds = new Meteor.Collection("wanteds");
 Offers = new Meteor.Collection("offers");
+Notifications = new Meteor.Collection("notifications");
 
 // Accounts.config({
 // 	sendVerificationEmail: true
@@ -54,17 +55,18 @@ Meteor.startup(function() {
 // Meteor.users.remove({"profile.group" : true});
 
 
+
     Meteor.users.find({}).forEach(function(user) {
 
 
 
 // This makes sure that each user has a profile balance.
-        if (!user.profile.balance) {
+        if (!user.profile.emailNotifications) {
             Meteor.users.update({
                 _id: user._id
             }, {
                 $set: {
-                    "profile.balance": 0
+                    "profile.emailNotifications": true
                 }
             });
         }
@@ -153,9 +155,38 @@ Meteor.methods({
 
             transaction.complete = true;
 
+                    sender = Meteor.users.findOne({
+            _id: transaction.sender
+        });
+        recipient = Meteor.users.findOne({
+            _id: transaction.recipient
+        });
+
+
+        msg = Handlebars.templates['sendNotification']({
+            recipient: recipient,
+            sender: sender,
+            request: transaction,
+            currencyAbbr: Options.findOne({
+                name: "currencyAbbr"
+            }).value
+        });
+
+
+        Notifications.insert(
+            {userId: recipient._id,
+            message: msg,
+            read: false,
+            timestamp: new Date()
+        });
+
             message.message = "You sent " + recipient.username + " " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!";
 
         message.transactionId = Transactions.insert(transaction);
+
+                    mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Options.findOne({name: "siteURL"}).value;
+            Email.send({to: recipient.emails[0].address, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
+
 
 
         }else{
@@ -185,14 +216,14 @@ line = user.username;
 
 Transactions.find({recipient: user._id, complete:true}).forEach(function(trans){
 
-    total = parseFloat(total + parseFloat(trans.amount));
+    total = parseFloat(total) + parseFloat(trans.amount);
 
 
 });
 
 Transactions.find({sender: user._id, complete:true}).forEach(function(trans){
 
-    total = parseFloat(total - parseFloat(trans.amount));
+    total = parseFloat(total) - parseFloat(trans.amount);
 
 });
 
@@ -221,7 +252,24 @@ Meteor.users.update({_id: user._id}, {$set: {"profile.balance" : total}});
             _id: request.recipient
         });
 
-        console.log(recipient);
+
+        msg = Handlebars.templates['requestNotification']({
+            recipient: recipient,
+            sender: sender,
+            request: request,
+            currencyAbbr: Options.findOne({
+                name: "currencyAbbr"
+            }).value
+        });
+
+
+        Notifications.insert(
+            {userId: recipient._id,
+            message: msg,
+            read: false,
+            timestamp: new Date()
+        });
+
 
         body = Handlebars.templates['sendRequestEmail']({
             recipient: recipient,
@@ -384,7 +432,16 @@ Meteor.users.update({_id: user._id}, {$set: {"profile.balance" : total}});
 
         transferBalance(transaction.sender, transaction.recipient,amount);
 
-    }
+    },
+
+    addNotification: function(uId, msg, read){
+
+Notifications.insert({userId: uId,
+message: msg,
+timestamp: new Date(),
+read: read});
+
+}
 
 });
 
@@ -394,6 +451,7 @@ Meteor.users.update({_id: user._id}, {$set: {"profile.balance" : total}});
 
 transferBalance = function(senderId,recipientId,amount){
 
+if(senderId != recipientId){
     console.log(amount);
 
     response = true;
@@ -403,7 +461,7 @@ transferBalance = function(senderId,recipientId,amount){
     newRecipientBalance = parseFloat(recipient.profile.balance) + parseFloat(amount);
 
     console.log("Sender balance: " + newSenderBalance);
-    console.log("Recipient balance: " + newSenderBalance);
+    console.log("Recipient balance: " + newRecipientBalance);
 
     Meteor.users.update({_id: senderId}, {$set: {"profile.balance" : parseFloat(newSenderBalance)}}, function(e,num){
         if(e) response = e;
@@ -411,7 +469,7 @@ transferBalance = function(senderId,recipientId,amount){
     Meteor.users.update({_id: recipientId}, {$set: {"profile.balance" : parseFloat(newRecipientBalance)}}, function(e,num){
         if(e) response = e;
     });
-
+}
     return response;
 
 }

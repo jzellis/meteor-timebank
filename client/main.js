@@ -25,6 +25,8 @@ Requests = new Meteor.Collection("requests");
 Options = new Meteor.Collection("options");
 Images = new Meteor.Collection("images");
 Groups = new Meteor.Collection("groups");
+Notifications = new Meteor.Collection("notifications");
+
 
 // This allows transforms on these collections, see below.
 
@@ -325,6 +327,23 @@ $(document).ready(function () {
 
     });
 
+
+    Meteor.setTimeout(function(){            $('#notificationWrapper').on('hidden.bs.dropdown', function () {
+                    read = [];
+        $('#notificationList li').each(function(){
+            read.push($(this).attr('data-id'));
+
+        });
+
+        for(i = 0; i < read.length; i++){
+            Notifications.update({_id: read[i]}, {$set: {read: true}});
+        }
+
+
+});
+
+},500);
+
     
 
 });
@@ -391,6 +410,21 @@ Handlebars.registerHelper("myGroups", function(){
 return Meteor.users.find({"profile.members" : Meteor.userId()}).fetch();
 
 });
+
+Handlebars.registerHelper("myNotifications", function(count){
+
+return Notifications.find({userId: Meteor.userId()}, {limit: count, sort: {timestamp: -1}}).fetch();
+
+});
+
+Handlebars.registerHelper("myUnreadNotificationsCount", function(){
+
+count = Notifications.find({userId: Meteor.userId(), read: false}).count();
+if(count > 0) return count;
+
+});
+
+
 
 Handlebars.registerHelper("getGroups", function(){
 
@@ -615,6 +649,26 @@ Handlebars.registerHelper("userIsMember", function(id,uId){
 if(Meteor.users.findOne({_id: id, "profile.members" : uId})){ return true;}else{return false}
 
 });
+
+Template.navbar.rendered = function(){
+
+//         window.setTimeout(function(){
+//             $('#notificationWrapper').on('hidden.bs.dropdown', function () {
+
+//                     read = [];
+//         $('#notificationList li').each(function(){
+//             read.push($(this).attr('data-id'));
+
+//         });
+
+//         for(i = 0; i < read.length; i++){
+//             Notifications.update({_id: read[i]}, {$set: {read: true}});
+//         }
+
+
+// })}, 250);
+
+}
 
 
 

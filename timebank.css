@@ -379,3 +379,11 @@ fieldset{
 .stats ol li{
   margin-bottom: 1em;
 }
+
+#notificationList li.unread{
+  font-weight: bold;
+}
+
+#notificationWrapper .dropdown-menu {
+  width: 300px
+}
