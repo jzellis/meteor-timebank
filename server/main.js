@@ -201,8 +201,8 @@ Meteor.methods({
 
         message.transactionId = Transactions.insert(transaction);
 
-            //         mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Options.findOne({name: "siteURL"}).value;
-            // Email.send({to: recipient.emails[0].address, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
+                    mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Options.findOne({name: "siteURL"}).value;
+            Email.send({to: recipient.emails[0].address, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
 
 
 
