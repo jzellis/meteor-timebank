@@ -467,11 +467,11 @@ read: read});
 // Functions
 
 transferBalance = function(senderId,recipientId,amount){
-
+    response = true;
 if(senderId != recipientId){
     console.log(amount);
 
-    response = true;
+
     sender = Meteor.users.findOne({_id: senderId});
     recipient = Meteor.users.findOne({_id: recipientId});
     newSenderBalance = parseFloat(sender.profile.balance) - parseFloat(amount);
