@@ -203,7 +203,11 @@ Meteor.methods({
 
                     mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Options.findOne({name: "siteURL"}).value;
             if(typeof recipient.emails != "undefined"){
-            Email.send({to: recipient.emails[0].address, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
+            try{
+                Email.send({to: recipient.emails[0].address, subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
+            }catch(e){
+                console.log(e);
+            }
                     }
 
 
