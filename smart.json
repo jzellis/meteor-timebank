@@ -1,4 +1,7 @@
 {
+	  "meteor": {
+    "tag": "v0.8.2"
+  },
   "packages": {
     "iron-router": "0.6.4",
     "bootstrap-3": {},
@@ -6,7 +9,6 @@
     "handlebars-server": {},
     "timeago": {},
     "moment": {},
-    "mongodb-aggregation": {},
-    "ui" : {}
+    "mongodb-aggregation": {}
   }
 }
