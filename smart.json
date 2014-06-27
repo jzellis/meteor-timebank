@@ -1,11 +1,12 @@
 {
   "packages": {
-    "iron-router": {},
+    "iron-router": "0.6.4",
     "bootstrap-3": {},
     "accounts-ui-bootstrap-3": {},
     "handlebars-server": {},
     "timeago": {},
     "moment": {},
-    "mongodb-aggregation": {}
+    "mongodb-aggregation": {},
+    "ui" : {}
   }
 }

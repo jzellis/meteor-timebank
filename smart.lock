@@ -2,7 +2,9 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "iron-router": {},
+      "iron-router": {
+        "version": "0.6.4"
+      },
       "bootstrap-3": {},
       "accounts-ui-bootstrap-3": {},
       "handlebars-server": {},
@@ -13,8 +15,8 @@
     "packages": {
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.7.0",
-        "commit": "05f34bc48c4cad9fdaa366c1ddcabe6980232ece"
+        "tag": "v0.6.4",
+        "commit": "927bbaed1b87894fb6fb70807f74ff3a5bd89f29"
       },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
@@ -32,24 +34,19 @@
         "commit": "1b72c4e9d82af66293e50be4516c487d15d97464"
       },
       "timeago": {
-        "git": "https://github.com/BeDifferential/timeago.git",
-        "tag": "v0.0.3",
-        "commit": "39135ea44ba69503d6b1e1e17431a57cb315cb21"
+        "git": "https://github.com/Differential/timeago.git",
+        "tag": "v0.0.4",
+        "commit": "60914e8ea3d930febc724febdf137bcd818cb49d"
       },
       "moment": {
         "git": "https://github.com/acreeger/meteor-moment.git",
-        "tag": "v2.5.1",
-        "commit": "8c9bc5d3fc96705057737cb9743d555417f6e551"
+        "tag": "v2.6.0",
+        "commit": "26156df681750fd6e6ed77043eef32b6653ebbdf"
       },
       "mongodb-aggregation": {
         "git": "https://github.com/jhoxray/meteor-mongo-extensions.git",
         "tag": "v0.1.71",
         "commit": "da9661c47b3797cec062005f01f84a4723051438"
-      },
-      "blaze-layout": {
-        "git": "https://github.com/EventedMind/blaze-layout.git",
-        "tag": "v0.2.2",
-        "commit": "8bc53798fe5965669ae67c72f91829fcfdceabfd"
       }
     }
   }
