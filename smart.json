@@ -3,7 +3,7 @@
     "tag": "v0.8.2"
   },
   "packages": {
-    "iron-router": "0.6.4",
+    "iron-router": "0.7.1",
     "bootstrap-3": {},
     "accounts-ui-bootstrap-3": {},
     "handlebars-server": {},
