@@ -20,7 +20,7 @@ Template.__define__("about", (function() {
     "class": "lead"
   }, function() {
     return Spacebars.makeRaw(Spacebars.mustache(self.lookup("getOption"), "description"));
-  }), "\n	"), "\n"), "\n"), "\n"), "\n"));
+  }), "\n	"), "\n"), "\n"), "\n")));
 }));
 
 })();

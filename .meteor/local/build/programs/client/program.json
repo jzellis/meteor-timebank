@@ -631,9 +631,9 @@
       "where": "client",
       "type": "js",
       "cacheable": true,
-      "url": "/client/templates/template.about.js?393bba4aef7c94aaee9acd58fcd86d8032ed6d58",
-      "size": 734,
-      "hash": "393bba4aef7c94aaee9acd58fcd86d8032ed6d58"
+      "url": "/client/templates/template.about.js?c2759f3e2b658a83d6d9c20165a160aab1b230a7",
+      "size": 728,
+      "hash": "c2759f3e2b658a83d6d9c20165a160aab1b230a7"
     },
     {
       "path": "app/client/templates/template.account.js",
