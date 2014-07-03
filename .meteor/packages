@@ -6,7 +6,6 @@
 standard-app-packages
 autopublish
 insecure
-preserve-inputs
 jquery
 accounts-password
 
@@ -23,3 +22,4 @@ timeago
 moment
 
 mongodb-aggregation
+blaze-layout

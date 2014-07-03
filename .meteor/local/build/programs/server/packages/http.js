@@ -16,7 +16,7 @@ var HTTP, makeErrorByStatus, encodeParams, encodeString, buildUrl, populateData;
 /////////////////////////////////////////////////////////////////////////////////////
                                                                                    //
 makeErrorByStatus = function(statusCode, content) {                                // 1
-  var MAX_LENGTH = 160; // if you change this, also change the appropriate test    // 2
+  var MAX_LENGTH = 500; // if you change this, also change the appropriate test    // 2
                                                                                    // 3
   var truncate = function(str, length) {                                           // 4
     return str.length > length ? str.slice(0, length) + '...' : str;               // 5

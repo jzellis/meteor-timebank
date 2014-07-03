@@ -33,7 +33,7 @@ var HTTP, makeErrorByStatus, encodeParams, encodeString, buildUrl, populateData;
 /////////////////////////////////////////////////////////////////////////////////////
                                                                                    //
 makeErrorByStatus = function(statusCode, content) {                                // 1
-  var MAX_LENGTH = 160; // if you change this, also change the appropriate test    // 2
+  var MAX_LENGTH = 500; // if you change this, also change the appropriate test    // 2
                                                                                    // 3
   var truncate = function(str, length) {                                           // 4
     return str.length > length ? str.slice(0, length) + '...' : str;               // 5
@@ -335,4 +335,4 @@ Package.http = {
 
 })();
 
-//# sourceMappingURL=4aec4250e79a92408f1c5e234a52434907239586.map
+//# sourceMappingURL=5858fc5e810b7135fc64f6c24e71564ab072c75e.map

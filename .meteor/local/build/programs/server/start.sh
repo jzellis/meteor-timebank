@@ -38,7 +38,7 @@ PLATFORM="${UNAME}_${ARCH}"
 
 
 # XXX don't hardcode linux :)
-TARBALL="dev_bundle_${PLATFORM}_0.3.26.tar.gz"
+TARBALL="dev_bundle_${PLATFORM}_0.3.37.tar.gz"
 BUNDLE_TMPDIR="$DATA_DIR/dependencies.fetch"
 
 rm -rf "$BUNDLE_TMPDIR"

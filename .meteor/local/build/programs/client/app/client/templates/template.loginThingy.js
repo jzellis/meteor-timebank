@@ -1,3 +1,10 @@
-(function(){Template.__define__("loginThingy",Package.handlebars.Handlebars.json_ast_to_func([["{",[[0,"loginButtons"]]]]));
+(function(){
+Template.__define__("loginThingy", (function() {
+  var self = this;
+  var template = this;
+  return function() {
+    return Spacebars.mustache(self.lookup("loginButtons"));
+  };
+}));
 
 })();

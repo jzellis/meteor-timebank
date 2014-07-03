@@ -171,9 +171,30 @@ _.extend(Meteor, {                                                              
         return fut.wait();                                                                          // 111
       return result;                                                                                // 112
     };                                                                                              // 113
-  }                                                                                                 // 114
-});                                                                                                 // 115
-                                                                                                    // 116
+  },                                                                                                // 114
+                                                                                                    // 115
+  // Sets child's prototype to a new object whose prototype is parent's                             // 116
+  // prototype. Used as:                                                                            // 117
+  //   Meteor._inherits(ClassB, ClassA).                                                            // 118
+  //   _.extend(ClassB.prototype, { ... })                                                          // 119
+  // Inspired by CoffeeScript's `extend` and Google Closure's `goog.inherits`.                      // 120
+  _inherits: function (Child, Parent) {                                                             // 121
+    // copy static fields                                                                           // 122
+    _.each(Parent, function (prop, field) {                                                         // 123
+      Child[field] = prop;                                                                          // 124
+    });                                                                                             // 125
+                                                                                                    // 126
+    // a middle member of prototype chain: takes the prototype from the Parent                      // 127
+    var Middle = function () {                                                                      // 128
+      this.constructor = Child;                                                                     // 129
+    };                                                                                              // 130
+    Middle.prototype = Parent.prototype;                                                            // 131
+    Child.prototype = new Middle();                                                                 // 132
+    Child.__super__ = Parent.prototype;                                                             // 133
+    return Child;                                                                                   // 134
+  }                                                                                                 // 135
+});                                                                                                 // 136
+                                                                                                    // 137
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -412,98 +433,90 @@ _.extend(Meteor, {                                                              
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
                                                                                                     //
-// http://davidshariff.com/blog/javascript-inheritance-patterns/                                    // 1
-var inherits = function (child, parent) {                                                           // 2
-  var tmp = function () {};                                                                         // 3
-  tmp.prototype = parent.prototype;                                                                 // 4
-  child.prototype = new tmp;                                                                        // 5
-  child.prototype.constructor = child;                                                              // 6
-};                                                                                                  // 7
+// Makes an error subclass which properly contains a stack trace in most                            // 1
+// environments. constructor can set fields on `this` (and should probably set                      // 2
+// `message`, which is what gets displayed at the top of a stack trace).                            // 3
+//                                                                                                  // 4
+Meteor.makeErrorType = function (name, constructor) {                                               // 5
+  var errorClass = function (/*arguments*/) {                                                       // 6
+    var self = this;                                                                                // 7
                                                                                                     // 8
-// Makes an error subclass which properly contains a stack trace in most                            // 9
-// environments. constructor can set fields on `this` (and should probably set                      // 10
-// `message`, which is what gets displayed at the top of a stack trace).                            // 11
-//                                                                                                  // 12
-Meteor.makeErrorType = function (name, constructor) {                                               // 13
-  var errorClass = function (/*arguments*/) {                                                       // 14
-    var self = this;                                                                                // 15
-                                                                                                    // 16
-    // Ensure we get a proper stack trace in most Javascript environments                           // 17
-    if (Error.captureStackTrace) {                                                                  // 18
-      // V8 environments (Chrome and Node.js)                                                       // 19
-      Error.captureStackTrace(self, errorClass);                                                    // 20
-    } else {                                                                                        // 21
-      // Firefox                                                                                    // 22
-      var e = new Error;                                                                            // 23
-      e.__proto__ = errorClass.prototype;                                                           // 24
-      if (e instanceof errorClass)                                                                  // 25
-        self = e;                                                                                   // 26
-    }                                                                                               // 27
-    // Safari magically works.                                                                      // 28
-                                                                                                    // 29
-    constructor.apply(self, arguments);                                                             // 30
-                                                                                                    // 31
-    self.errorType = name;                                                                          // 32
+    // Ensure we get a proper stack trace in most Javascript environments                           // 9
+    if (Error.captureStackTrace) {                                                                  // 10
+      // V8 environments (Chrome and Node.js)                                                       // 11
+      Error.captureStackTrace(self, errorClass);                                                    // 12
+    } else {                                                                                        // 13
+      // Firefox                                                                                    // 14
+      var e = new Error;                                                                            // 15
+      e.__proto__ = errorClass.prototype;                                                           // 16
+      if (e instanceof errorClass)                                                                  // 17
+        self = e;                                                                                   // 18
+    }                                                                                               // 19
+    // Safari magically works.                                                                      // 20
+                                                                                                    // 21
+    constructor.apply(self, arguments);                                                             // 22
+                                                                                                    // 23
+    self.errorType = name;                                                                          // 24
+                                                                                                    // 25
+    return self;                                                                                    // 26
+  };                                                                                                // 27
+                                                                                                    // 28
+  Meteor._inherits(errorClass, Error);                                                              // 29
+                                                                                                    // 30
+  return errorClass;                                                                                // 31
+};                                                                                                  // 32
                                                                                                     // 33
-    return self;                                                                                    // 34
-  };                                                                                                // 35
-                                                                                                    // 36
-  inherits(errorClass, Error);                                                                      // 37
-                                                                                                    // 38
-  return errorClass;                                                                                // 39
-};                                                                                                  // 40
-                                                                                                    // 41
-// This should probably be in the livedata package, but we don't want                               // 42
-// to require you to use the livedata package to get it. Eventually we                              // 43
-// should probably rename it to DDP.Error and put it back in the                                    // 44
-// 'livedata' package (which we should rename to 'ddp' also.)                                       // 45
-//                                                                                                  // 46
-// Note: The DDP server assumes that Meteor.Error EJSON-serializes as an object                     // 47
-// containing 'error' and optionally 'reason' and 'details'.                                        // 48
-// The DDP client manually puts these into Meteor.Error objects. (We don't use                      // 49
-// EJSON.addType here because the type is determined by location in the                             // 50
-// protocol, not text on the wire.)                                                                 // 51
-//                                                                                                  // 52
-Meteor.Error = Meteor.makeErrorType(                                                                // 53
-  "Meteor.Error",                                                                                   // 54
-  function (error, reason, details) {                                                               // 55
-    var self = this;                                                                                // 56
-                                                                                                    // 57
-    // Currently, a numeric code, likely similar to a HTTP code (eg,                                // 58
-    // 404, 500). That is likely to change though.                                                  // 59
-    self.error = error;                                                                             // 60
-                                                                                                    // 61
-    // Optional: A short human-readable summary of the error. Not                                   // 62
-    // intended to be shown to end users, just developers. ("Not Found",                            // 63
-    // "Internal Server Error")                                                                     // 64
-    self.reason = reason;                                                                           // 65
+// This should probably be in the livedata package, but we don't want                               // 34
+// to require you to use the livedata package to get it. Eventually we                              // 35
+// should probably rename it to DDP.Error and put it back in the                                    // 36
+// 'livedata' package (which we should rename to 'ddp' also.)                                       // 37
+//                                                                                                  // 38
+// Note: The DDP server assumes that Meteor.Error EJSON-serializes as an object                     // 39
+// containing 'error' and optionally 'reason' and 'details'.                                        // 40
+// The DDP client manually puts these into Meteor.Error objects. (We don't use                      // 41
+// EJSON.addType here because the type is determined by location in the                             // 42
+// protocol, not text on the wire.)                                                                 // 43
+//                                                                                                  // 44
+Meteor.Error = Meteor.makeErrorType(                                                                // 45
+  "Meteor.Error",                                                                                   // 46
+  function (error, reason, details) {                                                               // 47
+    var self = this;                                                                                // 48
+                                                                                                    // 49
+    // Currently, a numeric code, likely similar to a HTTP code (eg,                                // 50
+    // 404, 500). That is likely to change though.                                                  // 51
+    self.error = error;                                                                             // 52
+                                                                                                    // 53
+    // Optional: A short human-readable summary of the error. Not                                   // 54
+    // intended to be shown to end users, just developers. ("Not Found",                            // 55
+    // "Internal Server Error")                                                                     // 56
+    self.reason = reason;                                                                           // 57
+                                                                                                    // 58
+    // Optional: Additional information about the error, say for                                    // 59
+    // debugging. It might be a (textual) stack trace if the server is                              // 60
+    // willing to provide one. The corresponding thing in HTTP would be                             // 61
+    // the body of a 404 or 500 response. (The difference is that we                                // 62
+    // never expect this to be shown to end users, only developers, so                              // 63
+    // it doesn't need to be pretty.)                                                               // 64
+    self.details = details;                                                                         // 65
                                                                                                     // 66
-    // Optional: Additional information about the error, say for                                    // 67
-    // debugging. It might be a (textual) stack trace if the server is                              // 68
-    // willing to provide one. The corresponding thing in HTTP would be                             // 69
-    // the body of a 404 or 500 response. (The difference is that we                                // 70
-    // never expect this to be shown to end users, only developers, so                              // 71
-    // it doesn't need to be pretty.)                                                               // 72
-    self.details = details;                                                                         // 73
+    // This is what gets displayed at the top of a stack trace. Current                             // 67
+    // format is "[404]" (if no reason is set) or "File not found [404]"                            // 68
+    if (self.reason)                                                                                // 69
+      self.message = self.reason + ' [' + self.error + ']';                                         // 70
+    else                                                                                            // 71
+      self.message = '[' + self.error + ']';                                                        // 72
+  });                                                                                               // 73
                                                                                                     // 74
-    // This is what gets displayed at the top of a stack trace. Current                             // 75
-    // format is "[404]" (if no reason is set) or "File not found [404]"                            // 76
-    if (self.reason)                                                                                // 77
-      self.message = self.reason + ' [' + self.error + ']';                                         // 78
-    else                                                                                            // 79
-      self.message = '[' + self.error + ']';                                                        // 80
-  });                                                                                               // 81
-                                                                                                    // 82
-// Meteor.Error is basically data and is sent over DDP, so you should be able to                    // 83
-// properly EJSON-clone it. This is especially important because if a                               // 84
-// Meteor.Error is thrown through a Future, the error, reason, and details                          // 85
-// properties become non-enumerable so a standard Object clone won't preserve                       // 86
-// them and they will be lost from DDP.                                                             // 87
-Meteor.Error.prototype.clone = function () {                                                        // 88
-  var self = this;                                                                                  // 89
-  return new Meteor.Error(self.error, self.reason, self.details);                                   // 90
-};                                                                                                  // 91
-                                                                                                    // 92
+// Meteor.Error is basically data and is sent over DDP, so you should be able to                    // 75
+// properly EJSON-clone it. This is especially important because if a                               // 76
+// Meteor.Error is thrown through a Future, the error, reason, and details                          // 77
+// properties become non-enumerable so a standard Object clone won't preserve                       // 78
+// them and they will be lost from DDP.                                                             // 79
+Meteor.Error.prototype.clone = function () {                                                        // 80
+  var self = this;                                                                                  // 81
+  return new Meteor.Error(self.error, self.reason, self.details);                                   // 82
+};                                                                                                  // 83
+                                                                                                    // 84
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -766,48 +779,58 @@ _.extend(Meteor.EnvironmentVariable.prototype, {                                
     return currentValues[this.slot];                                                                // 12
   },                                                                                                // 13
                                                                                                     // 14
-  withValue: function (value, func) {                                                               // 15
-    var saved = currentValues[this.slot];                                                           // 16
-    try {                                                                                           // 17
-      currentValues[this.slot] = value;                                                             // 18
-      var ret = func();                                                                             // 19
-    } finally {                                                                                     // 20
-      currentValues[this.slot] = saved;                                                             // 21
-    }                                                                                               // 22
-    return ret;                                                                                     // 23
-  }                                                                                                 // 24
-});                                                                                                 // 25
-                                                                                                    // 26
-Meteor.bindEnvironment = function (func, onException, _this) {                                      // 27
-  // needed in order to be able to create closures inside func and                                  // 28
-  // have the closed variables not change back to their original                                    // 29
-  // values                                                                                         // 30
-  var boundValues = _.clone(currentValues);                                                         // 31
-                                                                                                    // 32
-  if (!onException || typeof(onException) === 'string') {                                           // 33
-    var description = onException || "callback of async function";                                  // 34
-    onException = function (error) {                                                                // 35
-      Meteor._debug(                                                                                // 36
-        "Exception in " + description + ":",                                                        // 37
-        error && error.stack || error                                                               // 38
-      );                                                                                            // 39
-    };                                                                                              // 40
-  }                                                                                                 // 41
-                                                                                                    // 42
-  return function (/* arguments */) {                                                               // 43
-    var savedValues = currentValues;                                                                // 44
-    try {                                                                                           // 45
-      currentValues = boundValues;                                                                  // 46
-      var ret = func.apply(_this, _.toArray(arguments));                                            // 47
-    } catch (e) {                                                                                   // 48
-      onException(e);                                                                               // 49
-    } finally {                                                                                     // 50
-      currentValues = savedValues;                                                                  // 51
-    }                                                                                               // 52
-    return ret;                                                                                     // 53
-  };                                                                                                // 54
-};                                                                                                  // 55
-                                                                                                    // 56
+  getOrNullIfOutsideFiber: function () {                                                            // 15
+    return this.get();                                                                              // 16
+  },                                                                                                // 17
+                                                                                                    // 18
+  withValue: function (value, func) {                                                               // 19
+    var saved = currentValues[this.slot];                                                           // 20
+    try {                                                                                           // 21
+      currentValues[this.slot] = value;                                                             // 22
+      var ret = func();                                                                             // 23
+    } finally {                                                                                     // 24
+      currentValues[this.slot] = saved;                                                             // 25
+    }                                                                                               // 26
+    return ret;                                                                                     // 27
+  }                                                                                                 // 28
+});                                                                                                 // 29
+                                                                                                    // 30
+Meteor.bindEnvironment = function (func, onException, _this) {                                      // 31
+  // needed in order to be able to create closures inside func and                                  // 32
+  // have the closed variables not change back to their original                                    // 33
+  // values                                                                                         // 34
+  var boundValues = _.clone(currentValues);                                                         // 35
+                                                                                                    // 36
+  if (!onException || typeof(onException) === 'string') {                                           // 37
+    var description = onException || "callback of async function";                                  // 38
+    onException = function (error) {                                                                // 39
+      Meteor._debug(                                                                                // 40
+        "Exception in " + description + ":",                                                        // 41
+        error && error.stack || error                                                               // 42
+      );                                                                                            // 43
+    };                                                                                              // 44
+  }                                                                                                 // 45
+                                                                                                    // 46
+  return function (/* arguments */) {                                                               // 47
+    var savedValues = currentValues;                                                                // 48
+    try {                                                                                           // 49
+      currentValues = boundValues;                                                                  // 50
+      var ret = func.apply(_this, _.toArray(arguments));                                            // 51
+    } catch (e) {                                                                                   // 52
+      // note: callback-hook currently relies on the fact that if onException                       // 53
+      // throws in the browser, the wrapped call throws.                                            // 54
+      onException(e);                                                                               // 55
+    } finally {                                                                                     // 56
+      currentValues = savedValues;                                                                  // 57
+    }                                                                                               // 58
+    return ret;                                                                                     // 59
+  };                                                                                                // 60
+};                                                                                                  // 61
+                                                                                                    // 62
+Meteor._nodeCodeMustBeInFiber = function () {                                                       // 63
+  // no-op on browser                                                                               // 64
+};                                                                                                  // 65
+                                                                                                    // 66
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -847,7 +870,7 @@ Meteor.absoluteUrl = function (path, options) {                                 
   if (path)                                                                                         // 20
     url += path;                                                                                    // 21
                                                                                                     // 22
-  // turn http to http if secure option is set, and we're not talking                               // 23
+  // turn http to https if secure option is set, and we're not talking                              // 23
   // to localhost.                                                                                  // 24
   if (options.secure &&                                                                             // 25
       /^http:/.test(url) && // url starts with 'http:'                                              // 26
@@ -888,4 +911,4 @@ Package.meteor = {
 
 })();
 
-//# sourceMappingURL=0ee0f69c02b4a9ccb6b7476bddadf436d7592260.map
+//# sourceMappingURL=439f867e12888606900664d4463e1b3ee3644e44.map

@@ -1,3 +1,19 @@
-(function(){Template.__define__("completeProfile",Package.handlebars.Handlebars.json_ast_to_func(["<div class='container'>\n\t<h2>Complete Profile</h2>\n\t<div class='col-md-12' role='form'>You're almost done! We just need you to provide some final info about yourself.</div>\n\t<form class='col-md-12'>\n\t\t<div class='well'>\n\t<fieldset class='form-group'>\n\t\t<label for='email'>Email</label>\n\t\t<input type='email' class='form-control' id='email'>\n\t</fieldset>\n\t<fieldset class='form-group'>\n\t\t<label for='url'>Homepage/URL</label>\n\t\t<input class='form-control' id='url'>\n\t</fieldset>\n\t<fieldset class='form-group'>\n\t\t<label for='bio'>Bio</label>\n\t\t<textarea class='form-control' id='bio'></textarea>\n\t</fieldset>\n\t\t<fieldset class='form-group' style='text-align:center'>\n\t\t<button type='submit' class='btn btn-success btn-lg'>Complete profile</button>\n\t</fieldset>\n</div>\n\t</form>\n\t</div>"]));
+(function(){
+Template.__define__("completeProfile", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "container"
+  }, HTML.Raw('\n	<h2>Complete Profile</h2>\n	<div class="col-md-12" role="form">You\'re almost done! We just need you to provide some final info about yourself.</div>\n	'), HTML.FORM({
+    "class": "col-md-12"
+  }, "\n		", HTML.DIV({
+    "class": "well"
+  }, HTML.Raw('\n	<fieldset class="form-group">\n		<label for="email">Email</label>\n		<input type="email" class="form-control" id="email">\n	</fieldset>\n	<fieldset class="form-group">\n		<label for="url">Homepage/URL</label>\n		<input class="form-control" id="url">\n	</fieldset>\n	'), HTML.FIELDSET({
+    "class": "form-group"
+  }, HTML.Raw('\n		<label for="bio">Bio</label>\n		'), HTML.TEXTAREA({
+    "class": "form-control",
+    id: "bio"
+  }), "\n	"), HTML.Raw('\n		<fieldset class="form-group" style="text-align:center">\n		<button type="submit" class="btn btn-success btn-lg">Complete profile</button>\n	</fieldset>\n')), "\n	"), "\n	");
+}));
 
 })();

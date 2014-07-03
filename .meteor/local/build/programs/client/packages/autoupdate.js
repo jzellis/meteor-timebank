@@ -20,6 +20,7 @@
 /* Imports */
 var Meteor = Package.meteor.Meteor;
 var Deps = Package.deps.Deps;
+var Retry = Package.retry.Retry;
 var DDP = Package.livedata.DDP;
 
 /* Package-scope variables */
@@ -79,53 +80,51 @@ Autoupdate.newClientAvailable = function () {                                   
                                                                                   // 44
                                                                                   // 45
                                                                                   // 46
-// XXX Livedata exporting this via DDP is a hack. See                             // 47
-// packages/livedata/livedata_common.js                                           // 48
-var retry = new DDP._Retry({                                                      // 49
-  // Unlike the stream reconnect use of Retry, which we want to be instant        // 50
-  // in normal operation, this is a wacky failure. We don't want to retry         // 51
-  // right away, we can start slowly.                                             // 52
-  //                                                                              // 53
-  // A better way than timeconstants here might be to use the knowledge           // 54
-  // of when we reconnect to help trigger these retries. Typically, the           // 55
-  // server fixing code will result in a restart and reconnect, but               // 56
-  // potentially the subscription could have a transient error.                   // 57
-  minCount: 0, // don't do any immediate retries                                  // 58
-  baseTimeout: 30*1000 // start with 30s                                          // 59
-});                                                                               // 60
-var failures = 0;                                                                 // 61
-                                                                                  // 62
-Autoupdate._retrySubscription = function () {                                     // 63
-  Meteor.subscribe("meteor_autoupdate_clientVersions", {                          // 64
-    onError: function (error) {                                                   // 65
-      Meteor._debug("autoupdate subscription failed:", error);                    // 66
-      failures++;                                                                 // 67
-      retry.retryLater(failures, function () {                                    // 68
-        // Just retry making the subscription, don't reload the whole             // 69
-        // page. While reloading would catch more cases (for example,             // 70
-        // the server went back a version and is now doing old-style hot          // 71
-        // code push), it would also be more prone to reload loops,               // 72
-        // which look really bad to the user. Just retrying the                   // 73
-        // subscription over DDP means it is at least possible to fix by          // 74
-        // updating the server.                                                   // 75
-        Autoupdate._retrySubscription();                                          // 76
-      });                                                                         // 77
-    },                                                                            // 78
-    onReady: function () {                                                        // 79
-      if (Package.reload) {                                                       // 80
-        Deps.autorun(function (computation) {                                     // 81
-          if (ClientVersions.findOne({current: true}) &&                          // 82
-              (! ClientVersions.findOne({_id: autoupdateVersion}))) {             // 83
-            computation.stop();                                                   // 84
-            Package.reload.Reload._reload();                                      // 85
-          }                                                                       // 86
-        });                                                                       // 87
-      }                                                                           // 88
-  }                                                                               // 89
-  });                                                                             // 90
-};                                                                                // 91
-Autoupdate._retrySubscription();                                                  // 92
-                                                                                  // 93
+var retry = new Retry({                                                           // 47
+  // Unlike the stream reconnect use of Retry, which we want to be instant        // 48
+  // in normal operation, this is a wacky failure. We don't want to retry         // 49
+  // right away, we can start slowly.                                             // 50
+  //                                                                              // 51
+  // A better way than timeconstants here might be to use the knowledge           // 52
+  // of when we reconnect to help trigger these retries. Typically, the           // 53
+  // server fixing code will result in a restart and reconnect, but               // 54
+  // potentially the subscription could have a transient error.                   // 55
+  minCount: 0, // don't do any immediate retries                                  // 56
+  baseTimeout: 30*1000 // start with 30s                                          // 57
+});                                                                               // 58
+var failures = 0;                                                                 // 59
+                                                                                  // 60
+Autoupdate._retrySubscription = function () {                                     // 61
+  Meteor.subscribe("meteor_autoupdate_clientVersions", {                          // 62
+    onError: function (error) {                                                   // 63
+      Meteor._debug("autoupdate subscription failed:", error);                    // 64
+      failures++;                                                                 // 65
+      retry.retryLater(failures, function () {                                    // 66
+        // Just retry making the subscription, don't reload the whole             // 67
+        // page. While reloading would catch more cases (for example,             // 68
+        // the server went back a version and is now doing old-style hot          // 69
+        // code push), it would also be more prone to reload loops,               // 70
+        // which look really bad to the user. Just retrying the                   // 71
+        // subscription over DDP means it is at least possible to fix by          // 72
+        // updating the server.                                                   // 73
+        Autoupdate._retrySubscription();                                          // 74
+      });                                                                         // 75
+    },                                                                            // 76
+    onReady: function () {                                                        // 77
+      if (Package.reload) {                                                       // 78
+        Deps.autorun(function (computation) {                                     // 79
+          if (ClientVersions.findOne({current: true}) &&                          // 80
+              (! ClientVersions.findOne({_id: autoupdateVersion}))) {             // 81
+            computation.stop();                                                   // 82
+            Package.reload.Reload._reload();                                      // 83
+          }                                                                       // 84
+        });                                                                       // 85
+      }                                                                           // 86
+  }                                                                               // 87
+  });                                                                             // 88
+};                                                                                // 89
+Autoupdate._retrySubscription();                                                  // 90
+                                                                                  // 91
 ////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -139,4 +138,4 @@ Package.autoupdate = {
 
 })();
 
-//# sourceMappingURL=c76cb651a032d3fdb795608d8dc51e7e07e1ee97.map
+//# sourceMappingURL=85a69577c7e94226061fb2c886f23080a9163712.map

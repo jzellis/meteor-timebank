@@ -1,3 +1,62 @@
-(function(){Template.__define__("recentTransactions",Package.handlebars.Handlebars.json_ast_to_func(["<ul class='list-unstyled'>\n\t",["#",[[0,"each"],[0,"recentTransactions"],10],["\n\t<li class='well'>\n<div>\n\t\t",["#",[[0,"with"],[0,"getUserById"],[0,"sender"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]]," sent ",["#",[[0,"with"],[0,"getUserById"],[0,"recipient"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["!",[[0,"username"]]],"</a>"]]," <b>",["{",[[0,"getOption"],"currencyAbbr"]]," ",["{",[[0,"amount"]]],"</b>\n\t</div>\n\t",["#",[[0,"if"],[0,"description"]],["<div style='font-style:italic'>&quot;",["{",[[0,"description"]]],"&quot;</div>"]],"\n\t<div style='text-align:right; font-size: 0.8em'>\n\t\t",["{",[[0,"timeago"],[0,"timestamp"]]],"\n\t</div>\n\t</li>\n\t"]],"\n</ul>"]));
+(function(){
+Template.__define__("recentTransactions", (function() {
+  var self = this;
+  var template = this;
+  return HTML.UL({
+    "class": "list-unstyled"
+  }, "\n	", UI.Each(function() {
+    return Spacebars.dataMustache(self.lookup("recentTransactions"), 10);
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n	", HTML.LI({
+      "class": "well"
+    }, "\n", HTML.DIV("\n		", Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("sender"));
+    }, UI.block(function() {
+      var self = this;
+      return HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      });
+    })), " sent ", Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("recipient"));
+    }, UI.block(function() {
+      var self = this;
+      return HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      });
+    })), " ", HTML.B(function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+    }, " ", function() {
+      return Spacebars.mustache(self.lookup("amount"));
+    }), "\n	"), "\n	", UI.If(function() {
+      return Spacebars.call(self.lookup("description"));
+    }, UI.block(function() {
+      var self = this;
+      return HTML.DIV({
+        style: "font-style:italic"
+      }, HTML.CharRef({
+        html: "&quot;",
+        str: '"'
+      }), function() {
+        return Spacebars.mustache(self.lookup("description"));
+      }, HTML.CharRef({
+        html: "&quot;",
+        str: '"'
+      }));
+    })), "\n	", HTML.DIV({
+      style: "text-align:right; font-size: 0.8em"
+    }, "\n		", function() {
+      return Spacebars.mustache(self.lookup("timeago"), self.lookup("timestamp"));
+    }, "\n	"), "\n	"), "\n	" ];
+  })), "\n");
+}));
 
 })();

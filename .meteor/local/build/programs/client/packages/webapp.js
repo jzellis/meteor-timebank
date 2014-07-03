@@ -19,13 +19,46 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
+var _ = Package.underscore._;
 
+/* Package-scope variables */
+var WebApp;
+
+(function () {
+
+///////////////////////////////////////////////////////////////////////
+//                                                                   //
+// packages/webapp/webapp_client.js                                  //
+//                                                                   //
+///////////////////////////////////////////////////////////////////////
+                                                                     //
+WebApp = {                                                           // 1
+                                                                     // 2
+  _isCssLoaded: function () {                                        // 3
+    if (document.styleSheets.length === 0)                           // 4
+      return true;                                                   // 5
+                                                                     // 6
+    return _.find(document.styleSheets, function (sheet) {           // 7
+      if (sheet.cssText && !sheet.cssRules) // IE8                   // 8
+        return !sheet.cssText.match(/meteor-css-not-found-error/);   // 9
+      return !_.find(sheet.cssRules, function (rule) {               // 10
+        return rule.selectorText === '.meteor-css-not-found-error';  // 11
+      });                                                            // 12
+    });                                                              // 13
+  }                                                                  // 14
+};                                                                   // 15
+                                                                     // 16
+///////////////////////////////////////////////////////////////////////
+
+}).call(this);
 
 
 /* Exports */
 if (typeof Package === 'undefined') Package = {};
-Package.webapp = {};
+Package.webapp = {
+  WebApp: WebApp
+};
 
 })();
 
-//# sourceMappingURL=5c7d940d9baab5b893f7e5904e7258ef69e7ef8b.map
+//# sourceMappingURL=e1be090051b82f046484dccc2de7d747e50c7328.map

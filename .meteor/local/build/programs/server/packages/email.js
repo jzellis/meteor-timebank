@@ -89,91 +89,90 @@ EmailTest.restoreOutputStream = function () {                                  /
 var devModeSend = function (mc) {                                              // 71
   var devmode_mail_id = next_devmode_mail_id++;                                // 72
                                                                                // 73
-  // Make sure we use whatever stream was set at the time of the Email.send    // 74
-  // call even in the 'end' callback, in case there are multiple concurrent    // 75
-  // test runs.                                                                // 76
-  var stream = output_stream;                                                  // 77
-                                                                               // 78
-  // This approach does not prevent other writers to stdout from interleaving. // 79
-  stream.write("====== BEGIN MAIL #" + devmode_mail_id + " ======\n");         // 80
-  mc.streamMessage();                                                          // 81
-  mc.pipe(stream, {end: false});                                               // 82
-  var future = new Future;                                                     // 83
-  mc.on('end', function () {                                                   // 84
-    stream.write("====== END MAIL #" + devmode_mail_id + " ======\n");         // 85
-    future['return']();                                                        // 86
-  });                                                                          // 87
-  future.wait();                                                               // 88
-};                                                                             // 89
-                                                                               // 90
-var smtpSend = function (pool, mc) {                                           // 91
-  pool._future_wrapped_sendMail(mc).wait();                                    // 92
-};                                                                             // 93
-                                                                               // 94
-/**                                                                            // 95
- * Mock out email sending (eg, during a test.) This is private for now.        // 96
- *                                                                             // 97
- * f receives the arguments to Email.send and should return true to go         // 98
- * ahead and send the email (or at least, try subsequent hooks), or            // 99
- * false to skip sending.                                                      // 100
- */                                                                            // 101
-var sendHooks = [];                                                            // 102
-EmailTest.hookSend = function (f) {                                            // 103
-  sendHooks.push(f);                                                           // 104
-};                                                                             // 105
-                                                                               // 106
-/**                                                                            // 107
- * Send an email.                                                              // 108
- *                                                                             // 109
- * Connects to the mail server configured via the MAIL_URL environment         // 110
- * variable. If unset, prints formatted message to stdout. The "from" option   // 111
- * is required, and at least one of "to", "cc", and "bcc" must be provided;    // 112
- * all other options are optional.                                             // 113
- *                                                                             // 114
- * @param options                                                              // 115
- * @param options.from {String} RFC5322 "From:" address                        // 116
- * @param options.to {String|String[]} RFC5322 "To:" address[es]               // 117
- * @param options.cc {String|String[]} RFC5322 "Cc:" address[es]               // 118
- * @param options.bcc {String|String[]} RFC5322 "Bcc:" address[es]             // 119
- * @param options.replyTo {String|String[]} RFC5322 "Reply-To:" address[es]    // 120
- * @param options.subject {String} RFC5322 "Subject:" line                     // 121
- * @param options.text {String} RFC5322 mail body (plain text)                 // 122
- * @param options.html {String} RFC5322 mail body (HTML)                       // 123
- * @param options.headers {Object} custom RFC5322 headers (dictionary)         // 124
- */                                                                            // 125
-Email.send = function (options) {                                              // 126
-  for (var i = 0; i < sendHooks.length; i++)                                   // 127
-    if (! sendHooks[i](options))                                               // 128
-      return;                                                                  // 129
-                                                                               // 130
-  var mc = new MailComposer();                                                 // 131
-                                                                               // 132
-  // setup message data                                                        // 133
-  // XXX support attachments (once we have a client/server-compatible binary   // 134
-  //     Buffer class)                                                         // 135
-  mc.setMessageOption({                                                        // 136
-    from: options.from,                                                        // 137
-    to: options.to,                                                            // 138
-    cc: options.cc,                                                            // 139
-    bcc: options.bcc,                                                          // 140
-    replyTo: options.replyTo,                                                  // 141
-    subject: options.subject,                                                  // 142
-    text: options.text,                                                        // 143
-    html: options.html                                                         // 144
-  });                                                                          // 145
-                                                                               // 146
-  _.each(options.headers, function (value, name) {                             // 147
-    mc.addHeader(name, value);                                                 // 148
-  });                                                                          // 149
-                                                                               // 150
-  var pool = getPool();                                                        // 151
-  if (pool) {                                                                  // 152
-    smtpSend(pool, mc);                                                        // 153
-  } else {                                                                     // 154
-    devModeSend(mc);                                                           // 155
-  }                                                                            // 156
-};                                                                             // 157
-                                                                               // 158
+  var stream = output_stream;                                                  // 74
+                                                                               // 75
+  // This approach does not prevent other writers to stdout from interleaving. // 76
+  stream.write("====== BEGIN MAIL #" + devmode_mail_id + " ======\n");         // 77
+  stream.write("(Mail not sent; to enable sending, set the MAIL_URL " +        // 78
+               "environment variable.)\n");                                    // 79
+  mc.streamMessage();                                                          // 80
+  mc.pipe(stream, {end: false});                                               // 81
+  var future = new Future;                                                     // 82
+  mc.on('end', function () {                                                   // 83
+    stream.write("====== END MAIL #" + devmode_mail_id + " ======\n");         // 84
+    future['return']();                                                        // 85
+  });                                                                          // 86
+  future.wait();                                                               // 87
+};                                                                             // 88
+                                                                               // 89
+var smtpSend = function (pool, mc) {                                           // 90
+  pool._future_wrapped_sendMail(mc).wait();                                    // 91
+};                                                                             // 92
+                                                                               // 93
+/**                                                                            // 94
+ * Mock out email sending (eg, during a test.) This is private for now.        // 95
+ *                                                                             // 96
+ * f receives the arguments to Email.send and should return true to go         // 97
+ * ahead and send the email (or at least, try subsequent hooks), or            // 98
+ * false to skip sending.                                                      // 99
+ */                                                                            // 100
+var sendHooks = [];                                                            // 101
+EmailTest.hookSend = function (f) {                                            // 102
+  sendHooks.push(f);                                                           // 103
+};                                                                             // 104
+                                                                               // 105
+/**                                                                            // 106
+ * Send an email.                                                              // 107
+ *                                                                             // 108
+ * Connects to the mail server configured via the MAIL_URL environment         // 109
+ * variable. If unset, prints formatted message to stdout. The "from" option   // 110
+ * is required, and at least one of "to", "cc", and "bcc" must be provided;    // 111
+ * all other options are optional.                                             // 112
+ *                                                                             // 113
+ * @param options                                                              // 114
+ * @param options.from {String} RFC5322 "From:" address                        // 115
+ * @param options.to {String|String[]} RFC5322 "To:" address[es]               // 116
+ * @param options.cc {String|String[]} RFC5322 "Cc:" address[es]               // 117
+ * @param options.bcc {String|String[]} RFC5322 "Bcc:" address[es]             // 118
+ * @param options.replyTo {String|String[]} RFC5322 "Reply-To:" address[es]    // 119
+ * @param options.subject {String} RFC5322 "Subject:" line                     // 120
+ * @param options.text {String} RFC5322 mail body (plain text)                 // 121
+ * @param options.html {String} RFC5322 mail body (HTML)                       // 122
+ * @param options.headers {Object} custom RFC5322 headers (dictionary)         // 123
+ */                                                                            // 124
+Email.send = function (options) {                                              // 125
+  for (var i = 0; i < sendHooks.length; i++)                                   // 126
+    if (! sendHooks[i](options))                                               // 127
+      return;                                                                  // 128
+                                                                               // 129
+  var mc = new MailComposer();                                                 // 130
+                                                                               // 131
+  // setup message data                                                        // 132
+  // XXX support attachments (once we have a client/server-compatible binary   // 133
+  //     Buffer class)                                                         // 134
+  mc.setMessageOption({                                                        // 135
+    from: options.from,                                                        // 136
+    to: options.to,                                                            // 137
+    cc: options.cc,                                                            // 138
+    bcc: options.bcc,                                                          // 139
+    replyTo: options.replyTo,                                                  // 140
+    subject: options.subject,                                                  // 141
+    text: options.text,                                                        // 142
+    html: options.html                                                         // 143
+  });                                                                          // 144
+                                                                               // 145
+  _.each(options.headers, function (value, name) {                             // 146
+    mc.addHeader(name, value);                                                 // 147
+  });                                                                          // 148
+                                                                               // 149
+  var pool = getPool();                                                        // 150
+  if (pool) {                                                                  // 151
+    smtpSend(pool, mc);                                                        // 152
+  } else {                                                                     // 153
+    devModeSend(mc);                                                           // 154
+  }                                                                            // 155
+};                                                                             // 156
+                                                                               // 157
 /////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);

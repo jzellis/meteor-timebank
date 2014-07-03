@@ -19,6 +19,7 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
+var Accounts = Package['accounts-base'].Accounts;
 
 /* Package-scope variables */
 var ServiceConfiguration;
@@ -39,21 +40,30 @@ if (typeof ServiceConfiguration === 'undefined') {                              
 // Table containing documents with configuration options for each                     // 6
 // login service                                                                      // 7
 ServiceConfiguration.configurations = new Meteor.Collection(                          // 8
-  "meteor_accounts_loginServiceConfiguration", {_preventAutopublish: true});          // 9
-// Leave this collection open in insecure mode. In theory, someone could              // 10
-// hijack your oauth connect requests to a different endpoint or appId,               // 11
-// but you did ask for 'insecure'. The advantage is that it is much                   // 12
-// easier to write a configuration wizard that works only in insecure                 // 13
-// mode.                                                                              // 14
-                                                                                      // 15
-                                                                                      // 16
-// Thrown when trying to use a login service which is not configured                  // 17
-ServiceConfiguration.ConfigError = function(description) {                            // 18
-  this.message = description;                                                         // 19
-};                                                                                    // 20
-ServiceConfiguration.ConfigError.prototype = new Error();                             // 21
-ServiceConfiguration.ConfigError.prototype.name = 'ServiceConfiguration.ConfigError'; // 22
-                                                                                      // 23
+  "meteor_accounts_loginServiceConfiguration", {                                      // 9
+    _preventAutopublish: true,                                                        // 10
+    connection: Meteor.isClient ? Accounts.connection : Meteor.connection             // 11
+  });                                                                                 // 12
+// Leave this collection open in insecure mode. In theory, someone could              // 13
+// hijack your oauth connect requests to a different endpoint or appId,               // 14
+// but you did ask for 'insecure'. The advantage is that it is much                   // 15
+// easier to write a configuration wizard that works only in insecure                 // 16
+// mode.                                                                              // 17
+                                                                                      // 18
+                                                                                      // 19
+// Thrown when trying to use a login service which is not configured                  // 20
+ServiceConfiguration.ConfigError = function (serviceName) {                           // 21
+  if (Meteor.isClient && !Accounts.loginServicesConfigured()) {                       // 22
+    this.message = "Login service configuration not yet loaded";                      // 23
+  } else if (serviceName) {                                                           // 24
+    this.message = "Service " + serviceName + " not configured";                      // 25
+  } else {                                                                            // 26
+    this.message = "Service not configured";                                          // 27
+  }                                                                                   // 28
+};                                                                                    // 29
+ServiceConfiguration.ConfigError.prototype = new Error();                             // 30
+ServiceConfiguration.ConfigError.prototype.name = 'ServiceConfiguration.ConfigError'; // 31
+                                                                                      // 32
 ////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -67,4 +77,4 @@ Package['service-configuration'] = {
 
 })();
 
-//# sourceMappingURL=65f9d7f8c45ecc9be55a58180bf579558581a9dc.map
+//# sourceMappingURL=c3ce094ff5f2ea7bb9376e0affb96ca42b6f50c1.map

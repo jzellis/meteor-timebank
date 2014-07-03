@@ -1,3 +1,8 @@
-(function(){Meteor.startup(function(){document.body.appendChild(Spark.render(Template.__define__(null,Package.handlebars.Handlebars.json_ast_to_func(["<div id='status' class='bg-success' style='display:none'><span class='body'></span><button type=\"button\" class=\"close\" aria-hidden=\"true\">&times;</button></div>\n\n",[">","navbar"],"\n\n\t\t\t",["{",[[0,"yield"]]],"\n\n\n\t\t\t",[">","loginModal"]]))));});
+(function(){
+UI.body.contentParts.push(UI.Component.extend({render: (function() {
+  var self = this;
+  return "";
+})}));
+Meteor.startup(function () { if (! UI.body.INSTANTIATED) { UI.body.INSTANTIATED = true; UI.DomRange.insert(UI.render(UI.body).dom, document.body); } });
 
 })();

@@ -180,8 +180,8 @@ _.each(['debug', 'info', 'warn', 'error'], function (level) {                   
                                                                                        // 145
     if (_.has(obj, 'message') && !_.isString(obj.message))                             // 146
       throw new Error("The 'message' field in log objects must be a string");          // 147
-                                                                                       // 148
-    obj = _.extend(Log._getCallerDetails(), obj);                                      // 149
+    if (!obj.omitCallerDetails)                                                        // 148
+      obj = _.extend(Log._getCallerDetails(), obj);                                    // 149
     obj.time = new Date();                                                             // 150
     obj.level = level;                                                                 // 151
                                                                                        // 152
@@ -321,4 +321,4 @@ Package.logging = {
 
 })();
 
-//# sourceMappingURL=0b5bf4a50ca23ebf02c29f1243437e173a6b6c1a.map
+//# sourceMappingURL=0de00019cf57ae305903f15baf5dc8e10f973ded.map

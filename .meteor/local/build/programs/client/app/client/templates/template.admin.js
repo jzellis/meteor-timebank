@@ -1,3 +1,260 @@
-(function(){Template.__define__("admin",Package.handlebars.Handlebars.json_ast_to_func(["<div class='container'>\n\n\t",["#",[[0,"if"],[0,"currentUser","profile","isAdmin"]],["\n\t<h1>Admin</h1>\n\n<div class='row'>\n\t<ul class=\"nav nav-tabs\">\n  <li class=\"active\"><a href=\"#stats\" data-toggle=\"tab\">Stats</a></li>\n\n  <li><a href=\"#users\" data-toggle=\"tab\">Users</a></li>\n  <li><a href=\"#settings\" data-toggle=\"tab\">Settings</a></li>\n</ul>\n\n<!-- Tab panes -->\n<div class=\"tab-content\">\n  <div class=\"tab-pane active\" id=\"stats\">\n  \t<ul>\n  \t\t<li>\tUsers: ",["{",[[0,"userCount"]]],"</li>\n  \t\t<li>Total Time: ",["{",[[0,"getTotalTime"]]],"</li>\n  \t</ul>\n\n\t<span class='btn btn-danger' id='calculateBalance'>Recalculate User Balance</span>\n\n  </div>\n\n  <div class=\"tab-pane\" id=\"users\">\n<table class='table'>\n\t<thead><tr><th>Username</th><th>Real Name</th><th>Email</th><th>Balance</th><th>Added</th><th>Admin</th><th></th></tr></thead>\n<tbody>\n\t",["#",[[0,"each"],[0,"getUsers"]],["\n\t<tr><td><a href='/users/",["{",[[0,"username"]]],"' target='_new'>",["{",[[0,"username"]]],"</a></td><td>",["{",[[0,"profile","name"]]],"</td><td><a href='mailto:",["{",[[0,"emails","0","address"]]],"'>",["{",[[0,"emails","0","address"]]],"</a></td><td>",["{",[[0,"profile","balance"]]],"</td><td>",["{",[[0,"formatDate"],[0,"profile","createdAt"]]],"</td><td><input type='checkbox' class='isAdmin' value='",["{",[[0,"_id"]]],"' ",["#",[[0,"if"],[0,"profile","isAdmin"]],["checked='checked'"]],"></td><td><button type='button' value='",["{",[[0,"_id"]]],"' class='deleteButton btn btn-danger btn-sm'>Delete</button></td></tr>\n\t"]],"\n</tbody>\n</table>\n  </div>\n\n  <div class=\"tab-pane\" id=\"settings\">\n  \t\n<form role='form' id='communityForm'>\n\t\t<div class='well' id='step2'>\n\t\t\t<h3>Step 2: Community Info</h3>\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='siteName'>Community Name</label>\n\t\t\t\t<input class='form-control input-lg' id='siteName' value='",["{",[[0,"getOption"],"sitename"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tThis is the public name of your community\n\t\t\t</span>\n\t\t</fieldset>\n\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='siteURL'>Site URL</label>\n\t\t\t\t<input class='form-control input-lg' id='siteURL' value='",["{",[[0,"getOption"],"siteURL"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tThis is the URL of your site, without trailing slashes\n\t\t\t</span>\n\t\t</fieldset>\n\n\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='siteImage'>Icon/Avatar</label>\n\t\t\t\t<input type='file' class='form-control input-lg' id='siteImage'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tThis is your community's icon or avatar.\n\t\t\t</span>\n\t\t</fieldset>\n\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='siteDescription'>Community Description</label>\n\t\t\t\t<textarea class='form-control' id='siteDescription' rows='8'>",["{",[[0,"getOption"],"description"]],"</textarea>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tDescribe your community &em; what it is, what it's for.\n\t\t\t</span>\n\t\t</fieldset>\n\t\t\t\t<fieldset class='form-group'>\n\t\t\t<label for='location'>Community Location (optional)</label>\n\t\t\t\t<input class='form-control' id='location' value='",["{",[[0,"getOption"],"location"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tOptional, but useful if your community is based on geography.\n\t\t\t</span>\n\t\t</fieldset>\n\t</div>\n\n\t\t<div class='well' id='step3'>\n\t\t\t<h3>Currency Info</h3>\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='currencyName'>Currency Name</label>\n\t\t\t\t<input class='form-control' id='currencyName' value='",["{",[[0,"getOption"],"currencyName"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\te.g. AustinBucks, DogeCoin, etc.\n\t\t\t</span>\n\t\t</fieldset>\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='currencyDescription'>Currency Description</label>\n\t\t\t\t<textarea class='form-control' id='currencyDescription' rows='8'>",["{",[[0,"getOption"],"currencyDescription"]],"</textarea>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tWhat is your currency based on? How is it shared?\n\t\t\t</span>\n\t\t</fieldset>\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='currencyAbbr'>Currency Abbrev</label>\n\t\t\t<div class='row'>\n\t\t\t\t<div class='col-md-2'>\n\t\t\t\t<input class='form-control' id='currencyAbbr' value='",["{",[[0,"getOption"],"currencyAbbr"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\te.g. auBck, USh, $\n\t\t\t</span>\n\t\t\t</div>\n\t\t</div>\n\t\t</fieldset>\n\t</div>\n\n\t<div class='well' id='step4'>\n\t\t\t<h3>Community Options</h3>\n\t\t<fieldset class='form-group'>\n\t\t\t<label for='defaultBalance'>New User Default Balance</label>\n\t\t\t\t<input class='form-control' id='defaultBalance' value='",["{",[[0,"getOption"],"defaultBalance"]],"'>\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tShould new users start with an existing amount of your currency?\n\t\t\t</span>\n\t\t</fieldset>\n\t\t<fieldset class='form-group'>\n\t\t\t<div class='checkbox'>\n\t\t\t<label for='negativeBalance'>\n\t\t\t\t<input type='checkbox' id='negativeBalance' value='true' ",["#",[[0,"if"],[0,"getOption"],"negativeBalance"],["checked='checked'"]],">\n\t\t\t\tCan Users Have A Negative Balance?\n\t\t\t</label>\n\t\t</div>\n\t\t</fieldset>\n\t\t\t\t<fieldset class='form-group'>\n\t\t\t<label for='maxNegativeBalance'>Maximum Negative Balance</label>\n\t\t\t\t<input class='form-control' id='maxNegativeBalance' value='",["{",[[0,"getOption"],"maxNegativeBalance"]],"' ",["#",[[0,"unless"],[0,"getOption"],"negativeBalance"],["disabled"]],">\n\t\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tThis is the maximum amount of negative balance a user can have. If they reach this threshold, they cannot give currency to any other user until their balance gets less negative.\n\t\t\t</span>\n\t\t</fieldset>\n\t\t\t\t<fieldset class='form-group'>\n\t\t\t<label for='whoCanJoin'>Who can join the community?</label>\n\t\t\t<select class='form-control' id='whoCanJoin'>\n\t\t\t\t<option value='anyone'>Anyone</option>\n\t\t\t\t<option value='invite'>Anyone with an invite code</option>\n\t\t\t</select>\n\t\t\t\t\t\t<span class=\"help-block\">\n\t\t\t\tInvite codes can be tied to a particular person, or you can generate random ones that you can hand out/print out/make up on the fly.\n\t\t\t</span>\n\t\t</fieldset>\n\t</div>\n\n\t<div class='row'>\n<div class='col-md-12' style='text-align:center'>\n\n\t<button type='submit' class='btn btn-lg btn-success'>Update Settings</button>\n</div>\n</div>\n\t</form>\n\n  </div>\n</div>\n</div>\n\t"],["\n\tYou are not an admin user.\n\t"]],"\n\t\t</div>"]));
+(function(){
+Template.__define__("admin", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "container"
+  }, "\n\n	", UI.If(function() {
+    return Spacebars.call(Spacebars.dot(self.lookup("currentUser"), "profile", "isAdmin"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n	", HTML.H1("Admin"), "\n\n", HTML.DIV({
+      "class": "row"
+    }, "\n	", HTML.UL({
+      "class": "nav nav-tabs"
+    }, "\n  ", HTML.LI({
+      "class": "active"
+    }, HTML.A({
+      href: "#stats",
+      "data-toggle": "tab"
+    }, "Stats")), "\n\n  ", HTML.LI(HTML.A({
+      href: "#users",
+      "data-toggle": "tab"
+    }, "Users")), "\n  ", HTML.LI(HTML.A({
+      href: "#settings",
+      "data-toggle": "tab"
+    }, "Settings")), "\n"), "\n\n", HTML.Comment(" Tab panes "), "\n", HTML.DIV({
+      "class": "tab-content"
+    }, "\n  ", HTML.DIV({
+      "class": "tab-pane active",
+      id: "stats"
+    }, "\n  	", HTML.UL("\n  		", HTML.LI("	Users: ", function() {
+      return Spacebars.mustache(self.lookup("userCount"));
+    }), "\n  		", HTML.LI("Total Time: ", function() {
+      return Spacebars.mustache(self.lookup("getTotalTime"));
+    }), "\n  	"), "\n\n	", HTML.SPAN({
+      "class": "btn btn-danger",
+      id: "calculateBalance"
+    }, "Recalculate User Balance"), "\n\n  "), "\n\n  ", HTML.DIV({
+      "class": "tab-pane",
+      id: "users"
+    }, "\n", HTML.TABLE({
+      "class": "table"
+    }, "\n	", HTML.THEAD(HTML.TR(HTML.TH("Username"), HTML.TH("Real Name"), HTML.TH("Email"), HTML.TH("Balance"), HTML.TH("Added"), HTML.TH("Admin"), HTML.TH())), "\n", HTML.TBODY("\n	", UI.Each(function() {
+      return Spacebars.call(self.lookup("getUsers"));
+    }, UI.block(function() {
+      var self = this;
+      return [ "\n	", HTML.TR(HTML.TD(HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ],
+        target: "_new"
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      })), HTML.TD(function() {
+        return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "name"));
+      }), HTML.TD(HTML.A({
+        href: [ "mailto:", function() {
+          return Spacebars.mustache(Spacebars.dot(self.lookup("emails"), "0", "address"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(Spacebars.dot(self.lookup("emails"), "0", "address"));
+      })), HTML.TD(function() {
+        return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "balance"));
+      }), HTML.TD(function() {
+        return Spacebars.mustache(self.lookup("formatDate"), Spacebars.dot(self.lookup("profile"), "createdAt"));
+      }), HTML.TD(HTML.INPUT({
+        type: "checkbox",
+        "class": "isAdmin",
+        value: function() {
+          return Spacebars.mustache(self.lookup("_id"));
+        },
+        checked: function() {
+          return Spacebars.mustache(self.lookup("isAdmin"));
+        }
+      })), HTML.TD(HTML.BUTTON({
+        type: "button",
+        value: function() {
+          return Spacebars.mustache(self.lookup("_id"));
+        },
+        "class": "deleteButton btn btn-danger btn-sm"
+      }, "Delete"))), "\n	" ];
+    })), "\n"), "\n"), "\n  "), "\n\n  ", HTML.DIV({
+      "class": "tab-pane",
+      id: "settings"
+    }, "\n  	\n", HTML.FORM({
+      role: "form",
+      id: "communityForm"
+    }, "\n		", HTML.DIV({
+      "class": "well",
+      id: "step2"
+    }, "\n			", HTML.H3("Step 2: Community Info"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "siteName"
+    }, "Community Name"), "\n				", HTML.INPUT({
+      "class": "form-control input-lg",
+      id: "siteName",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "sitename");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				This is the public name of your community\n			"), "\n		"), "\n\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "siteURL"
+    }, "Site URL"), "\n				", HTML.INPUT({
+      "class": "form-control input-lg",
+      id: "siteURL",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "siteURL");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				This is the URL of your site, without trailing slashes\n			"), "\n		"), "\n\n\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "siteImage"
+    }, "Icon/Avatar"), "\n				", HTML.INPUT({
+      type: "file",
+      "class": "form-control input-lg",
+      id: "siteImage"
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				This is your community's icon or avatar.\n			"), "\n		"), "\n\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "siteDescription"
+    }, "Community Description"), "\n				", HTML.TEXTAREA({
+      "class": "form-control",
+      id: "siteDescription",
+      rows: "8"
+    }, function() {
+      return Spacebars.mustache(self.lookup("getOption"), "description");
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				Describe your community – what it is, what it's for.\n			"), "\n		"), "\n				", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "location"
+    }, "Community Location (optional)"), "\n				", HTML.INPUT({
+      "class": "form-control",
+      id: "location",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "location");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				Optional, but useful if your community is based on geography.\n			"), "\n		"), "\n	"), "\n\n		", HTML.DIV({
+      "class": "well",
+      id: "step3"
+    }, "\n			", HTML.H3("Currency Info"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "currencyName"
+    }, "Currency Name"), "\n				", HTML.INPUT({
+      "class": "form-control",
+      id: "currencyName",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "currencyName");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				e.g. AustinBucks, DogeCoin, etc.\n			"), "\n		"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "currencyDescription"
+    }, "Currency Description"), "\n				", HTML.TEXTAREA({
+      "class": "form-control",
+      id: "currencyDescription",
+      rows: "8"
+    }, function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyDescription");
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				What is your currency based on? How is it shared?\n			"), "\n		"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "currencyAbbr"
+    }, "Currency Abbrev"), "\n			", HTML.DIV({
+      "class": "row"
+    }, "\n				", HTML.DIV({
+      "class": "col-md-2"
+    }, "\n				", HTML.INPUT({
+      "class": "form-control",
+      id: "currencyAbbr",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				e.g. auBck, USh, $\n			"), "\n			"), "\n		"), "\n		"), "\n	"), "\n\n	", HTML.DIV({
+      "class": "well",
+      id: "step4"
+    }, "\n			", HTML.H3("Community Options"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "defaultBalance"
+    }, "New User Default Balance"), "\n				", HTML.INPUT({
+      "class": "form-control",
+      id: "defaultBalance",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "defaultBalance");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				Should new users start with an existing amount of your currency?\n			"), "\n		"), "\n		", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.DIV({
+      "class": "checkbox"
+    }, "\n			", HTML.LABEL({
+      "for": "negativeBalance"
+    }, "\n				", HTML.INPUT({
+      type: "checkbox",
+      id: "negativeBalance",
+      value: "true",
+      checked: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "negativeBalance");
+      }
+    }), "\n				Can Users Have A Negative Balance?\n			"), "\n		"), "\n		"), "\n				", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "maxNegativeBalance"
+    }, "Maximum Negative Balance"), "\n				", HTML.INPUT({
+      "class": "form-control",
+      id: "maxNegativeBalance",
+      value: function() {
+        return Spacebars.mustache(self.lookup("getOption"), "maxNegativeBalance");
+      }
+    }), "\n							", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				This is the maximum amount of negative balance a user can have. If they reach this threshold, they cannot give currency to any other user until their balance gets less negative.\n			"), "\n		"), "\n				", HTML.FIELDSET({
+      "class": "form-group"
+    }, "\n			", HTML.LABEL({
+      "for": "whoCanJoin"
+    }, "Who can join the community?"), "\n			", HTML.SELECT({
+      "class": "form-control",
+      id: "whoCanJoin"
+    }, "\n				", HTML.OPTION({
+      value: "anyone"
+    }, "Anyone"), "\n				", HTML.OPTION({
+      value: "invite"
+    }, "Anyone with an invite code"), "\n			"), "\n						", HTML.SPAN({
+      "class": "help-block"
+    }, "\n				Invite codes can be tied to a particular person, or you can generate random ones that you can hand out/print out/make up on the fly.\n			"), "\n		"), "\n	"), "\n\n	", HTML.DIV({
+      "class": "row"
+    }, "\n", HTML.DIV({
+      "class": "col-md-12",
+      style: "text-align:center"
+    }, "\n\n	", HTML.BUTTON({
+      type: "submit",
+      "class": "btn btn-lg btn-success"
+    }, "Update Settings"), "\n"), "\n"), "\n	"), "\n\n  "), "\n"), "\n"), "\n	" ];
+  }), UI.block(function() {
+    var self = this;
+    return "\n	You are not an admin user.\n	";
+  })), "\n		");
+}));
 
 })();

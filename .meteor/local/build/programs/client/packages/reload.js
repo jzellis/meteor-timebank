@@ -181,18 +181,23 @@ Reload._reload = function () {                                                  
     }                                                                                        // 145
                                                                                              // 146
     if (typeof sessionStorage !== "undefined" && sessionStorage) {                           // 147
-      sessionStorage.setItem(KEY_NAME, json);                                                // 148
-    } else {                                                                                 // 149
-      Meteor._debug("Browser does not support sessionStorage. Not saving migration state."); // 150
-    }                                                                                        // 151
-                                                                                             // 152
-    // Tell the browser to shut down this VM and make a new one                              // 153
-    window.location.reload();                                                                // 154
-  }); };                                                                                     // 155
-                                                                                             // 156
-  tryReload();                                                                               // 157
-};                                                                                           // 158
-                                                                                             // 159
+      try {                                                                                  // 148
+        sessionStorage.setItem(KEY_NAME, json);                                              // 149
+      } catch (err) {                                                                        // 150
+        // happens in safari with private browsing                                           // 151
+        Meteor._debug("Couldn't save data for migration to sessionStorage", err);            // 152
+      }                                                                                      // 153
+    } else {                                                                                 // 154
+      Meteor._debug("Browser does not support sessionStorage. Not saving migration state."); // 155
+    }                                                                                        // 156
+                                                                                             // 157
+    // Tell the browser to shut down this VM and make a new one                              // 158
+    window.location.reload();                                                                // 159
+  }); };                                                                                     // 160
+                                                                                             // 161
+  tryReload();                                                                               // 162
+};                                                                                           // 163
+                                                                                             // 164
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -232,4 +237,4 @@ Package.reload = {
 
 })();
 
-//# sourceMappingURL=8495281f1e90298939d33611f64cb97609664269.map
+//# sourceMappingURL=ad0e94b5b63bbe79ab30e9dad4e6eb91694f5875.map

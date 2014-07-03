@@ -10,6 +10,7 @@ var WebApp = Package.webapp.WebApp;
 var main = Package.webapp.main;
 var WebAppInternals = Package.webapp.WebAppInternals;
 var Accounts = Package['accounts-base'].Accounts;
+var OAuth = Package.oauth.OAuth;
 var Oauth = Package.oauth.Oauth;
 
 (function () {
@@ -68,31 +69,47 @@ Accounts.registerLoginHandler(function (options) {                              
   if (!options.oauth)                                                                                              // 4
     return undefined; // don't handle                                                                              // 5
                                                                                                                    // 6
-  check(options.oauth, {credentialToken: String});                                                                 // 7
-                                                                                                                   // 8
-  if (!Oauth.hasCredential(options.oauth.credentialToken)) {                                                       // 9
-    // OAuth credentialToken is not recognized, which could be either because the popup                            // 10
-    // was closed by the user before completion, or some sort of error where                                       // 11
-    // the oauth provider didn't talk to our server correctly and closed the                                       // 12
-    // popup somehow.                                                                                              // 13
-    //                                                                                                             // 14
-    // we assume it was user canceled, and report it as such, using a                                              // 15
-    // Meteor.Error which the client can recognize. this will mask failures                                        // 16
-    // where things are misconfigured such that the server doesn't see the                                         // 17
-    // request but does close the window. This seems unlikely.                                                     // 18
-    throw new Meteor.Error(Accounts.LoginCancelledError.numericError,                                              // 19
-                           'No matching login attempt found');                                                     // 20
-  }                                                                                                                // 21
-  var result = Oauth.retrieveCredential(options.oauth.credentialToken);                                            // 22
-  if (result instanceof Error)                                                                                     // 23
-    // We tried to login, but there was a fatal error. Report it back                                              // 24
-    // to the user.                                                                                                // 25
-    throw result;                                                                                                  // 26
-  else                                                                                                             // 27
-    return Accounts.updateOrCreateUserFromExternalService(result.serviceName, result.serviceData, result.options); // 28
-});                                                                                                                // 29
-                                                                                                                   // 30
-                                                                                                                   // 31
+  check(options.oauth, {                                                                                           // 7
+    credentialToken: String,                                                                                       // 8
+    // When an error occurs while retrieving the access token, we store                                            // 9
+    // the error in the pending credentials table, with a secret of                                                // 10
+    // null. The client can call the login method with a secret of null                                            // 11
+    // to retrieve the error.                                                                                      // 12
+    credentialSecret: Match.OneOf(null, String)                                                                    // 13
+  });                                                                                                              // 14
+                                                                                                                   // 15
+  var result = OAuth.retrieveCredential(options.oauth.credentialToken,                                             // 16
+                                        options.oauth.credentialSecret);                                           // 17
+                                                                                                                   // 18
+  if (!result) {                                                                                                   // 19
+    // OAuth credentialToken is not recognized, which could be either                                              // 20
+    // because the popup was closed by the user before completion, or                                              // 21
+    // some sort of error where the oauth provider didn't talk to our                                              // 22
+    // server correctly and closed the popup somehow.                                                              // 23
+    //                                                                                                             // 24
+    // We assume it was user canceled and report it as such, using a                                               // 25
+    // numeric code that the client recognizes (XXX this will get                                                  // 26
+    // replaced by a symbolic error code at some point                                                             // 27
+    // https://trello.com/c/kMkw800Z/53-official-ddp-specification). This                                          // 28
+    // will mask failures where things are misconfigured such that the                                             // 29
+    // server doesn't see the request but does close the window. This                                              // 30
+    // seems unlikely.                                                                                             // 31
+    //                                                                                                             // 32
+    // XXX we want `type` to be the service name such as "facebook"                                                // 33
+    return { type: "oauth",                                                                                        // 34
+             error: new Meteor.Error(                                                                              // 35
+               Accounts.LoginCancelledError.numericError,                                                          // 36
+               "No matching login attempt found") };                                                               // 37
+  }                                                                                                                // 38
+                                                                                                                   // 39
+  if (result instanceof Error)                                                                                     // 40
+    // We tried to login, but there was a fatal error. Report it back                                              // 41
+    // to the user.                                                                                                // 42
+    throw result;                                                                                                  // 43
+  else                                                                                                             // 44
+    return Accounts.updateOrCreateUserFromExternalService(result.serviceName, result.serviceData, result.options); // 45
+});                                                                                                                // 46
+                                                                                                                   // 47
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);

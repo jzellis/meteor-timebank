@@ -1,3 +1,131 @@
-(function(){Template.__define__("stats",Package.handlebars.Handlebars.json_ast_to_func(["<style>/*\n\n\t#usageChart{\n\t\tbackground: #66F;\n\t}\n\t#usageChart rect{\n\t\tfill: #33F;\n\t}\n\n\t\t#usageChart text{\n\t\tfill: white;\n\t\ttext-anchor: end;\n\t}*/\n\t</style>\n\t<div class='container stats'>\n<!-- \t\t<div class='col-md-12'>\n\t\t\t<div class='panel panel-default'>\n\t\t\t<h2 class='panel-heading'>Usage</h2>\n\t\t\t<div class='panel-body'>\n\t\t\t<div id='chartWrapper'>\n\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t</div> -->\n\t\t<div class='col-md-12'>\n\t\t\t<div class='panel panel-default'>\n\t\t\t<h2 class='panel-heading'>Leaderboard</h2>\n\t\t\t<div class='panel-body'>\n\t\t\t\t<div class='col-md-4'>\n\t\t\t\t\t<h3>Most Sent</h3>\n\t\t\t\t\t<table class='table table-striped'>\n\t\t\t\t\t\t<thead>\n\t\t\t\t\t\t\t<tr><th>#</th><th colspan='2'>User</th><th>Amount (",["{",[[0,"getOption"],"currencyAbbr"]],")</th></tr>\n\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t",["#",[[0,"each"],[0,"rankings","sent"]],["\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<tr><td class='col-md-1'>",["{",[[0,"num"]]],"</td>",["#",[[0,"with"],[0,"getUserById"],[0,"id"]],["<td class='col-md-1'><a href='/users/",["{",[[0,"username"]]],"'><img src='",["{",[[0,"profile","picture"]]],"' class='avatar'></a></td><td><a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]],"</td><td>",["{",[[0,"amount"]]],"</td></tr>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t"]],"\n\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</div>\n\t\t\t\t<div class='col-md-4'>\n\t\t\t\t\t<h3>Most Received</h3>\n\t\t\t\t\t<table class='table table-striped'>\n\t\t\t\t\t\t<thead>\n\t\t\t\t\t\t\t<tr><th>#</th><th colspan='2'>User</th><th>Amount (",["{",[[0,"getOption"],"currencyAbbr"]],")</th></tr>\n\n\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t",["#",[[0,"each"],[0,"rankings","received"]],["\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<tr><td class='col-md-1'>",["{",[[0,"num"]]],"</td>",["#",[[0,"with"],[0,"getUserById"],[0,"id"]],["<td class='col-md-1'><a href='/users/",["{",[[0,"username"]]],"'><img src='",["{",[[0,"profile","picture"]]],"' class='avatar'></a></td><td><a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]],"</td><td>",["{",[[0,"amount"]]],"</td></tr>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t"]],"\n\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</div>\n\t\t\t\t<div class='col-md-4'>\n\t\t\t\t\t<h3>Total Transactions</h3>\n\t\t\t\t\t<table class='table table-striped'>\n\t\t\t\t\t\t<thead>\n\t\t\t\t\t\t\t<tr><th>#</th><th colspan='2'>User</th><th># Transactions</th></tr>\n\n\t\t\t\t\t\t</thead>\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t",["#",[[0,"each"],[0,"rankings","total"]],["\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t<tr><td class='col-md-1'>",["{",[[0,"num"]]],"</td>",["#",[[0,"with"],[0,"getUserById"],[0,"id"]],["<td class='col-md-1'><a href='/users/",["{",[[0,"username"]]],"'><img src='",["{",[[0,"profile","picture"]]],"' class='avatar'></a></td><td><a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]],"</td><td>",["{",[[0,"amount"]]],"</td></tr>\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t"]],"\n\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t</div>\n\t</div>"]));
+(function(){
+Template.__define__("stats", (function() {
+  var self = this;
+  var template = this;
+  return [ HTML.STYLE("/*\n\n	#usageChart{\n		background: #66F;\n	}\n	#usageChart rect{\n		fill: #33F;\n	}\n\n		#usageChart text{\n		fill: white;\n		text-anchor: end;\n	}*/\n	"), "\n	", HTML.DIV({
+    "class": "container stats"
+  }, HTML.Raw("\n<!-- 		<div class='col-md-12'>\n			<div class='panel panel-default'>\n			<h2 class='panel-heading'>Usage</h2>\n			<div class='panel-body'>\n			<div id='chartWrapper'>\n			</div>\n			</div>\n		</div>\n		</div> -->\n		"), HTML.DIV({
+    "class": "col-md-12"
+  }, "\n			", HTML.DIV({
+    "class": "panel panel-default"
+  }, HTML.Raw('\n			<h2 class="panel-heading">Leaderboard</h2>\n			'), HTML.DIV({
+    "class": "panel-body"
+  }, "\n				", HTML.DIV({
+    "class": "col-md-4"
+  }, HTML.Raw("\n					<h3>Most Sent</h3>\n					"), HTML.TABLE({
+    "class": "table table-striped"
+  }, "\n						", HTML.THEAD("\n							", HTML.TR(HTML.Raw('<th>#</th><th colspan="2">User</th>'), HTML.TH("Amount (", function() {
+    return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+  }, ")")), "\n						"), "\n						", HTML.TBODY("\n						", UI.Each(function() {
+    return Spacebars.call(Spacebars.dot(self.lookup("rankings"), "sent"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n							\n							", HTML.TR("\n								", HTML.TD({
+      "class": "col-md-1"
+    }, function() {
+      return Spacebars.mustache(self.lookup("num"));
+    }), "\n								", Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("id"));
+    }, UI.block(function() {
+      var self = this;
+      return [ "\n									", HTML.TD({
+        "class": "col-md-1"
+      }, HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, HTML.IMG({
+        src: function() {
+          return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "picture"));
+        },
+        "class": "avatar"
+      }))), "\n									", HTML.TD(HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      })) ];
+    })), "\n									", HTML.TD(function() {
+      return Spacebars.mustache(self.lookup("amount"));
+    }), "\n								"), "\n							\n						" ];
+  })), "\n					"), "\n					"), "\n				"), "\n				", HTML.DIV({
+    "class": "col-md-4"
+  }, HTML.Raw("\n					<h3>Most Received</h3>\n					"), HTML.TABLE({
+    "class": "table table-striped"
+  }, "\n						", HTML.THEAD("\n							", HTML.TR(HTML.Raw('<th>#</th><th colspan="2">User</th>'), HTML.TH("Amount (", function() {
+    return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+  }, ")")), "\n\n						"), "\n						", HTML.TBODY("\n						", UI.Each(function() {
+    return Spacebars.call(Spacebars.dot(self.lookup("rankings"), "received"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n							\n							", HTML.TR(HTML.TD({
+      "class": "col-md-1"
+    }, function() {
+      return Spacebars.mustache(self.lookup("num"));
+    }), Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("id"));
+    }, UI.block(function() {
+      var self = this;
+      return [ HTML.TD({
+        "class": "col-md-1"
+      }, HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, HTML.IMG({
+        src: function() {
+          return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "picture"));
+        },
+        "class": "avatar"
+      }))), HTML.TD(HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      })) ];
+    })), HTML.TD(function() {
+      return Spacebars.mustache(self.lookup("amount"));
+    })), "\n							\n						" ];
+  })), "\n					"), "\n					"), "\n				"), "\n				", HTML.DIV({
+    "class": "col-md-4"
+  }, HTML.Raw("\n					<h3>Total Transactions</h3>\n					"), HTML.TABLE({
+    "class": "table table-striped"
+  }, HTML.Raw('\n						<thead>\n							<tr><th>#</th><th colspan="2">User</th><th># Transactions</th></tr>\n\n						</thead>\n						'), HTML.TBODY("\n						", UI.Each(function() {
+    return Spacebars.call(Spacebars.dot(self.lookup("rankings"), "total"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n							\n							", HTML.TR(HTML.TD({
+      "class": "col-md-1"
+    }, function() {
+      return Spacebars.mustache(self.lookup("num"));
+    }), Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("id"));
+    }, UI.block(function() {
+      var self = this;
+      return [ HTML.TD({
+        "class": "col-md-1"
+      }, HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, HTML.IMG({
+        src: function() {
+          return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "picture"));
+        },
+        "class": "avatar"
+      }))), HTML.TD(HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      })) ];
+    })), HTML.TD(function() {
+      return Spacebars.mustache(self.lookup("amount"));
+    })), "\n							\n						" ];
+  })), "\n					"), "\n					"), "\n				"), "\n			"), "\n		"), "\n		"), "\n	") ];
+}));
 
 })();

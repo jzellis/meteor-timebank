@@ -1,3 +1,8 @@
-(function(){Template.__define__("tags",Package.handlebars.Handlebars.json_ast_to_func(["Tags"]));
+(function(){
+Template.__define__("tags", (function() {
+  var self = this;
+  var template = this;
+  return "Tags";
+}));
 
 })();

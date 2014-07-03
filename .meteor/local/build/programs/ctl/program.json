@@ -44,6 +44,21 @@
       "sourceMapRoot": "packages"
     },
     {
+      "path": "packages/retry.js",
+      "sourceMap": "packages/retry.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/callback-hook.js",
+      "sourceMap": "packages/callback-hook.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/id-map.js",
+      "sourceMap": "packages/id-map.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
       "path": "packages/ordered-dict.js",
       "sourceMap": "packages/ordered-dict.js.map",
       "sourceMapRoot": "packages"
@@ -72,6 +87,11 @@
     {
       "path": "packages/application-configuration.js",
       "sourceMap": "packages/application-configuration.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/binary-heap.js",
+      "sourceMap": "packages/binary-heap.js.map",
       "sourceMapRoot": "packages"
     },
     {

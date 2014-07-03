@@ -19,7 +19,6 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
-var Handlebars = Package.handlebars.Handlebars;
 
 /* Package-scope variables */
 var override;
@@ -249,23 +248,27 @@ var override;
 //                                                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                                                                                                                    //
-if (typeof Handlebars !== 'undefined') {                                                                           // 1
-  Handlebars.registerHelper("timeago", function(date, options) {                                                   // 2
-    override = options.hash['default']                                                                             // 3
-    var dateObj;                                                                                                   // 4
-    if (date) {                                                                                                    // 5
-      dateObj = new Date(date);                                                                                    // 6
-      return $.timeago(dateObj).replace(/\ /g, "\u00a0");                                                          // 7
-    }                                                                                                              // 8
-    if (override == undefined) {                                                                                   // 9
-      return "some time ago";                                                                                      // 10
-    } else {                                                                                                       // 11
-      return override;                                                                                             // 12
-    }                                                                                                              // 13
-  });                                                                                                              // 14
-}                                                                                                                  // 15
-                                                                                                                   // 16
-                                                                                                                   // 17
+if (typeof Package.ui != 'undefined') {                                                                            // 1
+  var Handlebars = Package.ui.Handlebars                                                                           // 2
+};                                                                                                                 // 3
+                                                                                                                   // 4
+if (typeof Handlebars !== 'undefined') {                                                                           // 5
+  Handlebars.registerHelper("timeago", function(date, options) {                                                   // 6
+    override = options.hash['default']                                                                             // 7
+    var dateObj;                                                                                                   // 8
+    if (date) {                                                                                                    // 9
+      dateObj = new Date(date);                                                                                    // 10
+      return $.timeago(dateObj).replace(/\ /g, "\u00a0");                                                          // 11
+    }                                                                                                              // 12
+    if (override == undefined) {                                                                                   // 13
+      return "some time ago";                                                                                      // 14
+    } else {                                                                                                       // 15
+      return override;                                                                                             // 16
+    }                                                                                                              // 17
+  });                                                                                                              // 18
+}                                                                                                                  // 19
+                                                                                                                   // 20
+                                                                                                                   // 21
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -277,4 +280,4 @@ Package.timeago = {};
 
 })();
 
-//# sourceMappingURL=cf42f182f31f9d9ab42b4b905b4a1319129a0f96.map
+//# sourceMappingURL=b7867636ccc76a7c528755dbd7bdb6aaa7142801.map

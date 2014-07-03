@@ -2,6 +2,7 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
+var OAuth = Package.oauth.OAuth;
 var Oauth = Package.oauth.Oauth;
 var HTTP = Package.http.HTTP;
 var _ = Package.underscore._;
@@ -23,7 +24,7 @@ Facebook = {};                                                                  
 var querystring = Npm.require('querystring');                                                     // 3
                                                                                                   // 4
                                                                                                   // 5
-Oauth.registerService('facebook', 2, null, function(query) {                                      // 6
+OAuth.registerService('facebook', 2, null, function(query) {                                      // 6
                                                                                                   // 7
   var response = getTokenResponse(query);                                                         // 8
   var accessToken = response.accessToken;                                                         // 9
@@ -64,7 +65,7 @@ var isJSON = function (str) {                                                   
 var getTokenResponse = function (query) {                                                         // 44
   var config = ServiceConfiguration.configurations.findOne({service: 'facebook'});                // 45
   if (!config)                                                                                    // 46
-    throw new ServiceConfiguration.ConfigError("Service not configured");                         // 47
+    throw new ServiceConfiguration.ConfigError();                                                 // 47
                                                                                                   // 48
   var responseContent;                                                                            // 49
   try {                                                                                           // 50
@@ -74,7 +75,7 @@ var getTokenResponse = function (query) {                                       
         params: {                                                                                 // 54
           client_id: config.appId,                                                                // 55
           redirect_uri: Meteor.absoluteUrl("_oauth/facebook?close"),                              // 56
-          client_secret: config.secret,                                                           // 57
+          client_secret: OAuth.openSecret(config.secret),                                         // 57
           code: query.code                                                                        // 58
         }                                                                                         // 59
       }).content;                                                                                 // 60
@@ -115,8 +116,8 @@ var getIdentity = function (accessToken) {                                      
   }                                                                                               // 95
 };                                                                                                // 96
                                                                                                   // 97
-Facebook.retrieveCredential = function(credentialToken) {                                         // 98
-  return Oauth.retrieveCredential(credentialToken);                                               // 99
+Facebook.retrieveCredential = function(credentialToken, credentialSecret) {                       // 98
+  return OAuth.retrieveCredential(credentialToken, credentialSecret);                             // 99
 };                                                                                                // 100
                                                                                                   // 101
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -19,85 +19,74 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
-var $ = Package.jquery.$;
-var jQuery = Package.jquery.jQuery;
+var Random = Package.random.Random;
 
 (function () {
 
-////////////////////////////////////////////////////////////////////////
-//                                                                    //
-// packages/localstorage/localstorage.js                              //
-//                                                                    //
-////////////////////////////////////////////////////////////////////////
-                                                                      //
-// This is not an ideal name, but we can change it later.             // 1
-                                                                      // 2
-if (window.localStorage) {                                            // 3
-  Meteor._localStorage = {                                            // 4
-    getItem: function (key) {                                         // 5
-      return window.localStorage.getItem(key);                        // 6
-    },                                                                // 7
-    setItem: function (key, value) {                                  // 8
-      window.localStorage.setItem(key, value);                        // 9
-    },                                                                // 10
-    removeItem: function (key) {                                      // 11
-      window.localStorage.removeItem(key);                            // 12
-    }                                                                 // 13
-  };                                                                  // 14
-}                                                                     // 15
-// XXX eliminate dependency on jQuery, detect browsers ourselves      // 16
-else if ($.browser.msie) { // If we are on IE, which support userData // 17
-  var userdata = document.createElement('span'); // could be anything // 18
-  userdata.style.behavior = 'url("#default#userData")';               // 19
-  userdata.id = 'localstorage-helper';                                // 20
-  userdata.style.display = 'none';                                    // 21
-  document.getElementsByTagName("head")[0].appendChild(userdata);     // 22
-                                                                      // 23
-  var userdataKey = 'localStorage';                                   // 24
-  userdata.load(userdataKey);                                         // 25
-                                                                      // 26
-  Meteor._localStorage = {                                            // 27
-    setItem: function (key, val) {                                    // 28
-      userdata.setAttribute(key, val);                                // 29
-      userdata.save(userdataKey);                                     // 30
-    },                                                                // 31
-                                                                      // 32
-    removeItem: function (key) {                                      // 33
-      userdata.removeAttribute(key);                                  // 34
-      userdata.save(userdataKey);                                     // 35
-    },                                                                // 36
-                                                                      // 37
-    getItem: function (key) {                                         // 38
-      userdata.load(userdataKey);                                     // 39
-      return userdata.getAttribute(key);                              // 40
-    }                                                                 // 41
-  };                                                                  // 42
-} else {                                                              // 43
-  Meteor._debug(                                                      // 44
-    "You are running a browser with no localStorage or userData "     // 45
-      + "support. Logging in from one tab will not cause another "    // 46
-      + "tab to be logged in.");                                      // 47
-                                                                      // 48
-  Meteor._localStorage = {                                            // 49
-    _data: {},                                                        // 50
-                                                                      // 51
-    setItem: function (key, val) {                                    // 52
-      this._data[key] = val;                                          // 53
-    },                                                                // 54
-    removeItem: function (key) {                                      // 55
-      delete this._data[key];                                         // 56
-    },                                                                // 57
-    getItem: function (key) {                                         // 58
-      var value = this._data[key];                                    // 59
-      if (value === undefined)                                        // 60
-        return null;                                                  // 61
-      else                                                            // 62
-        return value;                                                 // 63
-    }                                                                 // 64
-  };                                                                  // 65
-}                                                                     // 66
-                                                                      // 67
-////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//                                                                                  //
+// packages/localstorage/localstorage.js                                            //
+//                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////
+                                                                                    //
+// Meteor._localStorage is not an ideal name, but we can change it later.           // 1
+                                                                                    // 2
+// Let's test to make sure that localStorage actually works. For example, in        // 3
+// Safari with private browsing on, window.localStorage exists but actually         // 4
+// trying to use it throws.                                                         // 5
+// Accessing window.localStorage can also immediately throw an error in IE (#1291). // 6
+                                                                                    // 7
+var key = '_localstorage_test_' + Random.id();                                      // 8
+var retrieved;                                                                      // 9
+try {                                                                               // 10
+  if (window.localStorage) {                                                        // 11
+    window.localStorage.setItem(key, key);                                          // 12
+    retrieved = window.localStorage.getItem(key);                                   // 13
+    window.localStorage.removeItem(key);                                            // 14
+  }                                                                                 // 15
+} catch (e) {                                                                       // 16
+  // ... ignore                                                                     // 17
+}                                                                                   // 18
+if (key === retrieved) {                                                            // 19
+  Meteor._localStorage = {                                                          // 20
+    getItem: function (key) {                                                       // 21
+      return window.localStorage.getItem(key);                                      // 22
+    },                                                                              // 23
+    setItem: function (key, value) {                                                // 24
+      window.localStorage.setItem(key, value);                                      // 25
+    },                                                                              // 26
+    removeItem: function (key) {                                                    // 27
+      window.localStorage.removeItem(key);                                          // 28
+    }                                                                               // 29
+  };                                                                                // 30
+}                                                                                   // 31
+                                                                                    // 32
+if (!Meteor._localStorage) {                                                        // 33
+  Meteor._debug(                                                                    // 34
+    "You are running a browser with no localStorage or userData "                   // 35
+      + "support. Logging in from one tab will not cause another "                  // 36
+      + "tab to be logged in.");                                                    // 37
+                                                                                    // 38
+  Meteor._localStorage = {                                                          // 39
+    _data: {},                                                                      // 40
+                                                                                    // 41
+    setItem: function (key, val) {                                                  // 42
+      this._data[key] = val;                                                        // 43
+    },                                                                              // 44
+    removeItem: function (key) {                                                    // 45
+      delete this._data[key];                                                       // 46
+    },                                                                              // 47
+    getItem: function (key) {                                                       // 48
+      var value = this._data[key];                                                  // 49
+      if (value === undefined)                                                      // 50
+        return null;                                                                // 51
+      else                                                                          // 52
+        return value;                                                               // 53
+    }                                                                               // 54
+  };                                                                                // 55
+}                                                                                   // 56
+                                                                                    // 57
+//////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);
 
@@ -108,4 +97,4 @@ Package.localstorage = {};
 
 })();
 
-//# sourceMappingURL=66e8e87ffe90dfe2f3f14d2f450a49ac7a33c5b8.map
+//# sourceMappingURL=9ec7d68858d2e33aa807e5cfd5e12bb4d62fe00c.map

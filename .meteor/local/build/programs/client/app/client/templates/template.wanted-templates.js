@@ -1,4 +1,162 @@
-(function(){Template.__define__("wantedSingle",Package.handlebars.Handlebars.json_ast_to_func(["<div class='wanted wanted-md'>\n\t\t\t<div class='row'>\n\t\t\t\t\t\t\t<div class='col-md-2'>",["#",[[0,"with"],[0,"getUserById"],[0,"userId"]],["<a href='/users/",["{",[[0,"username"]]],"'><img src='",["{",[[0,"profile","picture"]]],"' class='avatar'></a>"]],"</div>\n\t\t\t<div class='col-md-10'>\n\t\t\t\t\t\t\t\t<div class='title'><a href='/wanted/",["{",[[0,"_id"]]],"'>",["{",[[0,"title"]]],"</a></div>\n\t\t\t\t<div class='small'>Posted by ",["#",[[0,"with"],[0,"getUserById"],[0,"userId"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]],"</div>\n\t\t\t\t<div class='small text-muted'>",["#",[[0,"if"],[0,"location"]],["<a class='text-muted' href='http://maps.google.com?q=",["{",[[0,"location"]]],"' target='_new'><i class=\"fa fa-map-marker\"></i> ",["{",[[0,"location"]]],"</a> - "]],["{",[[0,"formatDate"],[0,"timestamp"]]],"</div>\n\t\t\t\t<div class='col-md-12'>",["!",[[0,"trimWords"],[0,"body"],200,"..."]],"</div>\n\t\t\t\t\t\t\t\t<div class='text-right small'><a href='/wanted/",["{",[[0,"_id"]]],"'>",["{",[[0,"numReplies"]]]," replies</a></div>\n\n\n\t\t\t</div>\n\t\t</div>\n\t</div>"]));
-Template.__define__("wantedSingleSmall",Package.handlebars.Handlebars.json_ast_to_func(["<div class='wanted wanted-sm'>\n\t\t\t<div class='row'>\n\t\t\t\t\t\t\t<div class='col-md-2'>",["#",[[0,"with"],[0,"getUserById"],[0,"userId"]],["<a href='/users/",["{",[[0,"username"]]],"'><img src='",["{",[[0,"profile","picture"]]],"' class='avatar'></a>"]],"</div>\n\t\t\t<div class='col-md-10'>\n\t\t\t\t\t\t\t\t<div class='title'><a href='/wanted/",["{",[[0,"_id"]]],"'>",["{",[[0,"title"]]],"</a></div>\n\t\t\t\t<div class='small'>Posted by ",["#",[[0,"with"],[0,"getUserById"],[0,"userId"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]],"</div>\n\t\t\t\t<div class='small text-muted'>",["#",[[0,"if"],[0,"location"]],["<a class='text-muted' href='http://maps.google.com?q=",["{",[[0,"location"]]],"' target='_new'><i class=\"fa fa-map-marker\"></i> ",["{",[[0,"location"]]],"</a> - "]],["{",[[0,"formatDate"],[0,"timestamp"]]],"</div>\n\t\t\t\t<div class='col-md-12 small'>",["!",[[0,"trimWords"],[0,"body"],32,"..."]],"</div>\n\t\t\t\t\t\t\t\t<div class='text-right small'><a href='/wanted/",["{",[[0,"_id"]]],"'>",["{",[[0,"numReplies"]]]," replies</a></div>\n\n\n\t\t\t</div>\n\t\t</div>\n\t</div>"]));
+(function(){
+Template.__define__("wantedSingle", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "wanted wanted-md"
+  }, "\n			", HTML.DIV({
+    "class": "row"
+  }, "\n							", HTML.DIV({
+    "class": "col-md-2"
+  }, Spacebars.With(function() {
+    return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("userId"));
+  }, UI.block(function() {
+    var self = this;
+    return HTML.A({
+      href: [ "/users/", function() {
+        return Spacebars.mustache(self.lookup("username"));
+      } ]
+    }, HTML.IMG({
+      src: function() {
+        return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "picture"));
+      },
+      "class": "avatar"
+    }));
+  }))), "\n			", HTML.DIV({
+    "class": "col-md-10"
+  }, "\n								", HTML.DIV({
+    "class": "title"
+  }, HTML.A({
+    href: [ "/wanted/", function() {
+      return Spacebars.mustache(self.lookup("_id"));
+    } ]
+  }, function() {
+    return Spacebars.mustache(self.lookup("title"));
+  })), "\n				", HTML.DIV({
+    "class": "small"
+  }, "Posted by ", Spacebars.With(function() {
+    return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("userId"));
+  }, UI.block(function() {
+    var self = this;
+    return HTML.A({
+      href: [ "/users/", function() {
+        return Spacebars.mustache(self.lookup("username"));
+      } ]
+    }, function() {
+      return Spacebars.mustache(self.lookup("username"));
+    });
+  }))), "\n				", HTML.DIV({
+    "class": "small text-muted"
+  }, UI.If(function() {
+    return Spacebars.call(self.lookup("location"));
+  }, UI.block(function() {
+    var self = this;
+    return [ HTML.A({
+      "class": "text-muted",
+      href: [ "http://maps.google.com?q=", function() {
+        return Spacebars.mustache(self.lookup("location"));
+      } ],
+      target: "_new"
+    }, HTML.I({
+      "class": "fa fa-map-marker"
+    }), " ", function() {
+      return Spacebars.mustache(self.lookup("location"));
+    }), " - " ];
+  })), function() {
+    return Spacebars.mustache(self.lookup("formatDate"), self.lookup("timestamp"));
+  }), "\n				", HTML.DIV({
+    "class": "col-md-12"
+  }, function() {
+    return Spacebars.makeRaw(Spacebars.mustache(self.lookup("trimWords"), self.lookup("body"), 200, "..."));
+  }), "\n								", HTML.DIV({
+    "class": "text-right small"
+  }, HTML.A({
+    href: [ "/wanted/", function() {
+      return Spacebars.mustache(self.lookup("_id"));
+    } ]
+  }, function() {
+    return Spacebars.mustache(self.lookup("numReplies"));
+  }, " replies")), "\n\n\n			"), "\n		"), "\n	");
+}));
+
+Template.__define__("wantedSingleSmall", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "wanted wanted-sm"
+  }, "\n			", HTML.DIV({
+    "class": "row"
+  }, "\n							", HTML.DIV({
+    "class": "col-md-2"
+  }, Spacebars.With(function() {
+    return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("userId"));
+  }, UI.block(function() {
+    var self = this;
+    return HTML.A({
+      href: [ "/users/", function() {
+        return Spacebars.mustache(self.lookup("username"));
+      } ]
+    }, HTML.IMG({
+      src: function() {
+        return Spacebars.mustache(Spacebars.dot(self.lookup("profile"), "picture"));
+      },
+      "class": "avatar"
+    }));
+  }))), "\n			", HTML.DIV({
+    "class": "col-md-10"
+  }, "\n								", HTML.DIV({
+    "class": "title"
+  }, HTML.A({
+    href: [ "/wanted/", function() {
+      return Spacebars.mustache(self.lookup("_id"));
+    } ]
+  }, function() {
+    return Spacebars.mustache(self.lookup("title"));
+  })), "\n				", HTML.DIV({
+    "class": "small"
+  }, "Posted by ", Spacebars.With(function() {
+    return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("userId"));
+  }, UI.block(function() {
+    var self = this;
+    return HTML.A({
+      href: [ "/users/", function() {
+        return Spacebars.mustache(self.lookup("username"));
+      } ]
+    }, function() {
+      return Spacebars.mustache(self.lookup("username"));
+    });
+  }))), "\n				", HTML.DIV({
+    "class": "small text-muted"
+  }, UI.If(function() {
+    return Spacebars.call(self.lookup("location"));
+  }, UI.block(function() {
+    var self = this;
+    return [ HTML.A({
+      "class": "text-muted",
+      href: [ "http://maps.google.com?q=", function() {
+        return Spacebars.mustache(self.lookup("location"));
+      } ],
+      target: "_new"
+    }, HTML.I({
+      "class": "fa fa-map-marker"
+    }), " ", function() {
+      return Spacebars.mustache(self.lookup("location"));
+    }), " - " ];
+  })), function() {
+    return Spacebars.mustache(self.lookup("formatDate"), self.lookup("timestamp"));
+  }), "\n				", HTML.DIV({
+    "class": "col-md-12 small"
+  }, function() {
+    return Spacebars.makeRaw(Spacebars.mustache(self.lookup("trimWords"), self.lookup("body"), 32, "..."));
+  }), "\n								", HTML.DIV({
+    "class": "text-right small"
+  }, HTML.A({
+    href: [ "/wanted/", function() {
+      return Spacebars.mustache(self.lookup("_id"));
+    } ]
+  }, function() {
+    return Spacebars.mustache(self.lookup("numReplies"));
+  }, " replies")), "\n\n\n			"), "\n		"), "\n	");
+}));
 
 })();

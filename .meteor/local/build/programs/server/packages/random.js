@@ -103,111 +103,137 @@ var Alea = function () {                                                        
 };                                                                                  // 86
                                                                                     // 87
 var UNMISTAKABLE_CHARS = "23456789ABCDEFGHJKLMNPQRSTWXYZabcdefghijkmnopqrstuvwxyz"; // 88
-                                                                                    // 89
-// If seeds are provided, then the alea PRNG will be used, since cryptographic      // 90
-// PRNGs (Node crypto and window.crypto.getRandomValues) don't allow us to          // 91
-// specify seeds. The caller is responsible for making sure to provide a seed       // 92
-// for alea if a csprng is not available.                                           // 93
-var RandomGenerator = function (seedArray) {                                        // 94
-  var self = this;                                                                  // 95
-  if (seedArray !== undefined)                                                      // 96
-    self.alea = Alea.apply(null, seedArray);                                        // 97
-};                                                                                  // 98
-                                                                                    // 99
-RandomGenerator.prototype.fraction = function () {                                  // 100
-  var self = this;                                                                  // 101
-  if (self.alea) {                                                                  // 102
-    return self.alea();                                                             // 103
-  } else if (nodeCrypto) {                                                          // 104
-    var numerator = parseInt(self.hexString(8), 16);                                // 105
-    return numerator * 2.3283064365386963e-10; // 2^-32                             // 106
-  } else if (typeof window !== "undefined" && window.crypto &&                      // 107
-             window.crypto.getRandomValues) {                                       // 108
-    var array = new Uint32Array(1);                                                 // 109
-    window.crypto.getRandomValues(array);                                           // 110
-    return array[0] * 2.3283064365386963e-10; // 2^-32                              // 111
-  }                                                                                 // 112
-};                                                                                  // 113
-                                                                                    // 114
-RandomGenerator.prototype.hexString = function (digits) {                           // 115
-  var self = this;                                                                  // 116
-  if (nodeCrypto && ! self.alea) {                                                  // 117
-    var numBytes = Math.ceil(digits / 2);                                           // 118
-    var bytes;                                                                      // 119
-    // Try to get cryptographically strong randomness. Fall back to                 // 120
-    // non-cryptographically strong if not available.                               // 121
-    try {                                                                           // 122
-      bytes = nodeCrypto.randomBytes(numBytes);                                     // 123
-    } catch (e) {                                                                   // 124
-      // XXX should re-throw any error except insufficient entropy                  // 125
-      bytes = nodeCrypto.pseudoRandomBytes(numBytes);                               // 126
-    }                                                                               // 127
-    var result = bytes.toString("hex");                                             // 128
-    // If the number of digits is odd, we'll have generated an extra 4 bits         // 129
-    // of randomness, so we need to trim the last digit.                            // 130
-    return result.substring(0, digits);                                             // 131
-  } else {                                                                          // 132
-    var hexDigits = [];                                                             // 133
-    for (var i = 0; i < digits; ++i) {                                              // 134
-      hexDigits.push(self.choice("0123456789abcdef"));                              // 135
-    }                                                                               // 136
-    return hexDigits.join('');                                                      // 137
-  }                                                                                 // 138
-};                                                                                  // 139
-RandomGenerator.prototype.id = function () {                                        // 140
-  var digits = [];                                                                  // 141
-  var self = this;                                                                  // 142
-  // Length of 17 preserves around 96 bits of entropy, which is the                 // 143
-  // amount of state in the Alea PRNG.                                              // 144
-  for (var i = 0; i < 17; i++) {                                                    // 145
-    digits[i] = self.choice(UNMISTAKABLE_CHARS);                                    // 146
-  }                                                                                 // 147
-  return digits.join("");                                                           // 148
-};                                                                                  // 149
-                                                                                    // 150
-RandomGenerator.prototype.choice = function (arrayOrString) {                       // 151
-  var index = Math.floor(this.fraction() * arrayOrString.length);                   // 152
-  if (typeof arrayOrString === "string")                                            // 153
-    return arrayOrString.substr(index, 1);                                          // 154
-  else                                                                              // 155
-    return arrayOrString[index];                                                    // 156
-};                                                                                  // 157
-                                                                                    // 158
-// instantiate RNG.  Heuristically collect entropy from various sources when a      // 159
-// cryptographic PRNG isn't available.                                              // 160
+var BASE64_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" +         // 89
+  "0123456789-_";                                                                   // 90
+                                                                                    // 91
+// If seeds are provided, then the alea PRNG will be used, since cryptographic      // 92
+// PRNGs (Node crypto and window.crypto.getRandomValues) don't allow us to          // 93
+// specify seeds. The caller is responsible for making sure to provide a seed       // 94
+// for alea if a csprng is not available.                                           // 95
+var RandomGenerator = function (seedArray) {                                        // 96
+  var self = this;                                                                  // 97
+  if (seedArray !== undefined)                                                      // 98
+    self.alea = Alea.apply(null, seedArray);                                        // 99
+};                                                                                  // 100
+                                                                                    // 101
+RandomGenerator.prototype.fraction = function () {                                  // 102
+  var self = this;                                                                  // 103
+  if (self.alea) {                                                                  // 104
+    return self.alea();                                                             // 105
+  } else if (nodeCrypto) {                                                          // 106
+    var numerator = parseInt(self.hexString(8), 16);                                // 107
+    return numerator * 2.3283064365386963e-10; // 2^-32                             // 108
+  } else if (typeof window !== "undefined" && window.crypto &&                      // 109
+             window.crypto.getRandomValues) {                                       // 110
+    var array = new Uint32Array(1);                                                 // 111
+    window.crypto.getRandomValues(array);                                           // 112
+    return array[0] * 2.3283064365386963e-10; // 2^-32                              // 113
+  } else {                                                                          // 114
+    throw new Error('No random generator available');                               // 115
+  }                                                                                 // 116
+};                                                                                  // 117
+                                                                                    // 118
+RandomGenerator.prototype.hexString = function (digits) {                           // 119
+  var self = this;                                                                  // 120
+  if (nodeCrypto && ! self.alea) {                                                  // 121
+    var numBytes = Math.ceil(digits / 2);                                           // 122
+    var bytes;                                                                      // 123
+    // Try to get cryptographically strong randomness. Fall back to                 // 124
+    // non-cryptographically strong if not available.                               // 125
+    try {                                                                           // 126
+      bytes = nodeCrypto.randomBytes(numBytes);                                     // 127
+    } catch (e) {                                                                   // 128
+      // XXX should re-throw any error except insufficient entropy                  // 129
+      bytes = nodeCrypto.pseudoRandomBytes(numBytes);                               // 130
+    }                                                                               // 131
+    var result = bytes.toString("hex");                                             // 132
+    // If the number of digits is odd, we'll have generated an extra 4 bits         // 133
+    // of randomness, so we need to trim the last digit.                            // 134
+    return result.substring(0, digits);                                             // 135
+  } else {                                                                          // 136
+    var hexDigits = [];                                                             // 137
+    for (var i = 0; i < digits; ++i) {                                              // 138
+      hexDigits.push(self.choice("0123456789abcdef"));                              // 139
+    }                                                                               // 140
+    return hexDigits.join('');                                                      // 141
+  }                                                                                 // 142
+};                                                                                  // 143
+                                                                                    // 144
+RandomGenerator.prototype._randomString = function (charsCount,                     // 145
+                                                    alphabet) {                     // 146
+  var self = this;                                                                  // 147
+  var digits = [];                                                                  // 148
+  for (var i = 0; i < charsCount; i++) {                                            // 149
+    digits[i] = self.choice(alphabet);                                              // 150
+  }                                                                                 // 151
+  return digits.join("");                                                           // 152
+};                                                                                  // 153
+                                                                                    // 154
+RandomGenerator.prototype.id = function (charsCount) {                              // 155
+  var self = this;                                                                  // 156
+  // 17 characters is around 96 bits of entropy, which is the amount of             // 157
+  // state in the Alea PRNG.                                                        // 158
+  if (charsCount === undefined)                                                     // 159
+    charsCount = 17;                                                                // 160
                                                                                     // 161
-// client sources                                                                   // 162
-var height = (typeof window !== 'undefined' && window.innerHeight) ||               // 163
-      (typeof document !== 'undefined'                                              // 164
-       && document.documentElement                                                  // 165
-       && document.documentElement.clientHeight) ||                                 // 166
-      (typeof document !== 'undefined'                                              // 167
-       && document.body                                                             // 168
-       && document.body.clientHeight) ||                                            // 169
-      1;                                                                            // 170
-                                                                                    // 171
-var width = (typeof window !== 'undefined' && window.innerWidth) ||                 // 172
-      (typeof document !== 'undefined'                                              // 173
-       && document.documentElement                                                  // 174
-       && document.documentElement.clientWidth) ||                                  // 175
-      (typeof document !== 'undefined'                                              // 176
-       && document.body                                                             // 177
-       && document.body.clientWidth) ||                                             // 178
-      1;                                                                            // 179
-                                                                                    // 180
-var agent = (typeof navigator !== 'undefined' && navigator.userAgent) || "";        // 181
-                                                                                    // 182
-if (nodeCrypto ||                                                                   // 183
-    (typeof window !== "undefined" &&                                               // 184
-     window.crypto && window.crypto.getRandomValues))                               // 185
-  Random = new RandomGenerator();                                                   // 186
-else                                                                                // 187
-  Random = new RandomGenerator([new Date(), height, width, agent, Math.random()]);  // 188
-                                                                                    // 189
-Random.create = function () {                                                       // 190
-  return new RandomGenerator(arguments);                                            // 191
-};                                                                                  // 192
-                                                                                    // 193
+  return self._randomString(charsCount, UNMISTAKABLE_CHARS);                        // 162
+};                                                                                  // 163
+                                                                                    // 164
+RandomGenerator.prototype.secret = function (charsCount) {                          // 165
+  var self = this;                                                                  // 166
+  // Default to 256 bits of entropy, or 43 characters at 6 bits per                 // 167
+  // character.                                                                     // 168
+  if (charsCount === undefined)                                                     // 169
+    charsCount = 43;                                                                // 170
+  return self._randomString(charsCount, BASE64_CHARS);                              // 171
+};                                                                                  // 172
+                                                                                    // 173
+RandomGenerator.prototype.choice = function (arrayOrString) {                       // 174
+  var index = Math.floor(this.fraction() * arrayOrString.length);                   // 175
+  if (typeof arrayOrString === "string")                                            // 176
+    return arrayOrString.substr(index, 1);                                          // 177
+  else                                                                              // 178
+    return arrayOrString[index];                                                    // 179
+};                                                                                  // 180
+                                                                                    // 181
+// instantiate RNG.  Heuristically collect entropy from various sources when a      // 182
+// cryptographic PRNG isn't available.                                              // 183
+                                                                                    // 184
+// client sources                                                                   // 185
+var height = (typeof window !== 'undefined' && window.innerHeight) ||               // 186
+      (typeof document !== 'undefined'                                              // 187
+       && document.documentElement                                                  // 188
+       && document.documentElement.clientHeight) ||                                 // 189
+      (typeof document !== 'undefined'                                              // 190
+       && document.body                                                             // 191
+       && document.body.clientHeight) ||                                            // 192
+      1;                                                                            // 193
+                                                                                    // 194
+var width = (typeof window !== 'undefined' && window.innerWidth) ||                 // 195
+      (typeof document !== 'undefined'                                              // 196
+       && document.documentElement                                                  // 197
+       && document.documentElement.clientWidth) ||                                  // 198
+      (typeof document !== 'undefined'                                              // 199
+       && document.body                                                             // 200
+       && document.body.clientWidth) ||                                             // 201
+      1;                                                                            // 202
+                                                                                    // 203
+var agent = (typeof navigator !== 'undefined' && navigator.userAgent) || "";        // 204
+                                                                                    // 205
+if (nodeCrypto ||                                                                   // 206
+    (typeof window !== "undefined" &&                                               // 207
+     window.crypto && window.crypto.getRandomValues))                               // 208
+  Random = new RandomGenerator();                                                   // 209
+else                                                                                // 210
+  Random = new RandomGenerator([new Date(), height, width, agent, Math.random()]);  // 211
+                                                                                    // 212
+Random.createWithSeeds = function () {                                              // 213
+  if (arguments.length === 0) {                                                     // 214
+    throw new Error('No seeds were provided');                                      // 215
+  }                                                                                 // 216
+  return new RandomGenerator(arguments);                                            // 217
+};                                                                                  // 218
+                                                                                    // 219
 //////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);

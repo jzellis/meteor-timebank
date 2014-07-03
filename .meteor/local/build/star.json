@@ -1,6 +1,6 @@
 {
   "format": "site-archive-pre1",
-  "builtBy": "Meteor 0.7.0.1",
+  "builtBy": "Meteor 0.8.2",
   "programs": [
     {
       "name": "client",
@@ -19,5 +19,5 @@
     }
   ],
   "control": "ctl",
-  "meteorRelease": "0.7.0.1"
+  "meteorRelease": "0.8.2"
 }

@@ -104,1211 +104,1237 @@ exports = {};                                                                   
   // Collection Functions                                                                                // 70
   // --------------------                                                                                // 71
                                                                                                          // 72
-  // The cornerstone, an `each` implementation, aka `forEach`.                                           // 73
-  // Handles objects with the built-in `forEach`, arrays, and raw objects.                               // 74
-  // Delegates to **ECMAScript 5**'s native `forEach` if available.                                      // 75
-  var each = _.each = _.forEach = function(obj, iterator, context) {                                     // 76
-    if (obj == null) return;                                                                             // 77
-    if (nativeForEach && obj.forEach === nativeForEach) {                                                // 78
-      obj.forEach(iterator, context);                                                                    // 79
-    } else if (obj.length === +obj.length) {                                                             // 80
-      for (var i = 0, length = obj.length; i < length; i++) {                                            // 81
-        if (iterator.call(context, obj[i], i, obj) === breaker) return;                                  // 82
-      }                                                                                                  // 83
-    } else {                                                                                             // 84
-      var keys = _.keys(obj);                                                                            // 85
-      for (var i = 0, length = keys.length; i < length; i++) {                                           // 86
-        if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) return;                      // 87
-      }                                                                                                  // 88
-    }                                                                                                    // 89
-  };                                                                                                     // 90
-                                                                                                         // 91
-  // Return the results of applying the iterator to each element.                                        // 92
-  // Delegates to **ECMAScript 5**'s native `map` if available.                                          // 93
-  _.map = _.collect = function(obj, iterator, context) {                                                 // 94
-    var results = [];                                                                                    // 95
-    if (obj == null) return results;                                                                     // 96
-    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);                           // 97
-    each(obj, function(value, index, list) {                                                             // 98
-      results.push(iterator.call(context, value, index, list));                                          // 99
-    });                                                                                                  // 100
-    return results;                                                                                      // 101
-  };                                                                                                     // 102
-                                                                                                         // 103
-  var reduceError = 'Reduce of empty array with no initial value';                                       // 104
-                                                                                                         // 105
-  // **Reduce** builds up a single result from a list of values, aka `inject`,                           // 106
-  // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.                           // 107
-  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {                               // 108
-    var initial = arguments.length > 2;                                                                  // 109
-    if (obj == null) obj = [];                                                                           // 110
-    if (nativeReduce && obj.reduce === nativeReduce) {                                                   // 111
-      if (context) iterator = _.bind(iterator, context);                                                 // 112
-      return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);                                // 113
-    }                                                                                                    // 114
-    each(obj, function(value, index, list) {                                                             // 115
-      if (!initial) {                                                                                    // 116
-        memo = value;                                                                                    // 117
-        initial = true;                                                                                  // 118
-      } else {                                                                                           // 119
-        memo = iterator.call(context, memo, value, index, list);                                         // 120
-      }                                                                                                  // 121
-    });                                                                                                  // 122
-    if (!initial) throw new TypeError(reduceError);                                                      // 123
-    return memo;                                                                                         // 124
-  };                                                                                                     // 125
-                                                                                                         // 126
-  // The right-associative version of reduce, also known as `foldr`.                                     // 127
-  // Delegates to **ECMAScript 5**'s native `reduceRight` if available.                                  // 128
-  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {                                     // 129
-    var initial = arguments.length > 2;                                                                  // 130
-    if (obj == null) obj = [];                                                                           // 131
-    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {                                    // 132
-      if (context) iterator = _.bind(iterator, context);                                                 // 133
-      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);                      // 134
-    }                                                                                                    // 135
-    var length = obj.length;                                                                             // 136
-    if (length !== +length) {                                                                            // 137
-      var keys = _.keys(obj);                                                                            // 138
-      length = keys.length;                                                                              // 139
+  // METEOR CHANGE: Define _isArguments instead of depending on                                          // 73
+  // _.isArguments which is defined using each. In looksLikeArray                                        // 74
+  // (which each depends on), we then use _isArguments instead of                                        // 75
+  // _.isArguments.                                                                                      // 76
+  var _isArguments = function (obj) {                                                                    // 77
+    return toString.call(obj) === '[object Arguments]';                                                  // 78
+  };                                                                                                     // 79
+  // Define a fallback version of the method in browsers (ahem, IE), where                               // 80
+  // there isn't any inspectable "Arguments" type.                                                       // 81
+  if (!_isArguments(arguments)) {                                                                        // 82
+    _isArguments = function (obj) {                                                                      // 83
+      return !!(obj && hasOwnProperty.call(obj, 'callee') && typeof obj.callee === 'function');          // 84
+    };                                                                                                   // 85
+  }                                                                                                      // 86
+                                                                                                         // 87
+  // METEOR CHANGE: _.each({length: 5}) should be treated like an object, not an                         // 88
+  // array. This looksLikeArray function is introduced by Meteor, and replaces                           // 89
+  // all instances of `obj.length === +obj.length`.                                                      // 90
+  // https://github.com/meteor/meteor/issues/594                                                         // 91
+  // https://github.com/jashkenas/underscore/issues/770                                                  // 92
+  var looksLikeArray = function (obj) {                                                                  // 93
+    return (obj.length === +obj.length                                                                   // 94
+            // _.isArguments not yet necessarily defined here                                            // 95
+            && (_isArguments(obj) || obj.constructor !== Object));                                       // 96
+  };                                                                                                     // 97
+                                                                                                         // 98
+  // The cornerstone, an `each` implementation, aka `forEach`.                                           // 99
+  // Handles objects with the built-in `forEach`, arrays, and raw objects.                               // 100
+  // Delegates to **ECMAScript 5**'s native `forEach` if available.                                      // 101
+  var each = _.each = _.forEach = function(obj, iterator, context) {                                     // 102
+    if (obj == null) return;                                                                             // 103
+    if (nativeForEach && obj.forEach === nativeForEach) {                                                // 104
+      obj.forEach(iterator, context);                                                                    // 105
+    } else if (looksLikeArray(obj)) {                                                                    // 106
+      for (var i = 0, length = obj.length; i < length; i++) {                                            // 107
+        if (iterator.call(context, obj[i], i, obj) === breaker) return;                                  // 108
+      }                                                                                                  // 109
+    } else {                                                                                             // 110
+      var keys = _.keys(obj);                                                                            // 111
+      for (var i = 0, length = keys.length; i < length; i++) {                                           // 112
+        if (iterator.call(context, obj[keys[i]], keys[i], obj) === breaker) return;                      // 113
+      }                                                                                                  // 114
+    }                                                                                                    // 115
+  };                                                                                                     // 116
+                                                                                                         // 117
+  // Return the results of applying the iterator to each element.                                        // 118
+  // Delegates to **ECMAScript 5**'s native `map` if available.                                          // 119
+  _.map = _.collect = function(obj, iterator, context) {                                                 // 120
+    var results = [];                                                                                    // 121
+    if (obj == null) return results;                                                                     // 122
+    if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);                           // 123
+    each(obj, function(value, index, list) {                                                             // 124
+      results.push(iterator.call(context, value, index, list));                                          // 125
+    });                                                                                                  // 126
+    return results;                                                                                      // 127
+  };                                                                                                     // 128
+                                                                                                         // 129
+  var reduceError = 'Reduce of empty array with no initial value';                                       // 130
+                                                                                                         // 131
+  // **Reduce** builds up a single result from a list of values, aka `inject`,                           // 132
+  // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.                           // 133
+  _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {                               // 134
+    var initial = arguments.length > 2;                                                                  // 135
+    if (obj == null) obj = [];                                                                           // 136
+    if (nativeReduce && obj.reduce === nativeReduce) {                                                   // 137
+      if (context) iterator = _.bind(iterator, context);                                                 // 138
+      return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);                                // 139
     }                                                                                                    // 140
     each(obj, function(value, index, list) {                                                             // 141
-      index = keys ? keys[--length] : --length;                                                          // 142
-      if (!initial) {                                                                                    // 143
-        memo = obj[index];                                                                               // 144
-        initial = true;                                                                                  // 145
-      } else {                                                                                           // 146
-        memo = iterator.call(context, memo, obj[index], index, list);                                    // 147
-      }                                                                                                  // 148
-    });                                                                                                  // 149
-    if (!initial) throw new TypeError(reduceError);                                                      // 150
-    return memo;                                                                                         // 151
-  };                                                                                                     // 152
-                                                                                                         // 153
-  // Return the first value which passes a truth test. Aliased as `detect`.                              // 154
-  _.find = _.detect = function(obj, iterator, context) {                                                 // 155
-    var result;                                                                                          // 156
-    any(obj, function(value, index, list) {                                                              // 157
-      if (iterator.call(context, value, index, list)) {                                                  // 158
-        result = value;                                                                                  // 159
-        return true;                                                                                     // 160
-      }                                                                                                  // 161
-    });                                                                                                  // 162
-    return result;                                                                                       // 163
-  };                                                                                                     // 164
-                                                                                                         // 165
-  // Return all the elements that pass a truth test.                                                     // 166
-  // Delegates to **ECMAScript 5**'s native `filter` if available.                                       // 167
-  // Aliased as `select`.                                                                                // 168
-  _.filter = _.select = function(obj, iterator, context) {                                               // 169
-    var results = [];                                                                                    // 170
-    if (obj == null) return results;                                                                     // 171
-    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);               // 172
-    each(obj, function(value, index, list) {                                                             // 173
-      if (iterator.call(context, value, index, list)) results.push(value);                               // 174
+      if (!initial) {                                                                                    // 142
+        memo = value;                                                                                    // 143
+        initial = true;                                                                                  // 144
+      } else {                                                                                           // 145
+        memo = iterator.call(context, memo, value, index, list);                                         // 146
+      }                                                                                                  // 147
+    });                                                                                                  // 148
+    if (!initial) throw new TypeError(reduceError);                                                      // 149
+    return memo;                                                                                         // 150
+  };                                                                                                     // 151
+                                                                                                         // 152
+  // The right-associative version of reduce, also known as `foldr`.                                     // 153
+  // Delegates to **ECMAScript 5**'s native `reduceRight` if available.                                  // 154
+  _.reduceRight = _.foldr = function(obj, iterator, memo, context) {                                     // 155
+    var initial = arguments.length > 2;                                                                  // 156
+    if (obj == null) obj = [];                                                                           // 157
+    if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {                                    // 158
+      if (context) iterator = _.bind(iterator, context);                                                 // 159
+      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);                      // 160
+    }                                                                                                    // 161
+    var length = obj.length;                                                                             // 162
+    if (!looksLikeArray(obj)) {                                                                          // 163
+      var keys = _.keys(obj);                                                                            // 164
+      length = keys.length;                                                                              // 165
+    }                                                                                                    // 166
+    each(obj, function(value, index, list) {                                                             // 167
+      index = keys ? keys[--length] : --length;                                                          // 168
+      if (!initial) {                                                                                    // 169
+        memo = obj[index];                                                                               // 170
+        initial = true;                                                                                  // 171
+      } else {                                                                                           // 172
+        memo = iterator.call(context, memo, obj[index], index, list);                                    // 173
+      }                                                                                                  // 174
     });                                                                                                  // 175
-    return results;                                                                                      // 176
-  };                                                                                                     // 177
-                                                                                                         // 178
-  // Return all the elements for which a truth test fails.                                               // 179
-  _.reject = function(obj, iterator, context) {                                                          // 180
-    return _.filter(obj, function(value, index, list) {                                                  // 181
-      return !iterator.call(context, value, index, list);                                                // 182
-    }, context);                                                                                         // 183
-  };                                                                                                     // 184
-                                                                                                         // 185
-  // Determine whether all of the elements match a truth test.                                           // 186
-  // Delegates to **ECMAScript 5**'s native `every` if available.                                        // 187
-  // Aliased as `all`.                                                                                   // 188
-  _.every = _.all = function(obj, iterator, context) {                                                   // 189
-    iterator || (iterator = _.identity);                                                                 // 190
-    var result = true;                                                                                   // 191
-    if (obj == null) return result;                                                                      // 192
-    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);                   // 193
-    each(obj, function(value, index, list) {                                                             // 194
-      if (!(result = result && iterator.call(context, value, index, list))) return breaker;              // 195
-    });                                                                                                  // 196
-    return !!result;                                                                                     // 197
-  };                                                                                                     // 198
-                                                                                                         // 199
-  // Determine if at least one element in the object matches a truth test.                               // 200
-  // Delegates to **ECMAScript 5**'s native `some` if available.                                         // 201
-  // Aliased as `any`.                                                                                   // 202
-  var any = _.some = _.any = function(obj, iterator, context) {                                          // 203
-    iterator || (iterator = _.identity);                                                                 // 204
-    var result = false;                                                                                  // 205
-    if (obj == null) return result;                                                                      // 206
-    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);                       // 207
-    each(obj, function(value, index, list) {                                                             // 208
-      if (result || (result = iterator.call(context, value, index, list))) return breaker;               // 209
-    });                                                                                                  // 210
-    return !!result;                                                                                     // 211
-  };                                                                                                     // 212
-                                                                                                         // 213
-  // Determine if the array or object contains a given value (using `===`).                              // 214
-  // Aliased as `include`.                                                                               // 215
-  _.contains = _.include = function(obj, target) {                                                       // 216
-    if (obj == null) return false;                                                                       // 217
-    if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;                // 218
-    return any(obj, function(value) {                                                                    // 219
-      return value === target;                                                                           // 220
-    });                                                                                                  // 221
-  };                                                                                                     // 222
-                                                                                                         // 223
-  // Invoke a method (with arguments) on every item in a collection.                                     // 224
-  _.invoke = function(obj, method) {                                                                     // 225
-    var args = slice.call(arguments, 2);                                                                 // 226
-    var isFunc = _.isFunction(method);                                                                   // 227
-    return _.map(obj, function(value) {                                                                  // 228
-      return (isFunc ? method : value[method]).apply(value, args);                                       // 229
-    });                                                                                                  // 230
-  };                                                                                                     // 231
-                                                                                                         // 232
-  // Convenience version of a common use case of `map`: fetching a property.                             // 233
-  _.pluck = function(obj, key) {                                                                         // 234
-    return _.map(obj, function(value){ return value[key]; });                                            // 235
-  };                                                                                                     // 236
-                                                                                                         // 237
-  // Convenience version of a common use case of `filter`: selecting only objects                        // 238
-  // containing specific `key:value` pairs.                                                              // 239
-  _.where = function(obj, attrs, first) {                                                                // 240
-    if (_.isEmpty(attrs)) return first ? void 0 : [];                                                    // 241
-    return _[first ? 'find' : 'filter'](obj, function(value) {                                           // 242
-      for (var key in attrs) {                                                                           // 243
-        if (attrs[key] !== value[key]) return false;                                                     // 244
-      }                                                                                                  // 245
-      return true;                                                                                       // 246
+    if (!initial) throw new TypeError(reduceError);                                                      // 176
+    return memo;                                                                                         // 177
+  };                                                                                                     // 178
+                                                                                                         // 179
+  // Return the first value which passes a truth test. Aliased as `detect`.                              // 180
+  _.find = _.detect = function(obj, iterator, context) {                                                 // 181
+    var result;                                                                                          // 182
+    any(obj, function(value, index, list) {                                                              // 183
+      if (iterator.call(context, value, index, list)) {                                                  // 184
+        result = value;                                                                                  // 185
+        return true;                                                                                     // 186
+      }                                                                                                  // 187
+    });                                                                                                  // 188
+    return result;                                                                                       // 189
+  };                                                                                                     // 190
+                                                                                                         // 191
+  // Return all the elements that pass a truth test.                                                     // 192
+  // Delegates to **ECMAScript 5**'s native `filter` if available.                                       // 193
+  // Aliased as `select`.                                                                                // 194
+  _.filter = _.select = function(obj, iterator, context) {                                               // 195
+    var results = [];                                                                                    // 196
+    if (obj == null) return results;                                                                     // 197
+    if (nativeFilter && obj.filter === nativeFilter) return obj.filter(iterator, context);               // 198
+    each(obj, function(value, index, list) {                                                             // 199
+      if (iterator.call(context, value, index, list)) results.push(value);                               // 200
+    });                                                                                                  // 201
+    return results;                                                                                      // 202
+  };                                                                                                     // 203
+                                                                                                         // 204
+  // Return all the elements for which a truth test fails.                                               // 205
+  _.reject = function(obj, iterator, context) {                                                          // 206
+    return _.filter(obj, function(value, index, list) {                                                  // 207
+      return !iterator.call(context, value, index, list);                                                // 208
+    }, context);                                                                                         // 209
+  };                                                                                                     // 210
+                                                                                                         // 211
+  // Determine whether all of the elements match a truth test.                                           // 212
+  // Delegates to **ECMAScript 5**'s native `every` if available.                                        // 213
+  // Aliased as `all`.                                                                                   // 214
+  _.every = _.all = function(obj, iterator, context) {                                                   // 215
+    iterator || (iterator = _.identity);                                                                 // 216
+    var result = true;                                                                                   // 217
+    if (obj == null) return result;                                                                      // 218
+    if (nativeEvery && obj.every === nativeEvery) return obj.every(iterator, context);                   // 219
+    each(obj, function(value, index, list) {                                                             // 220
+      if (!(result = result && iterator.call(context, value, index, list))) return breaker;              // 221
+    });                                                                                                  // 222
+    return !!result;                                                                                     // 223
+  };                                                                                                     // 224
+                                                                                                         // 225
+  // Determine if at least one element in the object matches a truth test.                               // 226
+  // Delegates to **ECMAScript 5**'s native `some` if available.                                         // 227
+  // Aliased as `any`.                                                                                   // 228
+  var any = _.some = _.any = function(obj, iterator, context) {                                          // 229
+    iterator || (iterator = _.identity);                                                                 // 230
+    var result = false;                                                                                  // 231
+    if (obj == null) return result;                                                                      // 232
+    if (nativeSome && obj.some === nativeSome) return obj.some(iterator, context);                       // 233
+    each(obj, function(value, index, list) {                                                             // 234
+      if (result || (result = iterator.call(context, value, index, list))) return breaker;               // 235
+    });                                                                                                  // 236
+    return !!result;                                                                                     // 237
+  };                                                                                                     // 238
+                                                                                                         // 239
+  // Determine if the array or object contains a given value (using `===`).                              // 240
+  // Aliased as `include`.                                                                               // 241
+  _.contains = _.include = function(obj, target) {                                                       // 242
+    if (obj == null) return false;                                                                       // 243
+    if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;                // 244
+    return any(obj, function(value) {                                                                    // 245
+      return value === target;                                                                           // 246
     });                                                                                                  // 247
   };                                                                                                     // 248
                                                                                                          // 249
-  // Convenience version of a common use case of `find`: getting the first object                        // 250
-  // containing specific `key:value` pairs.                                                              // 251
-  _.findWhere = function(obj, attrs) {                                                                   // 252
-    return _.where(obj, attrs, true);                                                                    // 253
-  };                                                                                                     // 254
-                                                                                                         // 255
-  // Return the maximum element or (element-based computation).                                          // 256
-  // Can't optimize arrays of integers longer than 65,535 elements.                                      // 257
-  // See [WebKit Bug 80797](https://bugs.webkit.org/show_bug.cgi?id=80797)                               // 258
-  _.max = function(obj, iterator, context) {                                                             // 259
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {                       // 260
-      return Math.max.apply(Math, obj);                                                                  // 261
-    }                                                                                                    // 262
-    if (!iterator && _.isEmpty(obj)) return -Infinity;                                                   // 263
-    var result = {computed : -Infinity, value: -Infinity};                                               // 264
-    each(obj, function(value, index, list) {                                                             // 265
-      var computed = iterator ? iterator.call(context, value, index, list) : value;                      // 266
-      computed > result.computed && (result = {value : value, computed : computed});                     // 267
-    });                                                                                                  // 268
-    return result.value;                                                                                 // 269
-  };                                                                                                     // 270
-                                                                                                         // 271
-  // Return the minimum element (or element-based computation).                                          // 272
-  _.min = function(obj, iterator, context) {                                                             // 273
-    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {                       // 274
-      return Math.min.apply(Math, obj);                                                                  // 275
-    }                                                                                                    // 276
-    if (!iterator && _.isEmpty(obj)) return Infinity;                                                    // 277
-    var result = {computed : Infinity, value: Infinity};                                                 // 278
-    each(obj, function(value, index, list) {                                                             // 279
-      var computed = iterator ? iterator.call(context, value, index, list) : value;                      // 280
-      computed < result.computed && (result = {value : value, computed : computed});                     // 281
-    });                                                                                                  // 282
-    return result.value;                                                                                 // 283
-  };                                                                                                     // 284
-                                                                                                         // 285
-  // Shuffle an array, using the modern version of the                                                   // 286
-  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).                          // 287
-  _.shuffle = function(obj) {                                                                            // 288
-    var rand;                                                                                            // 289
-    var index = 0;                                                                                       // 290
-    var shuffled = [];                                                                                   // 291
-    each(obj, function(value) {                                                                          // 292
-      rand = _.random(index++);                                                                          // 293
-      shuffled[index - 1] = shuffled[rand];                                                              // 294
-      shuffled[rand] = value;                                                                            // 295
-    });                                                                                                  // 296
-    return shuffled;                                                                                     // 297
-  };                                                                                                     // 298
-                                                                                                         // 299
-  // Sample **n** random values from an array.                                                           // 300
-  // If **n** is not specified, returns a single random element from the array.                          // 301
-  // The internal `guard` argument allows it to work with `map`.                                         // 302
-  _.sample = function(obj, n, guard) {                                                                   // 303
-    if (arguments.length < 2 || guard) {                                                                 // 304
-      return obj[_.random(obj.length - 1)];                                                              // 305
-    }                                                                                                    // 306
-    return _.shuffle(obj).slice(0, Math.max(0, n));                                                      // 307
-  };                                                                                                     // 308
-                                                                                                         // 309
-  // An internal function to generate lookup iterators.                                                  // 310
-  var lookupIterator = function(value) {                                                                 // 311
-    return _.isFunction(value) ? value : function(obj){ return obj[value]; };                            // 312
-  };                                                                                                     // 313
-                                                                                                         // 314
-  // Sort the object's values by a criterion produced by an iterator.                                    // 315
-  _.sortBy = function(obj, value, context) {                                                             // 316
-    var iterator = lookupIterator(value);                                                                // 317
-    return _.pluck(_.map(obj, function(value, index, list) {                                             // 318
-      return {                                                                                           // 319
-        value: value,                                                                                    // 320
-        index: index,                                                                                    // 321
-        criteria: iterator.call(context, value, index, list)                                             // 322
-      };                                                                                                 // 323
-    }).sort(function(left, right) {                                                                      // 324
-      var a = left.criteria;                                                                             // 325
-      var b = right.criteria;                                                                            // 326
-      if (a !== b) {                                                                                     // 327
-        if (a > b || a === void 0) return 1;                                                             // 328
-        if (a < b || b === void 0) return -1;                                                            // 329
-      }                                                                                                  // 330
-      return left.index - right.index;                                                                   // 331
-    }), 'value');                                                                                        // 332
-  };                                                                                                     // 333
-                                                                                                         // 334
-  // An internal function used for aggregate "group by" operations.                                      // 335
-  var group = function(behavior) {                                                                       // 336
-    return function(obj, value, context) {                                                               // 337
-      var result = {};                                                                                   // 338
-      var iterator = value == null ? _.identity : lookupIterator(value);                                 // 339
-      each(obj, function(value, index) {                                                                 // 340
-        var key = iterator.call(context, value, index, obj);                                             // 341
-        behavior(result, key, value);                                                                    // 342
-      });                                                                                                // 343
-      return result;                                                                                     // 344
-    };                                                                                                   // 345
-  };                                                                                                     // 346
-                                                                                                         // 347
-  // Groups the object's values by a criterion. Pass either a string attribute                           // 348
-  // to group by, or a function that returns the criterion.                                              // 349
-  _.groupBy = group(function(result, key, value) {                                                       // 350
-    (_.has(result, key) ? result[key] : (result[key] = [])).push(value);                                 // 351
-  });                                                                                                    // 352
-                                                                                                         // 353
-  // Indexes the object's values by a criterion, similar to `groupBy`, but for                           // 354
-  // when you know that your index values will be unique.                                                // 355
-  _.indexBy = group(function(result, key, value) {                                                       // 356
-    result[key] = value;                                                                                 // 357
-  });                                                                                                    // 358
-                                                                                                         // 359
-  // Counts instances of an object that group by a certain criterion. Pass                               // 360
-  // either a string attribute to count by, or a function that returns the                               // 361
-  // criterion.                                                                                          // 362
-  _.countBy = group(function(result, key) {                                                              // 363
-    _.has(result, key) ? result[key]++ : result[key] = 1;                                                // 364
-  });                                                                                                    // 365
-                                                                                                         // 366
-  // Use a comparator function to figure out the smallest index at which                                 // 367
-  // an object should be inserted so as to maintain order. Uses binary search.                           // 368
-  _.sortedIndex = function(array, obj, iterator, context) {                                              // 369
-    iterator = iterator == null ? _.identity : lookupIterator(iterator);                                 // 370
-    var value = iterator.call(context, obj);                                                             // 371
-    var low = 0, high = array.length;                                                                    // 372
-    while (low < high) {                                                                                 // 373
-      var mid = (low + high) >>> 1;                                                                      // 374
-      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;                           // 375
-    }                                                                                                    // 376
-    return low;                                                                                          // 377
-  };                                                                                                     // 378
+  // Invoke a method (with arguments) on every item in a collection.                                     // 250
+  _.invoke = function(obj, method) {                                                                     // 251
+    var args = slice.call(arguments, 2);                                                                 // 252
+    var isFunc = _.isFunction(method);                                                                   // 253
+    return _.map(obj, function(value) {                                                                  // 254
+      return (isFunc ? method : value[method]).apply(value, args);                                       // 255
+    });                                                                                                  // 256
+  };                                                                                                     // 257
+                                                                                                         // 258
+  // Convenience version of a common use case of `map`: fetching a property.                             // 259
+  _.pluck = function(obj, key) {                                                                         // 260
+    return _.map(obj, function(value){ return value[key]; });                                            // 261
+  };                                                                                                     // 262
+                                                                                                         // 263
+  // Convenience version of a common use case of `filter`: selecting only objects                        // 264
+  // containing specific `key:value` pairs.                                                              // 265
+  _.where = function(obj, attrs, first) {                                                                // 266
+    if (_.isEmpty(attrs)) return first ? void 0 : [];                                                    // 267
+    return _[first ? 'find' : 'filter'](obj, function(value) {                                           // 268
+      for (var key in attrs) {                                                                           // 269
+        if (attrs[key] !== value[key]) return false;                                                     // 270
+      }                                                                                                  // 271
+      return true;                                                                                       // 272
+    });                                                                                                  // 273
+  };                                                                                                     // 274
+                                                                                                         // 275
+  // Convenience version of a common use case of `find`: getting the first object                        // 276
+  // containing specific `key:value` pairs.                                                              // 277
+  _.findWhere = function(obj, attrs) {                                                                   // 278
+    return _.where(obj, attrs, true);                                                                    // 279
+  };                                                                                                     // 280
+                                                                                                         // 281
+  // Return the maximum element or (element-based computation).                                          // 282
+  // Can't optimize arrays of integers longer than 65,535 elements.                                      // 283
+  // See [WebKit Bug 80797](https://bugs.webkit.org/show_bug.cgi?id=80797)                               // 284
+  _.max = function(obj, iterator, context) {                                                             // 285
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {                       // 286
+      return Math.max.apply(Math, obj);                                                                  // 287
+    }                                                                                                    // 288
+    if (!iterator && _.isEmpty(obj)) return -Infinity;                                                   // 289
+    var result = {computed : -Infinity, value: -Infinity};                                               // 290
+    each(obj, function(value, index, list) {                                                             // 291
+      var computed = iterator ? iterator.call(context, value, index, list) : value;                      // 292
+      computed > result.computed && (result = {value : value, computed : computed});                     // 293
+    });                                                                                                  // 294
+    return result.value;                                                                                 // 295
+  };                                                                                                     // 296
+                                                                                                         // 297
+  // Return the minimum element (or element-based computation).                                          // 298
+  _.min = function(obj, iterator, context) {                                                             // 299
+    if (!iterator && _.isArray(obj) && obj[0] === +obj[0] && obj.length < 65535) {                       // 300
+      return Math.min.apply(Math, obj);                                                                  // 301
+    }                                                                                                    // 302
+    if (!iterator && _.isEmpty(obj)) return Infinity;                                                    // 303
+    var result = {computed : Infinity, value: Infinity};                                                 // 304
+    each(obj, function(value, index, list) {                                                             // 305
+      var computed = iterator ? iterator.call(context, value, index, list) : value;                      // 306
+      computed < result.computed && (result = {value : value, computed : computed});                     // 307
+    });                                                                                                  // 308
+    return result.value;                                                                                 // 309
+  };                                                                                                     // 310
+                                                                                                         // 311
+  // Shuffle an array, using the modern version of the                                                   // 312
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).                          // 313
+  _.shuffle = function(obj) {                                                                            // 314
+    var rand;                                                                                            // 315
+    var index = 0;                                                                                       // 316
+    var shuffled = [];                                                                                   // 317
+    each(obj, function(value) {                                                                          // 318
+      rand = _.random(index++);                                                                          // 319
+      shuffled[index - 1] = shuffled[rand];                                                              // 320
+      shuffled[rand] = value;                                                                            // 321
+    });                                                                                                  // 322
+    return shuffled;                                                                                     // 323
+  };                                                                                                     // 324
+                                                                                                         // 325
+  // Sample **n** random values from an array.                                                           // 326
+  // If **n** is not specified, returns a single random element from the array.                          // 327
+  // The internal `guard` argument allows it to work with `map`.                                         // 328
+  _.sample = function(obj, n, guard) {                                                                   // 329
+    if (arguments.length < 2 || guard) {                                                                 // 330
+      return obj[_.random(obj.length - 1)];                                                              // 331
+    }                                                                                                    // 332
+    return _.shuffle(obj).slice(0, Math.max(0, n));                                                      // 333
+  };                                                                                                     // 334
+                                                                                                         // 335
+  // An internal function to generate lookup iterators.                                                  // 336
+  var lookupIterator = function(value) {                                                                 // 337
+    return _.isFunction(value) ? value : function(obj){ return obj[value]; };                            // 338
+  };                                                                                                     // 339
+                                                                                                         // 340
+  // Sort the object's values by a criterion produced by an iterator.                                    // 341
+  _.sortBy = function(obj, value, context) {                                                             // 342
+    var iterator = lookupIterator(value);                                                                // 343
+    return _.pluck(_.map(obj, function(value, index, list) {                                             // 344
+      return {                                                                                           // 345
+        value: value,                                                                                    // 346
+        index: index,                                                                                    // 347
+        criteria: iterator.call(context, value, index, list)                                             // 348
+      };                                                                                                 // 349
+    }).sort(function(left, right) {                                                                      // 350
+      var a = left.criteria;                                                                             // 351
+      var b = right.criteria;                                                                            // 352
+      if (a !== b) {                                                                                     // 353
+        if (a > b || a === void 0) return 1;                                                             // 354
+        if (a < b || b === void 0) return -1;                                                            // 355
+      }                                                                                                  // 356
+      return left.index - right.index;                                                                   // 357
+    }), 'value');                                                                                        // 358
+  };                                                                                                     // 359
+                                                                                                         // 360
+  // An internal function used for aggregate "group by" operations.                                      // 361
+  var group = function(behavior) {                                                                       // 362
+    return function(obj, value, context) {                                                               // 363
+      var result = {};                                                                                   // 364
+      var iterator = value == null ? _.identity : lookupIterator(value);                                 // 365
+      each(obj, function(value, index) {                                                                 // 366
+        var key = iterator.call(context, value, index, obj);                                             // 367
+        behavior(result, key, value);                                                                    // 368
+      });                                                                                                // 369
+      return result;                                                                                     // 370
+    };                                                                                                   // 371
+  };                                                                                                     // 372
+                                                                                                         // 373
+  // Groups the object's values by a criterion. Pass either a string attribute                           // 374
+  // to group by, or a function that returns the criterion.                                              // 375
+  _.groupBy = group(function(result, key, value) {                                                       // 376
+    (_.has(result, key) ? result[key] : (result[key] = [])).push(value);                                 // 377
+  });                                                                                                    // 378
                                                                                                          // 379
-  // Safely create a real, live array from anything iterable.                                            // 380
-  _.toArray = function(obj) {                                                                            // 381
-    if (!obj) return [];                                                                                 // 382
-    if (_.isArray(obj)) return slice.call(obj);                                                          // 383
-    if (obj.length === +obj.length) return _.map(obj, _.identity);                                       // 384
-    return _.values(obj);                                                                                // 385
-  };                                                                                                     // 386
-                                                                                                         // 387
-  // Return the number of elements in an object.                                                         // 388
-  _.size = function(obj) {                                                                               // 389
-    if (obj == null) return 0;                                                                           // 390
-    return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;                               // 391
-  };                                                                                                     // 392
-                                                                                                         // 393
-  // Array Functions                                                                                     // 394
-  // ---------------                                                                                     // 395
-                                                                                                         // 396
-  // Get the first element of an array. Passing **n** will return the first N                            // 397
-  // values in the array. Aliased as `head` and `take`. The **guard** check                              // 398
-  // allows it to work with `_.map`.                                                                     // 399
-  _.first = _.head = _.take = function(array, n, guard) {                                                // 400
-    if (array == null) return void 0;                                                                    // 401
-    return (n == null) || guard ? array[0] : slice.call(array, 0, n);                                    // 402
-  };                                                                                                     // 403
-                                                                                                         // 404
-  // Returns everything but the last entry of the array. Especially useful on                            // 405
-  // the arguments object. Passing **n** will return all the values in                                   // 406
-  // the array, excluding the last N. The **guard** check allows it to work with                         // 407
-  // `_.map`.                                                                                            // 408
-  _.initial = function(array, n, guard) {                                                                // 409
-    return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));                          // 410
-  };                                                                                                     // 411
-                                                                                                         // 412
-  // Get the last element of an array. Passing **n** will return the last N                              // 413
-  // values in the array. The **guard** check allows it to work with `_.map`.                            // 414
-  _.last = function(array, n, guard) {                                                                   // 415
-    if (array == null) return void 0;                                                                    // 416
-    if ((n == null) || guard) {                                                                          // 417
-      return array[array.length - 1];                                                                    // 418
-    } else {                                                                                             // 419
-      return slice.call(array, Math.max(array.length - n, 0));                                           // 420
-    }                                                                                                    // 421
-  };                                                                                                     // 422
-                                                                                                         // 423
-  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.                  // 424
-  // Especially useful on the arguments object. Passing an **n** will return                             // 425
-  // the rest N values in the array. The **guard**                                                       // 426
-  // check allows it to work with `_.map`.                                                               // 427
-  _.rest = _.tail = _.drop = function(array, n, guard) {                                                 // 428
-    return slice.call(array, (n == null) || guard ? 1 : n);                                              // 429
-  };                                                                                                     // 430
-                                                                                                         // 431
-  // Trim out all falsy values from an array.                                                            // 432
-  _.compact = function(array) {                                                                          // 433
-    return _.filter(array, _.identity);                                                                  // 434
-  };                                                                                                     // 435
-                                                                                                         // 436
-  // Internal implementation of a recursive `flatten` function.                                          // 437
-  var flatten = function(input, shallow, output) {                                                       // 438
-    if (shallow && _.every(input, _.isArray)) {                                                          // 439
-      return concat.apply(output, input);                                                                // 440
-    }                                                                                                    // 441
-    each(input, function(value) {                                                                        // 442
-      if (_.isArray(value) || _.isArguments(value)) {                                                    // 443
-        shallow ? push.apply(output, value) : flatten(value, shallow, output);                           // 444
-      } else {                                                                                           // 445
-        output.push(value);                                                                              // 446
-      }                                                                                                  // 447
-    });                                                                                                  // 448
-    return output;                                                                                       // 449
-  };                                                                                                     // 450
-                                                                                                         // 451
-  // Flatten out an array, either recursively (by default), or just one level.                           // 452
-  _.flatten = function(array, shallow) {                                                                 // 453
-    return flatten(array, shallow, []);                                                                  // 454
-  };                                                                                                     // 455
-                                                                                                         // 456
-  // Return a version of the array that does not contain the specified value(s).                         // 457
-  _.without = function(array) {                                                                          // 458
-    return _.difference(array, slice.call(arguments, 1));                                                // 459
-  };                                                                                                     // 460
-                                                                                                         // 461
-  // Produce a duplicate-free version of the array. If the array has already                             // 462
-  // been sorted, you have the option of using a faster algorithm.                                       // 463
-  // Aliased as `unique`.                                                                                // 464
-  _.uniq = _.unique = function(array, isSorted, iterator, context) {                                     // 465
-    if (_.isFunction(isSorted)) {                                                                        // 466
-      context = iterator;                                                                                // 467
-      iterator = isSorted;                                                                               // 468
-      isSorted = false;                                                                                  // 469
-    }                                                                                                    // 470
-    var initial = iterator ? _.map(array, iterator, context) : array;                                    // 471
-    var results = [];                                                                                    // 472
-    var seen = [];                                                                                       // 473
-    each(initial, function(value, index) {                                                               // 474
-      if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {           // 475
-        seen.push(value);                                                                                // 476
-        results.push(array[index]);                                                                      // 477
-      }                                                                                                  // 478
-    });                                                                                                  // 479
-    return results;                                                                                      // 480
+  // Indexes the object's values by a criterion, similar to `groupBy`, but for                           // 380
+  // when you know that your index values will be unique.                                                // 381
+  _.indexBy = group(function(result, key, value) {                                                       // 382
+    result[key] = value;                                                                                 // 383
+  });                                                                                                    // 384
+                                                                                                         // 385
+  // Counts instances of an object that group by a certain criterion. Pass                               // 386
+  // either a string attribute to count by, or a function that returns the                               // 387
+  // criterion.                                                                                          // 388
+  _.countBy = group(function(result, key) {                                                              // 389
+    _.has(result, key) ? result[key]++ : result[key] = 1;                                                // 390
+  });                                                                                                    // 391
+                                                                                                         // 392
+  // Use a comparator function to figure out the smallest index at which                                 // 393
+  // an object should be inserted so as to maintain order. Uses binary search.                           // 394
+  _.sortedIndex = function(array, obj, iterator, context) {                                              // 395
+    iterator = iterator == null ? _.identity : lookupIterator(iterator);                                 // 396
+    var value = iterator.call(context, obj);                                                             // 397
+    var low = 0, high = array.length;                                                                    // 398
+    while (low < high) {                                                                                 // 399
+      var mid = (low + high) >>> 1;                                                                      // 400
+      iterator.call(context, array[mid]) < value ? low = mid + 1 : high = mid;                           // 401
+    }                                                                                                    // 402
+    return low;                                                                                          // 403
+  };                                                                                                     // 404
+                                                                                                         // 405
+  // Safely create a real, live array from anything iterable.                                            // 406
+  _.toArray = function(obj) {                                                                            // 407
+    if (!obj) return [];                                                                                 // 408
+    if (_.isArray(obj)) return slice.call(obj);                                                          // 409
+    if (looksLikeArray(obj)) return _.map(obj, _.identity);                                              // 410
+    return _.values(obj);                                                                                // 411
+  };                                                                                                     // 412
+                                                                                                         // 413
+  // Return the number of elements in an object.                                                         // 414
+  _.size = function(obj) {                                                                               // 415
+    if (obj == null) return 0;                                                                           // 416
+    return (looksLikeArray(obj)) ? obj.length : _.keys(obj).length;                                      // 417
+  };                                                                                                     // 418
+                                                                                                         // 419
+  // Array Functions                                                                                     // 420
+  // ---------------                                                                                     // 421
+                                                                                                         // 422
+  // Get the first element of an array. Passing **n** will return the first N                            // 423
+  // values in the array. Aliased as `head` and `take`. The **guard** check                              // 424
+  // allows it to work with `_.map`.                                                                     // 425
+  _.first = _.head = _.take = function(array, n, guard) {                                                // 426
+    if (array == null) return void 0;                                                                    // 427
+    return (n == null) || guard ? array[0] : slice.call(array, 0, n);                                    // 428
+  };                                                                                                     // 429
+                                                                                                         // 430
+  // Returns everything but the last entry of the array. Especially useful on                            // 431
+  // the arguments object. Passing **n** will return all the values in                                   // 432
+  // the array, excluding the last N. The **guard** check allows it to work with                         // 433
+  // `_.map`.                                                                                            // 434
+  _.initial = function(array, n, guard) {                                                                // 435
+    return slice.call(array, 0, array.length - ((n == null) || guard ? 1 : n));                          // 436
+  };                                                                                                     // 437
+                                                                                                         // 438
+  // Get the last element of an array. Passing **n** will return the last N                              // 439
+  // values in the array. The **guard** check allows it to work with `_.map`.                            // 440
+  _.last = function(array, n, guard) {                                                                   // 441
+    if (array == null) return void 0;                                                                    // 442
+    if ((n == null) || guard) {                                                                          // 443
+      return array[array.length - 1];                                                                    // 444
+    } else {                                                                                             // 445
+      return slice.call(array, Math.max(array.length - n, 0));                                           // 446
+    }                                                                                                    // 447
+  };                                                                                                     // 448
+                                                                                                         // 449
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.                  // 450
+  // Especially useful on the arguments object. Passing an **n** will return                             // 451
+  // the rest N values in the array. The **guard**                                                       // 452
+  // check allows it to work with `_.map`.                                                               // 453
+  _.rest = _.tail = _.drop = function(array, n, guard) {                                                 // 454
+    return slice.call(array, (n == null) || guard ? 1 : n);                                              // 455
+  };                                                                                                     // 456
+                                                                                                         // 457
+  // Trim out all falsy values from an array.                                                            // 458
+  _.compact = function(array) {                                                                          // 459
+    return _.filter(array, _.identity);                                                                  // 460
+  };                                                                                                     // 461
+                                                                                                         // 462
+  // Internal implementation of a recursive `flatten` function.                                          // 463
+  var flatten = function(input, shallow, output) {                                                       // 464
+    if (shallow && _.every(input, _.isArray)) {                                                          // 465
+      return concat.apply(output, input);                                                                // 466
+    }                                                                                                    // 467
+    each(input, function(value) {                                                                        // 468
+      if (_.isArray(value) || _.isArguments(value)) {                                                    // 469
+        shallow ? push.apply(output, value) : flatten(value, shallow, output);                           // 470
+      } else {                                                                                           // 471
+        output.push(value);                                                                              // 472
+      }                                                                                                  // 473
+    });                                                                                                  // 474
+    return output;                                                                                       // 475
+  };                                                                                                     // 476
+                                                                                                         // 477
+  // Flatten out an array, either recursively (by default), or just one level.                           // 478
+  _.flatten = function(array, shallow) {                                                                 // 479
+    return flatten(array, shallow, []);                                                                  // 480
   };                                                                                                     // 481
                                                                                                          // 482
-  // Produce an array that contains the union: each distinct element from all of                         // 483
-  // the passed-in arrays.                                                                               // 484
-  _.union = function() {                                                                                 // 485
-    return _.uniq(_.flatten(arguments, true));                                                           // 486
-  };                                                                                                     // 487
-                                                                                                         // 488
-  // Produce an array that contains every item shared between all the                                    // 489
-  // passed-in arrays.                                                                                   // 490
-  _.intersection = function(array) {                                                                     // 491
-    var rest = slice.call(arguments, 1);                                                                 // 492
-    return _.filter(_.uniq(array), function(item) {                                                      // 493
-      return _.every(rest, function(other) {                                                             // 494
-        return _.indexOf(other, item) >= 0;                                                              // 495
-      });                                                                                                // 496
-    });                                                                                                  // 497
-  };                                                                                                     // 498
-                                                                                                         // 499
-  // Take the difference between one array and a number of other arrays.                                 // 500
-  // Only the elements present in just the first array will remain.                                      // 501
-  _.difference = function(array) {                                                                       // 502
-    var rest = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 503
-    return _.filter(array, function(value){ return !_.contains(rest, value); });                         // 504
-  };                                                                                                     // 505
-                                                                                                         // 506
-  // Zip together multiple lists into a single array -- elements that share                              // 507
-  // an index go together.                                                                               // 508
-  _.zip = function() {                                                                                   // 509
-    var length = _.max(_.pluck(arguments, "length").concat(0));                                          // 510
-    var results = new Array(length);                                                                     // 511
-    for (var i = 0; i < length; i++) {                                                                   // 512
-      results[i] = _.pluck(arguments, '' + i);                                                           // 513
-    }                                                                                                    // 514
-    return results;                                                                                      // 515
-  };                                                                                                     // 516
-                                                                                                         // 517
-  // Converts lists into objects. Pass either a single array of `[key, value]`                           // 518
-  // pairs, or two parallel arrays of the same length -- one of keys, and one of                         // 519
-  // the corresponding values.                                                                           // 520
-  _.object = function(list, values) {                                                                    // 521
-    if (list == null) return {};                                                                         // 522
-    var result = {};                                                                                     // 523
-    for (var i = 0, length = list.length; i < length; i++) {                                             // 524
-      if (values) {                                                                                      // 525
-        result[list[i]] = values[i];                                                                     // 526
-      } else {                                                                                           // 527
-        result[list[i][0]] = list[i][1];                                                                 // 528
-      }                                                                                                  // 529
-    }                                                                                                    // 530
-    return result;                                                                                       // 531
-  };                                                                                                     // 532
-                                                                                                         // 533
-  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),                       // 534
-  // we need this function. Return the position of the first occurrence of an                            // 535
-  // item in an array, or -1 if the item is not included in the array.                                   // 536
-  // Delegates to **ECMAScript 5**'s native `indexOf` if available.                                      // 537
-  // If the array is large and already in sort order, pass `true`                                        // 538
-  // for **isSorted** to use binary search.                                                              // 539
-  _.indexOf = function(array, item, isSorted) {                                                          // 540
-    if (array == null) return -1;                                                                        // 541
-    var i = 0, length = array.length;                                                                    // 542
-    if (isSorted) {                                                                                      // 543
-      if (typeof isSorted == 'number') {                                                                 // 544
-        i = (isSorted < 0 ? Math.max(0, length + isSorted) : isSorted);                                  // 545
-      } else {                                                                                           // 546
-        i = _.sortedIndex(array, item);                                                                  // 547
-        return array[i] === item ? i : -1;                                                               // 548
-      }                                                                                                  // 549
-    }                                                                                                    // 550
-    if (nativeIndexOf && array.indexOf === nativeIndexOf) return array.indexOf(item, isSorted);          // 551
-    for (; i < length; i++) if (array[i] === item) return i;                                             // 552
-    return -1;                                                                                           // 553
-  };                                                                                                     // 554
-                                                                                                         // 555
-  // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.                                  // 556
-  _.lastIndexOf = function(array, item, from) {                                                          // 557
-    if (array == null) return -1;                                                                        // 558
-    var hasIndex = from != null;                                                                         // 559
-    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {                                  // 560
-      return hasIndex ? array.lastIndexOf(item, from) : array.lastIndexOf(item);                         // 561
-    }                                                                                                    // 562
-    var i = (hasIndex ? from : array.length);                                                            // 563
-    while (i--) if (array[i] === item) return i;                                                         // 564
-    return -1;                                                                                           // 565
-  };                                                                                                     // 566
-                                                                                                         // 567
-  // Generate an integer Array containing an arithmetic progression. A port of                           // 568
-  // the native Python `range()` function. See                                                           // 569
-  // [the Python documentation](http://docs.python.org/library/functions.html#range).                    // 570
-  _.range = function(start, stop, step) {                                                                // 571
-    if (arguments.length <= 1) {                                                                         // 572
-      stop = start || 0;                                                                                 // 573
-      start = 0;                                                                                         // 574
-    }                                                                                                    // 575
-    step = arguments[2] || 1;                                                                            // 576
-                                                                                                         // 577
-    var length = Math.max(Math.ceil((stop - start) / step), 0);                                          // 578
-    var idx = 0;                                                                                         // 579
-    var range = new Array(length);                                                                       // 580
+  // Return a version of the array that does not contain the specified value(s).                         // 483
+  _.without = function(array) {                                                                          // 484
+    return _.difference(array, slice.call(arguments, 1));                                                // 485
+  };                                                                                                     // 486
+                                                                                                         // 487
+  // Produce a duplicate-free version of the array. If the array has already                             // 488
+  // been sorted, you have the option of using a faster algorithm.                                       // 489
+  // Aliased as `unique`.                                                                                // 490
+  _.uniq = _.unique = function(array, isSorted, iterator, context) {                                     // 491
+    if (_.isFunction(isSorted)) {                                                                        // 492
+      context = iterator;                                                                                // 493
+      iterator = isSorted;                                                                               // 494
+      isSorted = false;                                                                                  // 495
+    }                                                                                                    // 496
+    var initial = iterator ? _.map(array, iterator, context) : array;                                    // 497
+    var results = [];                                                                                    // 498
+    var seen = [];                                                                                       // 499
+    each(initial, function(value, index) {                                                               // 500
+      if (isSorted ? (!index || seen[seen.length - 1] !== value) : !_.contains(seen, value)) {           // 501
+        seen.push(value);                                                                                // 502
+        results.push(array[index]);                                                                      // 503
+      }                                                                                                  // 504
+    });                                                                                                  // 505
+    return results;                                                                                      // 506
+  };                                                                                                     // 507
+                                                                                                         // 508
+  // Produce an array that contains the union: each distinct element from all of                         // 509
+  // the passed-in arrays.                                                                               // 510
+  _.union = function() {                                                                                 // 511
+    return _.uniq(_.flatten(arguments, true));                                                           // 512
+  };                                                                                                     // 513
+                                                                                                         // 514
+  // Produce an array that contains every item shared between all the                                    // 515
+  // passed-in arrays.                                                                                   // 516
+  _.intersection = function(array) {                                                                     // 517
+    var rest = slice.call(arguments, 1);                                                                 // 518
+    return _.filter(_.uniq(array), function(item) {                                                      // 519
+      return _.every(rest, function(other) {                                                             // 520
+        return _.indexOf(other, item) >= 0;                                                              // 521
+      });                                                                                                // 522
+    });                                                                                                  // 523
+  };                                                                                                     // 524
+                                                                                                         // 525
+  // Take the difference between one array and a number of other arrays.                                 // 526
+  // Only the elements present in just the first array will remain.                                      // 527
+  _.difference = function(array) {                                                                       // 528
+    var rest = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 529
+    return _.filter(array, function(value){ return !_.contains(rest, value); });                         // 530
+  };                                                                                                     // 531
+                                                                                                         // 532
+  // Zip together multiple lists into a single array -- elements that share                              // 533
+  // an index go together.                                                                               // 534
+  _.zip = function() {                                                                                   // 535
+    var length = _.max(_.pluck(arguments, "length").concat(0));                                          // 536
+    var results = new Array(length);                                                                     // 537
+    for (var i = 0; i < length; i++) {                                                                   // 538
+      results[i] = _.pluck(arguments, '' + i);                                                           // 539
+    }                                                                                                    // 540
+    return results;                                                                                      // 541
+  };                                                                                                     // 542
+                                                                                                         // 543
+  // Converts lists into objects. Pass either a single array of `[key, value]`                           // 544
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of                         // 545
+  // the corresponding values.                                                                           // 546
+  _.object = function(list, values) {                                                                    // 547
+    if (list == null) return {};                                                                         // 548
+    var result = {};                                                                                     // 549
+    for (var i = 0, length = list.length; i < length; i++) {                                             // 550
+      if (values) {                                                                                      // 551
+        result[list[i]] = values[i];                                                                     // 552
+      } else {                                                                                           // 553
+        result[list[i][0]] = list[i][1];                                                                 // 554
+      }                                                                                                  // 555
+    }                                                                                                    // 556
+    return result;                                                                                       // 557
+  };                                                                                                     // 558
+                                                                                                         // 559
+  // If the browser doesn't supply us with indexOf (I'm looking at you, **MSIE**),                       // 560
+  // we need this function. Return the position of the first occurrence of an                            // 561
+  // item in an array, or -1 if the item is not included in the array.                                   // 562
+  // Delegates to **ECMAScript 5**'s native `indexOf` if available.                                      // 563
+  // If the array is large and already in sort order, pass `true`                                        // 564
+  // for **isSorted** to use binary search.                                                              // 565
+  _.indexOf = function(array, item, isSorted) {                                                          // 566
+    if (array == null) return -1;                                                                        // 567
+    var i = 0, length = array.length;                                                                    // 568
+    if (isSorted) {                                                                                      // 569
+      if (typeof isSorted == 'number') {                                                                 // 570
+        i = (isSorted < 0 ? Math.max(0, length + isSorted) : isSorted);                                  // 571
+      } else {                                                                                           // 572
+        i = _.sortedIndex(array, item);                                                                  // 573
+        return array[i] === item ? i : -1;                                                               // 574
+      }                                                                                                  // 575
+    }                                                                                                    // 576
+    if (nativeIndexOf && array.indexOf === nativeIndexOf) return array.indexOf(item, isSorted);          // 577
+    for (; i < length; i++) if (array[i] === item) return i;                                             // 578
+    return -1;                                                                                           // 579
+  };                                                                                                     // 580
                                                                                                          // 581
-    while(idx < length) {                                                                                // 582
-      range[idx++] = start;                                                                              // 583
-      start += step;                                                                                     // 584
-    }                                                                                                    // 585
-                                                                                                         // 586
-    return range;                                                                                        // 587
-  };                                                                                                     // 588
-                                                                                                         // 589
-  // Function (ahem) Functions                                                                           // 590
-  // ------------------                                                                                  // 591
-                                                                                                         // 592
-  // Reusable constructor function for prototype setting.                                                // 593
-  var ctor = function(){};                                                                               // 594
-                                                                                                         // 595
-  // Create a function bound to a given object (assigning `this`, and arguments,                         // 596
-  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if                              // 597
-  // available.                                                                                          // 598
-  _.bind = function(func, context) {                                                                     // 599
-    var args, bound;                                                                                     // 600
-    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1)); // 601
-    if (!_.isFunction(func)) throw new TypeError;                                                        // 602
-    args = slice.call(arguments, 2);                                                                     // 603
-    return bound = function() {                                                                          // 604
-      if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));      // 605
-      ctor.prototype = func.prototype;                                                                   // 606
-      var self = new ctor;                                                                               // 607
-      ctor.prototype = null;                                                                             // 608
-      var result = func.apply(self, args.concat(slice.call(arguments)));                                 // 609
-      if (Object(result) === result) return result;                                                      // 610
-      return self;                                                                                       // 611
-    };                                                                                                   // 612
-  };                                                                                                     // 613
-                                                                                                         // 614
-  // Partially apply a function by creating a version that has had some of its                           // 615
-  // arguments pre-filled, without changing its dynamic `this` context.                                  // 616
-  _.partial = function(func) {                                                                           // 617
-    var args = slice.call(arguments, 1);                                                                 // 618
-    return function() {                                                                                  // 619
-      return func.apply(this, args.concat(slice.call(arguments)));                                       // 620
-    };                                                                                                   // 621
-  };                                                                                                     // 622
-                                                                                                         // 623
-  // Bind all of an object's methods to that object. Useful for ensuring that                            // 624
-  // all callbacks defined on an object belong to it.                                                    // 625
-  _.bindAll = function(obj) {                                                                            // 626
-    var funcs = slice.call(arguments, 1);                                                                // 627
-    if (funcs.length === 0) throw new Error("bindAll must be passed function names");                    // 628
-    each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });                                          // 629
-    return obj;                                                                                          // 630
-  };                                                                                                     // 631
-                                                                                                         // 632
-  // Memoize an expensive function by storing its results.                                               // 633
-  _.memoize = function(func, hasher) {                                                                   // 634
-    var memo = {};                                                                                       // 635
-    hasher || (hasher = _.identity);                                                                     // 636
-    return function() {                                                                                  // 637
-      var key = hasher.apply(this, arguments);                                                           // 638
-      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));                   // 639
-    };                                                                                                   // 640
-  };                                                                                                     // 641
-                                                                                                         // 642
-  // Delays a function for the given number of milliseconds, and then calls                              // 643
-  // it with the arguments supplied.                                                                     // 644
-  _.delay = function(func, wait) {                                                                       // 645
-    var args = slice.call(arguments, 2);                                                                 // 646
-    return setTimeout(function(){ return func.apply(null, args); }, wait);                               // 647
+  // Delegates to **ECMAScript 5**'s native `lastIndexOf` if available.                                  // 582
+  _.lastIndexOf = function(array, item, from) {                                                          // 583
+    if (array == null) return -1;                                                                        // 584
+    var hasIndex = from != null;                                                                         // 585
+    if (nativeLastIndexOf && array.lastIndexOf === nativeLastIndexOf) {                                  // 586
+      return hasIndex ? array.lastIndexOf(item, from) : array.lastIndexOf(item);                         // 587
+    }                                                                                                    // 588
+    var i = (hasIndex ? from : array.length);                                                            // 589
+    while (i--) if (array[i] === item) return i;                                                         // 590
+    return -1;                                                                                           // 591
+  };                                                                                                     // 592
+                                                                                                         // 593
+  // Generate an integer Array containing an arithmetic progression. A port of                           // 594
+  // the native Python `range()` function. See                                                           // 595
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).                    // 596
+  _.range = function(start, stop, step) {                                                                // 597
+    if (arguments.length <= 1) {                                                                         // 598
+      stop = start || 0;                                                                                 // 599
+      start = 0;                                                                                         // 600
+    }                                                                                                    // 601
+    step = arguments[2] || 1;                                                                            // 602
+                                                                                                         // 603
+    var length = Math.max(Math.ceil((stop - start) / step), 0);                                          // 604
+    var idx = 0;                                                                                         // 605
+    var range = new Array(length);                                                                       // 606
+                                                                                                         // 607
+    while(idx < length) {                                                                                // 608
+      range[idx++] = start;                                                                              // 609
+      start += step;                                                                                     // 610
+    }                                                                                                    // 611
+                                                                                                         // 612
+    return range;                                                                                        // 613
+  };                                                                                                     // 614
+                                                                                                         // 615
+  // Function (ahem) Functions                                                                           // 616
+  // ------------------                                                                                  // 617
+                                                                                                         // 618
+  // Reusable constructor function for prototype setting.                                                // 619
+  var ctor = function(){};                                                                               // 620
+                                                                                                         // 621
+  // Create a function bound to a given object (assigning `this`, and arguments,                         // 622
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if                              // 623
+  // available.                                                                                          // 624
+  _.bind = function(func, context) {                                                                     // 625
+    var args, bound;                                                                                     // 626
+    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1)); // 627
+    if (!_.isFunction(func)) throw new TypeError;                                                        // 628
+    args = slice.call(arguments, 2);                                                                     // 629
+    return bound = function() {                                                                          // 630
+      if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));      // 631
+      ctor.prototype = func.prototype;                                                                   // 632
+      var self = new ctor;                                                                               // 633
+      ctor.prototype = null;                                                                             // 634
+      var result = func.apply(self, args.concat(slice.call(arguments)));                                 // 635
+      if (Object(result) === result) return result;                                                      // 636
+      return self;                                                                                       // 637
+    };                                                                                                   // 638
+  };                                                                                                     // 639
+                                                                                                         // 640
+  // Partially apply a function by creating a version that has had some of its                           // 641
+  // arguments pre-filled, without changing its dynamic `this` context.                                  // 642
+  _.partial = function(func) {                                                                           // 643
+    var args = slice.call(arguments, 1);                                                                 // 644
+    return function() {                                                                                  // 645
+      return func.apply(this, args.concat(slice.call(arguments)));                                       // 646
+    };                                                                                                   // 647
   };                                                                                                     // 648
                                                                                                          // 649
-  // Defers a function, scheduling it to run after the current call stack has                            // 650
-  // cleared.                                                                                            // 651
-  _.defer = function(func) {                                                                             // 652
-    return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));                                 // 653
-  };                                                                                                     // 654
-                                                                                                         // 655
-  // Returns a function, that, when invoked, will only be triggered at most once                         // 656
-  // during a given window of time. Normally, the throttled function will run                            // 657
-  // as much as it can, without ever going more than once per `wait` duration;                           // 658
-  // but if you'd like to disable the execution on the leading edge, pass                                // 659
-  // `{leading: false}`. To disable execution on the trailing edge, ditto.                               // 660
-  _.throttle = function(func, wait, options) {                                                           // 661
-    var context, args, result;                                                                           // 662
-    var timeout = null;                                                                                  // 663
-    var previous = 0;                                                                                    // 664
-    options || (options = {});                                                                           // 665
-    var later = function() {                                                                             // 666
-      previous = options.leading === false ? 0 : new Date;                                               // 667
-      timeout = null;                                                                                    // 668
-      result = func.apply(context, args);                                                                // 669
-    };                                                                                                   // 670
-    return function() {                                                                                  // 671
-      var now = new Date;                                                                                // 672
-      if (!previous && options.leading === false) previous = now;                                        // 673
-      var remaining = wait - (now - previous);                                                           // 674
-      context = this;                                                                                    // 675
-      args = arguments;                                                                                  // 676
-      if (remaining <= 0) {                                                                              // 677
-        clearTimeout(timeout);                                                                           // 678
-        timeout = null;                                                                                  // 679
-        previous = now;                                                                                  // 680
-        result = func.apply(context, args);                                                              // 681
-      } else if (!timeout && options.trailing !== false) {                                               // 682
-        timeout = setTimeout(later, remaining);                                                          // 683
-      }                                                                                                  // 684
-      return result;                                                                                     // 685
-    };                                                                                                   // 686
-  };                                                                                                     // 687
-                                                                                                         // 688
-  // Returns a function, that, as long as it continues to be invoked, will not                           // 689
-  // be triggered. The function will be called after it stops being called for                           // 690
-  // N milliseconds. If `immediate` is passed, trigger the function on the                               // 691
-  // leading edge, instead of the trailing.                                                              // 692
-  _.debounce = function(func, wait, immediate) {                                                         // 693
-    var timeout, args, context, timestamp, result;                                                       // 694
-    return function() {                                                                                  // 695
-      context = this;                                                                                    // 696
-      args = arguments;                                                                                  // 697
-      timestamp = new Date();                                                                            // 698
-      var later = function() {                                                                           // 699
-        var last = (new Date()) - timestamp;                                                             // 700
-        if (last < wait) {                                                                               // 701
-          timeout = setTimeout(later, wait - last);                                                      // 702
-        } else {                                                                                         // 703
-          timeout = null;                                                                                // 704
-          if (!immediate) result = func.apply(context, args);                                            // 705
-        }                                                                                                // 706
-      };                                                                                                 // 707
-      var callNow = immediate && !timeout;                                                               // 708
-      if (!timeout) {                                                                                    // 709
-        timeout = setTimeout(later, wait);                                                               // 710
-      }                                                                                                  // 711
-      if (callNow) result = func.apply(context, args);                                                   // 712
-      return result;                                                                                     // 713
-    };                                                                                                   // 714
-  };                                                                                                     // 715
-                                                                                                         // 716
-  // Returns a function that will be executed at most one time, no matter how                            // 717
-  // often you call it. Useful for lazy initialization.                                                  // 718
-  _.once = function(func) {                                                                              // 719
-    var ran = false, memo;                                                                               // 720
+  // Bind all of an object's methods to that object. Useful for ensuring that                            // 650
+  // all callbacks defined on an object belong to it.                                                    // 651
+  _.bindAll = function(obj) {                                                                            // 652
+    var funcs = slice.call(arguments, 1);                                                                // 653
+    if (funcs.length === 0) throw new Error("bindAll must be passed function names");                    // 654
+    each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });                                          // 655
+    return obj;                                                                                          // 656
+  };                                                                                                     // 657
+                                                                                                         // 658
+  // Memoize an expensive function by storing its results.                                               // 659
+  _.memoize = function(func, hasher) {                                                                   // 660
+    var memo = {};                                                                                       // 661
+    hasher || (hasher = _.identity);                                                                     // 662
+    return function() {                                                                                  // 663
+      var key = hasher.apply(this, arguments);                                                           // 664
+      return _.has(memo, key) ? memo[key] : (memo[key] = func.apply(this, arguments));                   // 665
+    };                                                                                                   // 666
+  };                                                                                                     // 667
+                                                                                                         // 668
+  // Delays a function for the given number of milliseconds, and then calls                              // 669
+  // it with the arguments supplied.                                                                     // 670
+  _.delay = function(func, wait) {                                                                       // 671
+    var args = slice.call(arguments, 2);                                                                 // 672
+    return setTimeout(function(){ return func.apply(null, args); }, wait);                               // 673
+  };                                                                                                     // 674
+                                                                                                         // 675
+  // Defers a function, scheduling it to run after the current call stack has                            // 676
+  // cleared.                                                                                            // 677
+  _.defer = function(func) {                                                                             // 678
+    return _.delay.apply(_, [func, 1].concat(slice.call(arguments, 1)));                                 // 679
+  };                                                                                                     // 680
+                                                                                                         // 681
+  // Returns a function, that, when invoked, will only be triggered at most once                         // 682
+  // during a given window of time. Normally, the throttled function will run                            // 683
+  // as much as it can, without ever going more than once per `wait` duration;                           // 684
+  // but if you'd like to disable the execution on the leading edge, pass                                // 685
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.                               // 686
+  _.throttle = function(func, wait, options) {                                                           // 687
+    var context, args, result;                                                                           // 688
+    var timeout = null;                                                                                  // 689
+    var previous = 0;                                                                                    // 690
+    options || (options = {});                                                                           // 691
+    var later = function() {                                                                             // 692
+      previous = options.leading === false ? 0 : new Date;                                               // 693
+      timeout = null;                                                                                    // 694
+      result = func.apply(context, args);                                                                // 695
+    };                                                                                                   // 696
+    return function() {                                                                                  // 697
+      var now = new Date;                                                                                // 698
+      if (!previous && options.leading === false) previous = now;                                        // 699
+      var remaining = wait - (now - previous);                                                           // 700
+      context = this;                                                                                    // 701
+      args = arguments;                                                                                  // 702
+      if (remaining <= 0) {                                                                              // 703
+        clearTimeout(timeout);                                                                           // 704
+        timeout = null;                                                                                  // 705
+        previous = now;                                                                                  // 706
+        result = func.apply(context, args);                                                              // 707
+      } else if (!timeout && options.trailing !== false) {                                               // 708
+        timeout = setTimeout(later, remaining);                                                          // 709
+      }                                                                                                  // 710
+      return result;                                                                                     // 711
+    };                                                                                                   // 712
+  };                                                                                                     // 713
+                                                                                                         // 714
+  // Returns a function, that, as long as it continues to be invoked, will not                           // 715
+  // be triggered. The function will be called after it stops being called for                           // 716
+  // N milliseconds. If `immediate` is passed, trigger the function on the                               // 717
+  // leading edge, instead of the trailing.                                                              // 718
+  _.debounce = function(func, wait, immediate) {                                                         // 719
+    var timeout, args, context, timestamp, result;                                                       // 720
     return function() {                                                                                  // 721
-      if (ran) return memo;                                                                              // 722
-      ran = true;                                                                                        // 723
-      memo = func.apply(this, arguments);                                                                // 724
-      func = null;                                                                                       // 725
-      return memo;                                                                                       // 726
-    };                                                                                                   // 727
-  };                                                                                                     // 728
-                                                                                                         // 729
-  // Returns the first function passed as an argument to the second,                                     // 730
-  // allowing you to adjust arguments, run code before and after, and                                    // 731
-  // conditionally execute the original function.                                                        // 732
-  _.wrap = function(func, wrapper) {                                                                     // 733
-    return function() {                                                                                  // 734
-      var args = [func];                                                                                 // 735
-      push.apply(args, arguments);                                                                       // 736
-      return wrapper.apply(this, args);                                                                  // 737
-    };                                                                                                   // 738
-  };                                                                                                     // 739
-                                                                                                         // 740
-  // Returns a function that is the composition of a list of functions, each                             // 741
-  // consuming the return value of the function that follows.                                            // 742
-  _.compose = function() {                                                                               // 743
-    var funcs = arguments;                                                                               // 744
-    return function() {                                                                                  // 745
-      var args = arguments;                                                                              // 746
-      for (var i = funcs.length - 1; i >= 0; i--) {                                                      // 747
-        args = [funcs[i].apply(this, args)];                                                             // 748
-      }                                                                                                  // 749
-      return args[0];                                                                                    // 750
-    };                                                                                                   // 751
-  };                                                                                                     // 752
-                                                                                                         // 753
-  // Returns a function that will only be executed after being called N times.                           // 754
-  _.after = function(times, func) {                                                                      // 755
-    return function() {                                                                                  // 756
-      if (--times < 1) {                                                                                 // 757
-        return func.apply(this, arguments);                                                              // 758
-      }                                                                                                  // 759
-    };                                                                                                   // 760
-  };                                                                                                     // 761
-                                                                                                         // 762
-  // Object Functions                                                                                    // 763
-  // ----------------                                                                                    // 764
-                                                                                                         // 765
-  // Retrieve the names of an object's properties.                                                       // 766
-  // Delegates to **ECMAScript 5**'s native `Object.keys`                                                // 767
-  _.keys = nativeKeys || function(obj) {                                                                 // 768
-    if (obj !== Object(obj)) throw new TypeError('Invalid object');                                      // 769
-    var keys = [];                                                                                       // 770
-    for (var key in obj) if (_.has(obj, key)) keys.push(key);                                            // 771
-    return keys;                                                                                         // 772
-  };                                                                                                     // 773
-                                                                                                         // 774
-  // Retrieve the values of an object's properties.                                                      // 775
-  _.values = function(obj) {                                                                             // 776
-    var keys = _.keys(obj);                                                                              // 777
-    var length = keys.length;                                                                            // 778
-    var values = new Array(length);                                                                      // 779
-    for (var i = 0; i < length; i++) {                                                                   // 780
-      values[i] = obj[keys[i]];                                                                          // 781
-    }                                                                                                    // 782
-    return values;                                                                                       // 783
-  };                                                                                                     // 784
-                                                                                                         // 785
-  // Convert an object into a list of `[key, value]` pairs.                                              // 786
-  _.pairs = function(obj) {                                                                              // 787
-    var keys = _.keys(obj);                                                                              // 788
-    var length = keys.length;                                                                            // 789
-    var pairs = new Array(length);                                                                       // 790
-    for (var i = 0; i < length; i++) {                                                                   // 791
-      pairs[i] = [keys[i], obj[keys[i]]];                                                                // 792
-    }                                                                                                    // 793
-    return pairs;                                                                                        // 794
-  };                                                                                                     // 795
-                                                                                                         // 796
-  // Invert the keys and values of an object. The values must be serializable.                           // 797
-  _.invert = function(obj) {                                                                             // 798
-    var result = {};                                                                                     // 799
-    var keys = _.keys(obj);                                                                              // 800
-    for (var i = 0, length = keys.length; i < length; i++) {                                             // 801
-      result[obj[keys[i]]] = keys[i];                                                                    // 802
-    }                                                                                                    // 803
-    return result;                                                                                       // 804
-  };                                                                                                     // 805
-                                                                                                         // 806
-  // Return a sorted list of the function names available on the object.                                 // 807
-  // Aliased as `methods`                                                                                // 808
-  _.functions = _.methods = function(obj) {                                                              // 809
-    var names = [];                                                                                      // 810
-    for (var key in obj) {                                                                               // 811
-      if (_.isFunction(obj[key])) names.push(key);                                                       // 812
-    }                                                                                                    // 813
-    return names.sort();                                                                                 // 814
-  };                                                                                                     // 815
-                                                                                                         // 816
-  // Extend a given object with all the properties in passed-in object(s).                               // 817
-  _.extend = function(obj) {                                                                             // 818
-    each(slice.call(arguments, 1), function(source) {                                                    // 819
-      if (source) {                                                                                      // 820
-        for (var prop in source) {                                                                       // 821
-          obj[prop] = source[prop];                                                                      // 822
-        }                                                                                                // 823
-      }                                                                                                  // 824
-    });                                                                                                  // 825
-    return obj;                                                                                          // 826
-  };                                                                                                     // 827
-                                                                                                         // 828
-  // Return a copy of the object only containing the whitelisted properties.                             // 829
-  _.pick = function(obj) {                                                                               // 830
-    var copy = {};                                                                                       // 831
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 832
-    each(keys, function(key) {                                                                           // 833
-      if (key in obj) copy[key] = obj[key];                                                              // 834
-    });                                                                                                  // 835
-    return copy;                                                                                         // 836
-  };                                                                                                     // 837
-                                                                                                         // 838
-   // Return a copy of the object without the blacklisted properties.                                    // 839
-  _.omit = function(obj) {                                                                               // 840
-    var copy = {};                                                                                       // 841
-    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 842
-    for (var key in obj) {                                                                               // 843
-      if (!_.contains(keys, key)) copy[key] = obj[key];                                                  // 844
-    }                                                                                                    // 845
-    return copy;                                                                                         // 846
-  };                                                                                                     // 847
-                                                                                                         // 848
-  // Fill in a given object with default properties.                                                     // 849
-  _.defaults = function(obj) {                                                                           // 850
-    each(slice.call(arguments, 1), function(source) {                                                    // 851
-      if (source) {                                                                                      // 852
-        for (var prop in source) {                                                                       // 853
-          if (obj[prop] === void 0) obj[prop] = source[prop];                                            // 854
-        }                                                                                                // 855
-      }                                                                                                  // 856
-    });                                                                                                  // 857
-    return obj;                                                                                          // 858
-  };                                                                                                     // 859
-                                                                                                         // 860
-  // Create a (shallow-cloned) duplicate of an object.                                                   // 861
-  _.clone = function(obj) {                                                                              // 862
-    if (!_.isObject(obj)) return obj;                                                                    // 863
-    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);                                             // 864
-  };                                                                                                     // 865
-                                                                                                         // 866
-  // Invokes interceptor with the obj, and then returns obj.                                             // 867
-  // The primary purpose of this method is to "tap into" a method chain, in                              // 868
-  // order to perform operations on intermediate results within the chain.                               // 869
-  _.tap = function(obj, interceptor) {                                                                   // 870
-    interceptor(obj);                                                                                    // 871
-    return obj;                                                                                          // 872
+      context = this;                                                                                    // 722
+      args = arguments;                                                                                  // 723
+      timestamp = new Date();                                                                            // 724
+      var later = function() {                                                                           // 725
+        var last = (new Date()) - timestamp;                                                             // 726
+        if (last < wait) {                                                                               // 727
+          timeout = setTimeout(later, wait - last);                                                      // 728
+        } else {                                                                                         // 729
+          timeout = null;                                                                                // 730
+          if (!immediate) result = func.apply(context, args);                                            // 731
+        }                                                                                                // 732
+      };                                                                                                 // 733
+      var callNow = immediate && !timeout;                                                               // 734
+      if (!timeout) {                                                                                    // 735
+        timeout = setTimeout(later, wait);                                                               // 736
+      }                                                                                                  // 737
+      if (callNow) result = func.apply(context, args);                                                   // 738
+      return result;                                                                                     // 739
+    };                                                                                                   // 740
+  };                                                                                                     // 741
+                                                                                                         // 742
+  // Returns a function that will be executed at most one time, no matter how                            // 743
+  // often you call it. Useful for lazy initialization.                                                  // 744
+  _.once = function(func) {                                                                              // 745
+    var ran = false, memo;                                                                               // 746
+    return function() {                                                                                  // 747
+      if (ran) return memo;                                                                              // 748
+      ran = true;                                                                                        // 749
+      memo = func.apply(this, arguments);                                                                // 750
+      func = null;                                                                                       // 751
+      return memo;                                                                                       // 752
+    };                                                                                                   // 753
+  };                                                                                                     // 754
+                                                                                                         // 755
+  // Returns the first function passed as an argument to the second,                                     // 756
+  // allowing you to adjust arguments, run code before and after, and                                    // 757
+  // conditionally execute the original function.                                                        // 758
+  _.wrap = function(func, wrapper) {                                                                     // 759
+    return function() {                                                                                  // 760
+      var args = [func];                                                                                 // 761
+      push.apply(args, arguments);                                                                       // 762
+      return wrapper.apply(this, args);                                                                  // 763
+    };                                                                                                   // 764
+  };                                                                                                     // 765
+                                                                                                         // 766
+  // Returns a function that is the composition of a list of functions, each                             // 767
+  // consuming the return value of the function that follows.                                            // 768
+  _.compose = function() {                                                                               // 769
+    var funcs = arguments;                                                                               // 770
+    return function() {                                                                                  // 771
+      var args = arguments;                                                                              // 772
+      for (var i = funcs.length - 1; i >= 0; i--) {                                                      // 773
+        args = [funcs[i].apply(this, args)];                                                             // 774
+      }                                                                                                  // 775
+      return args[0];                                                                                    // 776
+    };                                                                                                   // 777
+  };                                                                                                     // 778
+                                                                                                         // 779
+  // Returns a function that will only be executed after being called N times.                           // 780
+  _.after = function(times, func) {                                                                      // 781
+    return function() {                                                                                  // 782
+      if (--times < 1) {                                                                                 // 783
+        return func.apply(this, arguments);                                                              // 784
+      }                                                                                                  // 785
+    };                                                                                                   // 786
+  };                                                                                                     // 787
+                                                                                                         // 788
+  // Object Functions                                                                                    // 789
+  // ----------------                                                                                    // 790
+                                                                                                         // 791
+  // Retrieve the names of an object's properties.                                                       // 792
+  // Delegates to **ECMAScript 5**'s native `Object.keys`                                                // 793
+  _.keys = nativeKeys || function(obj) {                                                                 // 794
+    if (obj !== Object(obj)) throw new TypeError('Invalid object');                                      // 795
+    var keys = [];                                                                                       // 796
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);                                            // 797
+    return keys;                                                                                         // 798
+  };                                                                                                     // 799
+                                                                                                         // 800
+  // Retrieve the values of an object's properties.                                                      // 801
+  _.values = function(obj) {                                                                             // 802
+    var keys = _.keys(obj);                                                                              // 803
+    var length = keys.length;                                                                            // 804
+    var values = new Array(length);                                                                      // 805
+    for (var i = 0; i < length; i++) {                                                                   // 806
+      values[i] = obj[keys[i]];                                                                          // 807
+    }                                                                                                    // 808
+    return values;                                                                                       // 809
+  };                                                                                                     // 810
+                                                                                                         // 811
+  // Convert an object into a list of `[key, value]` pairs.                                              // 812
+  _.pairs = function(obj) {                                                                              // 813
+    var keys = _.keys(obj);                                                                              // 814
+    var length = keys.length;                                                                            // 815
+    var pairs = new Array(length);                                                                       // 816
+    for (var i = 0; i < length; i++) {                                                                   // 817
+      pairs[i] = [keys[i], obj[keys[i]]];                                                                // 818
+    }                                                                                                    // 819
+    return pairs;                                                                                        // 820
+  };                                                                                                     // 821
+                                                                                                         // 822
+  // Invert the keys and values of an object. The values must be serializable.                           // 823
+  _.invert = function(obj) {                                                                             // 824
+    var result = {};                                                                                     // 825
+    var keys = _.keys(obj);                                                                              // 826
+    for (var i = 0, length = keys.length; i < length; i++) {                                             // 827
+      result[obj[keys[i]]] = keys[i];                                                                    // 828
+    }                                                                                                    // 829
+    return result;                                                                                       // 830
+  };                                                                                                     // 831
+                                                                                                         // 832
+  // Return a sorted list of the function names available on the object.                                 // 833
+  // Aliased as `methods`                                                                                // 834
+  _.functions = _.methods = function(obj) {                                                              // 835
+    var names = [];                                                                                      // 836
+    for (var key in obj) {                                                                               // 837
+      if (_.isFunction(obj[key])) names.push(key);                                                       // 838
+    }                                                                                                    // 839
+    return names.sort();                                                                                 // 840
+  };                                                                                                     // 841
+                                                                                                         // 842
+  // Extend a given object with all the properties in passed-in object(s).                               // 843
+  _.extend = function(obj) {                                                                             // 844
+    each(slice.call(arguments, 1), function(source) {                                                    // 845
+      if (source) {                                                                                      // 846
+        for (var prop in source) {                                                                       // 847
+          obj[prop] = source[prop];                                                                      // 848
+        }                                                                                                // 849
+      }                                                                                                  // 850
+    });                                                                                                  // 851
+    return obj;                                                                                          // 852
+  };                                                                                                     // 853
+                                                                                                         // 854
+  // Return a copy of the object only containing the whitelisted properties.                             // 855
+  _.pick = function(obj) {                                                                               // 856
+    var copy = {};                                                                                       // 857
+    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 858
+    each(keys, function(key) {                                                                           // 859
+      if (key in obj) copy[key] = obj[key];                                                              // 860
+    });                                                                                                  // 861
+    return copy;                                                                                         // 862
+  };                                                                                                     // 863
+                                                                                                         // 864
+   // Return a copy of the object without the blacklisted properties.                                    // 865
+  _.omit = function(obj) {                                                                               // 866
+    var copy = {};                                                                                       // 867
+    var keys = concat.apply(ArrayProto, slice.call(arguments, 1));                                       // 868
+    for (var key in obj) {                                                                               // 869
+      if (!_.contains(keys, key)) copy[key] = obj[key];                                                  // 870
+    }                                                                                                    // 871
+    return copy;                                                                                         // 872
   };                                                                                                     // 873
                                                                                                          // 874
-  // Internal recursive comparison function for `isEqual`.                                               // 875
-  var eq = function(a, b, aStack, bStack) {                                                              // 876
-    // Identical objects are equal. `0 === -0`, but they aren't identical.                               // 877
-    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).           // 878
-    if (a === b) return a !== 0 || 1 / a == 1 / b;                                                       // 879
-    // A strict comparison is necessary because `null == undefined`.                                     // 880
-    if (a == null || b == null) return a === b;                                                          // 881
-    // Unwrap any wrapped objects.                                                                       // 882
-    if (a instanceof _) a = a._wrapped;                                                                  // 883
-    if (b instanceof _) b = b._wrapped;                                                                  // 884
-    // Compare `[[Class]]` names.                                                                        // 885
-    var className = toString.call(a);                                                                    // 886
-    if (className != toString.call(b)) return false;                                                     // 887
-    switch (className) {                                                                                 // 888
-      // Strings, numbers, dates, and booleans are compared by value.                                    // 889
-      case '[object String]':                                                                            // 890
-        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is             // 891
-        // equivalent to `new String("5")`.                                                              // 892
-        return a == String(b);                                                                           // 893
-      case '[object Number]':                                                                            // 894
-        // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for               // 895
-        // other numeric values.                                                                         // 896
-        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);                                  // 897
-      case '[object Date]':                                                                              // 898
-      case '[object Boolean]':                                                                           // 899
-        // Coerce dates and booleans to numeric primitive values. Dates are compared by their            // 900
-        // millisecond representations. Note that invalid dates with millisecond representations         // 901
-        // of `NaN` are not equivalent.                                                                  // 902
-        return +a == +b;                                                                                 // 903
-      // RegExps are compared by their source patterns and flags.                                        // 904
-      case '[object RegExp]':                                                                            // 905
-        return a.source == b.source &&                                                                   // 906
-               a.global == b.global &&                                                                   // 907
-               a.multiline == b.multiline &&                                                             // 908
-               a.ignoreCase == b.ignoreCase;                                                             // 909
-    }                                                                                                    // 910
-    if (typeof a != 'object' || typeof b != 'object') return false;                                      // 911
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic                         // 912
-    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.                       // 913
-    var length = aStack.length;                                                                          // 914
-    while (length--) {                                                                                   // 915
-      // Linear search. Performance is inversely proportional to the number of                           // 916
-      // unique nested structures.                                                                       // 917
-      if (aStack[length] == a) return bStack[length] == b;                                               // 918
-    }                                                                                                    // 919
-    // Objects with different constructors are not equivalent, but `Object`s                             // 920
-    // from different frames are.                                                                        // 921
-    var aCtor = a.constructor, bCtor = b.constructor;                                                    // 922
-    if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&                          // 923
-                             _.isFunction(bCtor) && (bCtor instanceof bCtor))) {                         // 924
-      return false;                                                                                      // 925
-    }                                                                                                    // 926
-    // Add the first object to the stack of traversed objects.                                           // 927
-    aStack.push(a);                                                                                      // 928
-    bStack.push(b);                                                                                      // 929
-    var size = 0, result = true;                                                                         // 930
-    // Recursively compare objects and arrays.                                                           // 931
-    if (className == '[object Array]') {                                                                 // 932
-      // Compare array lengths to determine if a deep comparison is necessary.                           // 933
-      size = a.length;                                                                                   // 934
-      result = size == b.length;                                                                         // 935
-      if (result) {                                                                                      // 936
-        // Deep compare the contents, ignoring non-numeric properties.                                   // 937
-        while (size--) {                                                                                 // 938
-          if (!(result = eq(a[size], b[size], aStack, bStack))) break;                                   // 939
-        }                                                                                                // 940
-      }                                                                                                  // 941
-    } else {                                                                                             // 942
-      // Deep compare objects.                                                                           // 943
-      for (var key in a) {                                                                               // 944
-        if (_.has(a, key)) {                                                                             // 945
-          // Count the expected number of properties.                                                    // 946
-          size++;                                                                                        // 947
-          // Deep compare each member.                                                                   // 948
-          if (!(result = _.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;                    // 949
-        }                                                                                                // 950
-      }                                                                                                  // 951
-      // Ensure that both objects contain the same number of properties.                                 // 952
-      if (result) {                                                                                      // 953
-        for (key in b) {                                                                                 // 954
-          if (_.has(b, key) && !(size--)) break;                                                         // 955
-        }                                                                                                // 956
-        result = !size;                                                                                  // 957
-      }                                                                                                  // 958
-    }                                                                                                    // 959
-    // Remove the first object from the stack of traversed objects.                                      // 960
-    aStack.pop();                                                                                        // 961
-    bStack.pop();                                                                                        // 962
-    return result;                                                                                       // 963
-  };                                                                                                     // 964
-                                                                                                         // 965
-  // Perform a deep comparison to check if two objects are equal.                                        // 966
-  _.isEqual = function(a, b) {                                                                           // 967
-    return eq(a, b, [], []);                                                                             // 968
-  };                                                                                                     // 969
-                                                                                                         // 970
-  // Is a given array, string, or object empty?                                                          // 971
-  // An "empty" object has no enumerable own-properties.                                                 // 972
-  _.isEmpty = function(obj) {                                                                            // 973
-    if (obj == null) return true;                                                                        // 974
-    if (_.isArray(obj) || _.isString(obj)) return obj.length === 0;                                      // 975
-    for (var key in obj) if (_.has(obj, key)) return false;                                              // 976
-    return true;                                                                                         // 977
-  };                                                                                                     // 978
-                                                                                                         // 979
-  // Is a given value a DOM element?                                                                     // 980
-  _.isElement = function(obj) {                                                                          // 981
-    return !!(obj && obj.nodeType === 1);                                                                // 982
-  };                                                                                                     // 983
-                                                                                                         // 984
-  // Is a given value an array?                                                                          // 985
-  // Delegates to ECMA5's native Array.isArray                                                           // 986
-  _.isArray = nativeIsArray || function(obj) {                                                           // 987
-    return toString.call(obj) == '[object Array]';                                                       // 988
-  };                                                                                                     // 989
-                                                                                                         // 990
-  // Is a given variable an object?                                                                      // 991
-  _.isObject = function(obj) {                                                                           // 992
-    return obj === Object(obj);                                                                          // 993
-  };                                                                                                     // 994
-                                                                                                         // 995
-  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.             // 996
-  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {                 // 997
-    _['is' + name] = function(obj) {                                                                     // 998
-      return toString.call(obj) == '[object ' + name + ']';                                              // 999
-    };                                                                                                   // 1000
-  });                                                                                                    // 1001
-                                                                                                         // 1002
-  // Define a fallback version of the method in browsers (ahem, IE), where                               // 1003
-  // there isn't any inspectable "Arguments" type.                                                       // 1004
-  if (!_.isArguments(arguments)) {                                                                       // 1005
-    _.isArguments = function(obj) {                                                                      // 1006
-      return !!(obj && _.has(obj, 'callee'));                                                            // 1007
-    };                                                                                                   // 1008
-  }                                                                                                      // 1009
+  // Fill in a given object with default properties.                                                     // 875
+  _.defaults = function(obj) {                                                                           // 876
+    each(slice.call(arguments, 1), function(source) {                                                    // 877
+      if (source) {                                                                                      // 878
+        for (var prop in source) {                                                                       // 879
+          if (obj[prop] === void 0) obj[prop] = source[prop];                                            // 880
+        }                                                                                                // 881
+      }                                                                                                  // 882
+    });                                                                                                  // 883
+    return obj;                                                                                          // 884
+  };                                                                                                     // 885
+                                                                                                         // 886
+  // Create a (shallow-cloned) duplicate of an object.                                                   // 887
+  _.clone = function(obj) {                                                                              // 888
+    if (!_.isObject(obj)) return obj;                                                                    // 889
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);                                             // 890
+  };                                                                                                     // 891
+                                                                                                         // 892
+  // Invokes interceptor with the obj, and then returns obj.                                             // 893
+  // The primary purpose of this method is to "tap into" a method chain, in                              // 894
+  // order to perform operations on intermediate results within the chain.                               // 895
+  _.tap = function(obj, interceptor) {                                                                   // 896
+    interceptor(obj);                                                                                    // 897
+    return obj;                                                                                          // 898
+  };                                                                                                     // 899
+                                                                                                         // 900
+  // Internal recursive comparison function for `isEqual`.                                               // 901
+  var eq = function(a, b, aStack, bStack) {                                                              // 902
+    // Identical objects are equal. `0 === -0`, but they aren't identical.                               // 903
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).           // 904
+    if (a === b) return a !== 0 || 1 / a == 1 / b;                                                       // 905
+    // A strict comparison is necessary because `null == undefined`.                                     // 906
+    if (a == null || b == null) return a === b;                                                          // 907
+    // Unwrap any wrapped objects.                                                                       // 908
+    if (a instanceof _) a = a._wrapped;                                                                  // 909
+    if (b instanceof _) b = b._wrapped;                                                                  // 910
+    // Compare `[[Class]]` names.                                                                        // 911
+    var className = toString.call(a);                                                                    // 912
+    if (className != toString.call(b)) return false;                                                     // 913
+    switch (className) {                                                                                 // 914
+      // Strings, numbers, dates, and booleans are compared by value.                                    // 915
+      case '[object String]':                                                                            // 916
+        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is             // 917
+        // equivalent to `new String("5")`.                                                              // 918
+        return a == String(b);                                                                           // 919
+      case '[object Number]':                                                                            // 920
+        // `NaN`s are equivalent, but non-reflexive. An `egal` comparison is performed for               // 921
+        // other numeric values.                                                                         // 922
+        return a != +a ? b != +b : (a == 0 ? 1 / a == 1 / b : a == +b);                                  // 923
+      case '[object Date]':                                                                              // 924
+      case '[object Boolean]':                                                                           // 925
+        // Coerce dates and booleans to numeric primitive values. Dates are compared by their            // 926
+        // millisecond representations. Note that invalid dates with millisecond representations         // 927
+        // of `NaN` are not equivalent.                                                                  // 928
+        return +a == +b;                                                                                 // 929
+      // RegExps are compared by their source patterns and flags.                                        // 930
+      case '[object RegExp]':                                                                            // 931
+        return a.source == b.source &&                                                                   // 932
+               a.global == b.global &&                                                                   // 933
+               a.multiline == b.multiline &&                                                             // 934
+               a.ignoreCase == b.ignoreCase;                                                             // 935
+    }                                                                                                    // 936
+    if (typeof a != 'object' || typeof b != 'object') return false;                                      // 937
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic                         // 938
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.                       // 939
+    var length = aStack.length;                                                                          // 940
+    while (length--) {                                                                                   // 941
+      // Linear search. Performance is inversely proportional to the number of                           // 942
+      // unique nested structures.                                                                       // 943
+      if (aStack[length] == a) return bStack[length] == b;                                               // 944
+    }                                                                                                    // 945
+    // Objects with different constructors are not equivalent, but `Object`s                             // 946
+    // from different frames are.                                                                        // 947
+    var aCtor = a.constructor, bCtor = b.constructor;                                                    // 948
+    if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&                          // 949
+                             _.isFunction(bCtor) && (bCtor instanceof bCtor))) {                         // 950
+      return false;                                                                                      // 951
+    }                                                                                                    // 952
+    // Add the first object to the stack of traversed objects.                                           // 953
+    aStack.push(a);                                                                                      // 954
+    bStack.push(b);                                                                                      // 955
+    var size = 0, result = true;                                                                         // 956
+    // Recursively compare objects and arrays.                                                           // 957
+    if (className == '[object Array]') {                                                                 // 958
+      // Compare array lengths to determine if a deep comparison is necessary.                           // 959
+      size = a.length;                                                                                   // 960
+      result = size == b.length;                                                                         // 961
+      if (result) {                                                                                      // 962
+        // Deep compare the contents, ignoring non-numeric properties.                                   // 963
+        while (size--) {                                                                                 // 964
+          if (!(result = eq(a[size], b[size], aStack, bStack))) break;                                   // 965
+        }                                                                                                // 966
+      }                                                                                                  // 967
+    } else {                                                                                             // 968
+      // Deep compare objects.                                                                           // 969
+      for (var key in a) {                                                                               // 970
+        if (_.has(a, key)) {                                                                             // 971
+          // Count the expected number of properties.                                                    // 972
+          size++;                                                                                        // 973
+          // Deep compare each member.                                                                   // 974
+          if (!(result = _.has(b, key) && eq(a[key], b[key], aStack, bStack))) break;                    // 975
+        }                                                                                                // 976
+      }                                                                                                  // 977
+      // Ensure that both objects contain the same number of properties.                                 // 978
+      if (result) {                                                                                      // 979
+        for (key in b) {                                                                                 // 980
+          if (_.has(b, key) && !(size--)) break;                                                         // 981
+        }                                                                                                // 982
+        result = !size;                                                                                  // 983
+      }                                                                                                  // 984
+    }                                                                                                    // 985
+    // Remove the first object from the stack of traversed objects.                                      // 986
+    aStack.pop();                                                                                        // 987
+    bStack.pop();                                                                                        // 988
+    return result;                                                                                       // 989
+  };                                                                                                     // 990
+                                                                                                         // 991
+  // Perform a deep comparison to check if two objects are equal.                                        // 992
+  _.isEqual = function(a, b) {                                                                           // 993
+    return eq(a, b, [], []);                                                                             // 994
+  };                                                                                                     // 995
+                                                                                                         // 996
+  // Is a given array, string, or object empty?                                                          // 997
+  // An "empty" object has no enumerable own-properties.                                                 // 998
+  _.isEmpty = function(obj) {                                                                            // 999
+    if (obj == null) return true;                                                                        // 1000
+    if (_.isArray(obj) || _.isString(obj)) return obj.length === 0;                                      // 1001
+    for (var key in obj) if (_.has(obj, key)) return false;                                              // 1002
+    return true;                                                                                         // 1003
+  };                                                                                                     // 1004
+                                                                                                         // 1005
+  // Is a given value a DOM element?                                                                     // 1006
+  _.isElement = function(obj) {                                                                          // 1007
+    return !!(obj && obj.nodeType === 1);                                                                // 1008
+  };                                                                                                     // 1009
                                                                                                          // 1010
-  // Optimize `isFunction` if appropriate.                                                               // 1011
-  if (typeof (/./) !== 'function') {                                                                     // 1012
-    _.isFunction = function(obj) {                                                                       // 1013
-      return typeof obj === 'function';                                                                  // 1014
-    };                                                                                                   // 1015
-  }                                                                                                      // 1016
-                                                                                                         // 1017
-  // Is a given object a finite number?                                                                  // 1018
-  _.isFinite = function(obj) {                                                                           // 1019
-    return isFinite(obj) && !isNaN(parseFloat(obj));                                                     // 1020
-  };                                                                                                     // 1021
-                                                                                                         // 1022
-  // Is the given value `NaN`? (NaN is the only number which does not equal itself).                     // 1023
-  _.isNaN = function(obj) {                                                                              // 1024
-    return _.isNumber(obj) && obj != +obj;                                                               // 1025
-  };                                                                                                     // 1026
-                                                                                                         // 1027
-  // Is a given value a boolean?                                                                         // 1028
-  _.isBoolean = function(obj) {                                                                          // 1029
-    return obj === true || obj === false || toString.call(obj) == '[object Boolean]';                    // 1030
-  };                                                                                                     // 1031
-                                                                                                         // 1032
-  // Is a given value equal to null?                                                                     // 1033
-  _.isNull = function(obj) {                                                                             // 1034
-    return obj === null;                                                                                 // 1035
-  };                                                                                                     // 1036
-                                                                                                         // 1037
-  // Is a given variable undefined?                                                                      // 1038
-  _.isUndefined = function(obj) {                                                                        // 1039
-    return obj === void 0;                                                                               // 1040
-  };                                                                                                     // 1041
-                                                                                                         // 1042
-  // Shortcut function for checking if an object has a given property directly                           // 1043
-  // on itself (in other words, not on a prototype).                                                     // 1044
-  _.has = function(obj, key) {                                                                           // 1045
-    return hasOwnProperty.call(obj, key);                                                                // 1046
+  // Is a given value an array?                                                                          // 1011
+  // Delegates to ECMA5's native Array.isArray                                                           // 1012
+  _.isArray = nativeIsArray || function(obj) {                                                           // 1013
+    return toString.call(obj) == '[object Array]';                                                       // 1014
+  };                                                                                                     // 1015
+                                                                                                         // 1016
+  // Is a given variable an object?                                                                      // 1017
+  _.isObject = function(obj) {                                                                           // 1018
+    return obj === Object(obj);                                                                          // 1019
+  };                                                                                                     // 1020
+                                                                                                         // 1021
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp.             // 1022
+  each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp'], function(name) {                 // 1023
+    _['is' + name] = function(obj) {                                                                     // 1024
+      return toString.call(obj) == '[object ' + name + ']';                                              // 1025
+    };                                                                                                   // 1026
+  });                                                                                                    // 1027
+                                                                                                         // 1028
+  // Define a fallback version of the method in browsers (ahem, IE), where                               // 1029
+  // there isn't any inspectable "Arguments" type.                                                       // 1030
+  if (!_.isArguments(arguments)) {                                                                       // 1031
+    _.isArguments = function(obj) {                                                                      // 1032
+      return !!(obj && _.has(obj, 'callee'));                                                            // 1033
+    };                                                                                                   // 1034
+  }                                                                                                      // 1035
+                                                                                                         // 1036
+  // Optimize `isFunction` if appropriate.                                                               // 1037
+  if (typeof (/./) !== 'function') {                                                                     // 1038
+    _.isFunction = function(obj) {                                                                       // 1039
+      return typeof obj === 'function';                                                                  // 1040
+    };                                                                                                   // 1041
+  }                                                                                                      // 1042
+                                                                                                         // 1043
+  // Is a given object a finite number?                                                                  // 1044
+  _.isFinite = function(obj) {                                                                           // 1045
+    return isFinite(obj) && !isNaN(parseFloat(obj));                                                     // 1046
   };                                                                                                     // 1047
                                                                                                          // 1048
-  // Utility Functions                                                                                   // 1049
-  // -----------------                                                                                   // 1050
-                                                                                                         // 1051
-  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its                           // 1052
-  // previous owner. Returns a reference to the Underscore object.                                       // 1053
-  _.noConflict = function() {                                                                            // 1054
-    root._ = previousUnderscore;                                                                         // 1055
-    return this;                                                                                         // 1056
+  // Is the given value `NaN`? (NaN is the only number which does not equal itself).                     // 1049
+  _.isNaN = function(obj) {                                                                              // 1050
+    return _.isNumber(obj) && obj != +obj;                                                               // 1051
+  };                                                                                                     // 1052
+                                                                                                         // 1053
+  // Is a given value a boolean?                                                                         // 1054
+  _.isBoolean = function(obj) {                                                                          // 1055
+    return obj === true || obj === false || toString.call(obj) == '[object Boolean]';                    // 1056
   };                                                                                                     // 1057
                                                                                                          // 1058
-  // Keep the identity function around for default iterators.                                            // 1059
-  _.identity = function(value) {                                                                         // 1060
-    return value;                                                                                        // 1061
+  // Is a given value equal to null?                                                                     // 1059
+  _.isNull = function(obj) {                                                                             // 1060
+    return obj === null;                                                                                 // 1061
   };                                                                                                     // 1062
                                                                                                          // 1063
-  // Run a function **n** times.                                                                         // 1064
-  _.times = function(n, iterator, context) {                                                             // 1065
-    var accum = Array(Math.max(0, n));                                                                   // 1066
-    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);                                    // 1067
-    return accum;                                                                                        // 1068
-  };                                                                                                     // 1069
-                                                                                                         // 1070
-  // Return a random integer between min and max (inclusive).                                            // 1071
-  _.random = function(min, max) {                                                                        // 1072
-    if (max == null) {                                                                                   // 1073
-      max = min;                                                                                         // 1074
-      min = 0;                                                                                           // 1075
-    }                                                                                                    // 1076
-    return min + Math.floor(Math.random() * (max - min + 1));                                            // 1077
-  };                                                                                                     // 1078
-                                                                                                         // 1079
-  // List of HTML entities for escaping.                                                                 // 1080
-  var entityMap = {                                                                                      // 1081
-    escape: {                                                                                            // 1082
-      '&': '&amp;',                                                                                      // 1083
-      '<': '&lt;',                                                                                       // 1084
-      '>': '&gt;',                                                                                       // 1085
-      '"': '&quot;',                                                                                     // 1086
-      "'": '&#x27;'                                                                                      // 1087
-    }                                                                                                    // 1088
-  };                                                                                                     // 1089
-  entityMap.unescape = _.invert(entityMap.escape);                                                       // 1090
-                                                                                                         // 1091
-  // Regexes containing the keys and values listed immediately above.                                    // 1092
-  var entityRegexes = {                                                                                  // 1093
-    escape:   new RegExp('[' + _.keys(entityMap.escape).join('') + ']', 'g'),                            // 1094
-    unescape: new RegExp('(' + _.keys(entityMap.unescape).join('|') + ')', 'g')                          // 1095
-  };                                                                                                     // 1096
-                                                                                                         // 1097
-  // Functions for escaping and unescaping strings to/from HTML interpolation.                           // 1098
-  _.each(['escape', 'unescape'], function(method) {                                                      // 1099
-    _[method] = function(string) {                                                                       // 1100
-      if (string == null) return '';                                                                     // 1101
-      return ('' + string).replace(entityRegexes[method], function(match) {                              // 1102
-        return entityMap[method][match];                                                                 // 1103
-      });                                                                                                // 1104
-    };                                                                                                   // 1105
-  });                                                                                                    // 1106
-                                                                                                         // 1107
-  // If the value of the named `property` is a function then invoke it with the                          // 1108
-  // `object` as context; otherwise, return it.                                                          // 1109
-  _.result = function(object, property) {                                                                // 1110
-    if (object == null) return void 0;                                                                   // 1111
-    var value = object[property];                                                                        // 1112
-    return _.isFunction(value) ? value.call(object) : value;                                             // 1113
-  };                                                                                                     // 1114
-                                                                                                         // 1115
-  // Add your own custom functions to the Underscore object.                                             // 1116
-  _.mixin = function(obj) {                                                                              // 1117
-    each(_.functions(obj), function(name) {                                                              // 1118
-      var func = _[name] = obj[name];                                                                    // 1119
-      _.prototype[name] = function() {                                                                   // 1120
-        var args = [this._wrapped];                                                                      // 1121
-        push.apply(args, arguments);                                                                     // 1122
-        return result.call(this, func.apply(_, args));                                                   // 1123
-      };                                                                                                 // 1124
-    });                                                                                                  // 1125
-  };                                                                                                     // 1126
-                                                                                                         // 1127
-  // Generate a unique integer id (unique within the entire client session).                             // 1128
-  // Useful for temporary DOM ids.                                                                       // 1129
-  var idCounter = 0;                                                                                     // 1130
-  _.uniqueId = function(prefix) {                                                                        // 1131
-    var id = ++idCounter + '';                                                                           // 1132
-    return prefix ? prefix + id : id;                                                                    // 1133
-  };                                                                                                     // 1134
-                                                                                                         // 1135
-  // By default, Underscore uses ERB-style template delimiters, change the                               // 1136
-  // following template settings to use alternative delimiters.                                          // 1137
-  _.templateSettings = {                                                                                 // 1138
-    evaluate    : /<%([\s\S]+?)%>/g,                                                                     // 1139
-    interpolate : /<%=([\s\S]+?)%>/g,                                                                    // 1140
-    escape      : /<%-([\s\S]+?)%>/g                                                                     // 1141
-  };                                                                                                     // 1142
-                                                                                                         // 1143
-  // When customizing `templateSettings`, if you don't want to define an                                 // 1144
-  // interpolation, evaluation or escaping regex, we need one that is                                    // 1145
-  // guaranteed not to match.                                                                            // 1146
-  var noMatch = /(.)^/;                                                                                  // 1147
-                                                                                                         // 1148
-  // Certain characters need to be escaped so that they can be put into a                                // 1149
-  // string literal.                                                                                     // 1150
-  var escapes = {                                                                                        // 1151
-    "'":      "'",                                                                                       // 1152
-    '\\':     '\\',                                                                                      // 1153
-    '\r':     'r',                                                                                       // 1154
-    '\n':     'n',                                                                                       // 1155
-    '\t':     't',                                                                                       // 1156
-    '\u2028': 'u2028',                                                                                   // 1157
-    '\u2029': 'u2029'                                                                                    // 1158
-  };                                                                                                     // 1159
-                                                                                                         // 1160
-  var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;                                                          // 1161
-                                                                                                         // 1162
-  // JavaScript micro-templating, similar to John Resig's implementation.                                // 1163
-  // Underscore templating handles arbitrary delimiters, preserves whitespace,                           // 1164
-  // and correctly escapes quotes within interpolated code.                                              // 1165
-  _.template = function(text, data, settings) {                                                          // 1166
-    var render;                                                                                          // 1167
-    settings = _.defaults({}, settings, _.templateSettings);                                             // 1168
+  // Is a given variable undefined?                                                                      // 1064
+  _.isUndefined = function(obj) {                                                                        // 1065
+    return obj === void 0;                                                                               // 1066
+  };                                                                                                     // 1067
+                                                                                                         // 1068
+  // Shortcut function for checking if an object has a given property directly                           // 1069
+  // on itself (in other words, not on a prototype).                                                     // 1070
+  _.has = function(obj, key) {                                                                           // 1071
+    return hasOwnProperty.call(obj, key);                                                                // 1072
+  };                                                                                                     // 1073
+                                                                                                         // 1074
+  // Utility Functions                                                                                   // 1075
+  // -----------------                                                                                   // 1076
+                                                                                                         // 1077
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its                           // 1078
+  // previous owner. Returns a reference to the Underscore object.                                       // 1079
+  _.noConflict = function() {                                                                            // 1080
+    root._ = previousUnderscore;                                                                         // 1081
+    return this;                                                                                         // 1082
+  };                                                                                                     // 1083
+                                                                                                         // 1084
+  // Keep the identity function around for default iterators.                                            // 1085
+  _.identity = function(value) {                                                                         // 1086
+    return value;                                                                                        // 1087
+  };                                                                                                     // 1088
+                                                                                                         // 1089
+  // Run a function **n** times.                                                                         // 1090
+  _.times = function(n, iterator, context) {                                                             // 1091
+    var accum = Array(Math.max(0, n));                                                                   // 1092
+    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);                                    // 1093
+    return accum;                                                                                        // 1094
+  };                                                                                                     // 1095
+                                                                                                         // 1096
+  // Return a random integer between min and max (inclusive).                                            // 1097
+  _.random = function(min, max) {                                                                        // 1098
+    if (max == null) {                                                                                   // 1099
+      max = min;                                                                                         // 1100
+      min = 0;                                                                                           // 1101
+    }                                                                                                    // 1102
+    return min + Math.floor(Math.random() * (max - min + 1));                                            // 1103
+  };                                                                                                     // 1104
+                                                                                                         // 1105
+  // List of HTML entities for escaping.                                                                 // 1106
+  var entityMap = {                                                                                      // 1107
+    escape: {                                                                                            // 1108
+      '&': '&amp;',                                                                                      // 1109
+      '<': '&lt;',                                                                                       // 1110
+      '>': '&gt;',                                                                                       // 1111
+      '"': '&quot;',                                                                                     // 1112
+      "'": '&#x27;'                                                                                      // 1113
+    }                                                                                                    // 1114
+  };                                                                                                     // 1115
+  entityMap.unescape = _.invert(entityMap.escape);                                                       // 1116
+                                                                                                         // 1117
+  // Regexes containing the keys and values listed immediately above.                                    // 1118
+  var entityRegexes = {                                                                                  // 1119
+    escape:   new RegExp('[' + _.keys(entityMap.escape).join('') + ']', 'g'),                            // 1120
+    unescape: new RegExp('(' + _.keys(entityMap.unescape).join('|') + ')', 'g')                          // 1121
+  };                                                                                                     // 1122
+                                                                                                         // 1123
+  // Functions for escaping and unescaping strings to/from HTML interpolation.                           // 1124
+  _.each(['escape', 'unescape'], function(method) {                                                      // 1125
+    _[method] = function(string) {                                                                       // 1126
+      if (string == null) return '';                                                                     // 1127
+      return ('' + string).replace(entityRegexes[method], function(match) {                              // 1128
+        return entityMap[method][match];                                                                 // 1129
+      });                                                                                                // 1130
+    };                                                                                                   // 1131
+  });                                                                                                    // 1132
+                                                                                                         // 1133
+  // If the value of the named `property` is a function then invoke it with the                          // 1134
+  // `object` as context; otherwise, return it.                                                          // 1135
+  _.result = function(object, property) {                                                                // 1136
+    if (object == null) return void 0;                                                                   // 1137
+    var value = object[property];                                                                        // 1138
+    return _.isFunction(value) ? value.call(object) : value;                                             // 1139
+  };                                                                                                     // 1140
+                                                                                                         // 1141
+  // Add your own custom functions to the Underscore object.                                             // 1142
+  _.mixin = function(obj) {                                                                              // 1143
+    each(_.functions(obj), function(name) {                                                              // 1144
+      var func = _[name] = obj[name];                                                                    // 1145
+      _.prototype[name] = function() {                                                                   // 1146
+        var args = [this._wrapped];                                                                      // 1147
+        push.apply(args, arguments);                                                                     // 1148
+        return result.call(this, func.apply(_, args));                                                   // 1149
+      };                                                                                                 // 1150
+    });                                                                                                  // 1151
+  };                                                                                                     // 1152
+                                                                                                         // 1153
+  // Generate a unique integer id (unique within the entire client session).                             // 1154
+  // Useful for temporary DOM ids.                                                                       // 1155
+  var idCounter = 0;                                                                                     // 1156
+  _.uniqueId = function(prefix) {                                                                        // 1157
+    var id = ++idCounter + '';                                                                           // 1158
+    return prefix ? prefix + id : id;                                                                    // 1159
+  };                                                                                                     // 1160
+                                                                                                         // 1161
+  // By default, Underscore uses ERB-style template delimiters, change the                               // 1162
+  // following template settings to use alternative delimiters.                                          // 1163
+  _.templateSettings = {                                                                                 // 1164
+    evaluate    : /<%([\s\S]+?)%>/g,                                                                     // 1165
+    interpolate : /<%=([\s\S]+?)%>/g,                                                                    // 1166
+    escape      : /<%-([\s\S]+?)%>/g                                                                     // 1167
+  };                                                                                                     // 1168
                                                                                                          // 1169
-    // Combine delimiters into one regular expression via alternation.                                   // 1170
-    var matcher = new RegExp([                                                                           // 1171
-      (settings.escape || noMatch).source,                                                               // 1172
-      (settings.interpolate || noMatch).source,                                                          // 1173
-      (settings.evaluate || noMatch).source                                                              // 1174
-    ].join('|') + '|$', 'g');                                                                            // 1175
-                                                                                                         // 1176
-    // Compile the template source, escaping string literals appropriately.                              // 1177
-    var index = 0;                                                                                       // 1178
-    var source = "__p+='";                                                                               // 1179
-    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {                       // 1180
-      source += text.slice(index, offset)                                                                // 1181
-        .replace(escaper, function(match) { return '\\' + escapes[match]; });                            // 1182
-                                                                                                         // 1183
-      if (escape) {                                                                                      // 1184
-        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";                             // 1185
-      }                                                                                                  // 1186
-      if (interpolate) {                                                                                 // 1187
-        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";                                  // 1188
-      }                                                                                                  // 1189
-      if (evaluate) {                                                                                    // 1190
-        source += "';\n" + evaluate + "\n__p+='";                                                        // 1191
-      }                                                                                                  // 1192
-      index = offset + match.length;                                                                     // 1193
-      return match;                                                                                      // 1194
-    });                                                                                                  // 1195
-    source += "';\n";                                                                                    // 1196
-                                                                                                         // 1197
-    // If a variable is not specified, place data values in local scope.                                 // 1198
-    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';                                // 1199
-                                                                                                         // 1200
-    source = "var __t,__p='',__j=Array.prototype.join," +                                                // 1201
-      "print=function(){__p+=__j.call(arguments,'');};\n" +                                              // 1202
-      source + "return __p;\n";                                                                          // 1203
-                                                                                                         // 1204
-    try {                                                                                                // 1205
-      render = new Function(settings.variable || 'obj', '_', source);                                    // 1206
-    } catch (e) {                                                                                        // 1207
-      e.source = source;                                                                                 // 1208
-      throw e;                                                                                           // 1209
-    }                                                                                                    // 1210
-                                                                                                         // 1211
-    if (data) return render(data, _);                                                                    // 1212
-    var template = function(data) {                                                                      // 1213
-      return render.call(this, data, _);                                                                 // 1214
-    };                                                                                                   // 1215
-                                                                                                         // 1216
-    // Provide the compiled function source as a convenience for precompilation.                         // 1217
-    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';                // 1218
-                                                                                                         // 1219
-    return template;                                                                                     // 1220
-  };                                                                                                     // 1221
-                                                                                                         // 1222
-  // Add a "chain" function, which will delegate to the wrapper.                                         // 1223
-  _.chain = function(obj) {                                                                              // 1224
-    return _(obj).chain();                                                                               // 1225
-  };                                                                                                     // 1226
-                                                                                                         // 1227
-  // OOP                                                                                                 // 1228
-  // ---------------                                                                                     // 1229
-  // If Underscore is called as a function, it returns a wrapped object that                             // 1230
-  // can be used OO-style. This wrapper holds altered versions of all the                                // 1231
-  // underscore functions. Wrapped objects may be chained.                                               // 1232
-                                                                                                         // 1233
-  // Helper function to continue chaining intermediate results.                                          // 1234
-  var result = function(obj) {                                                                           // 1235
-    return this._chain ? _(obj).chain() : obj;                                                           // 1236
-  };                                                                                                     // 1237
-                                                                                                         // 1238
-  // Add all of the Underscore functions to the wrapper object.                                          // 1239
-  _.mixin(_);                                                                                            // 1240
-                                                                                                         // 1241
-  // Add all mutator Array functions to the wrapper.                                                     // 1242
-  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {                // 1243
-    var method = ArrayProto[name];                                                                       // 1244
-    _.prototype[name] = function() {                                                                     // 1245
-      var obj = this._wrapped;                                                                           // 1246
-      method.apply(obj, arguments);                                                                      // 1247
-      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];                      // 1248
-      return result.call(this, obj);                                                                     // 1249
-    };                                                                                                   // 1250
-  });                                                                                                    // 1251
-                                                                                                         // 1252
-  // Add all accessor Array functions to the wrapper.                                                    // 1253
-  each(['concat', 'join', 'slice'], function(name) {                                                     // 1254
-    var method = ArrayProto[name];                                                                       // 1255
-    _.prototype[name] = function() {                                                                     // 1256
-      return result.call(this, method.apply(this._wrapped, arguments));                                  // 1257
-    };                                                                                                   // 1258
-  });                                                                                                    // 1259
-                                                                                                         // 1260
-  _.extend(_.prototype, {                                                                                // 1261
-                                                                                                         // 1262
-    // Start chaining a wrapped Underscore object.                                                       // 1263
-    chain: function() {                                                                                  // 1264
-      this._chain = true;                                                                                // 1265
-      return this;                                                                                       // 1266
-    },                                                                                                   // 1267
-                                                                                                         // 1268
-    // Extracts the result from a wrapped and chained object.                                            // 1269
-    value: function() {                                                                                  // 1270
-      return this._wrapped;                                                                              // 1271
-    }                                                                                                    // 1272
-                                                                                                         // 1273
-  });                                                                                                    // 1274
-                                                                                                         // 1275
-}).call(this);                                                                                           // 1276
-                                                                                                         // 1277
+  // When customizing `templateSettings`, if you don't want to define an                                 // 1170
+  // interpolation, evaluation or escaping regex, we need one that is                                    // 1171
+  // guaranteed not to match.                                                                            // 1172
+  var noMatch = /(.)^/;                                                                                  // 1173
+                                                                                                         // 1174
+  // Certain characters need to be escaped so that they can be put into a                                // 1175
+  // string literal.                                                                                     // 1176
+  var escapes = {                                                                                        // 1177
+    "'":      "'",                                                                                       // 1178
+    '\\':     '\\',                                                                                      // 1179
+    '\r':     'r',                                                                                       // 1180
+    '\n':     'n',                                                                                       // 1181
+    '\t':     't',                                                                                       // 1182
+    '\u2028': 'u2028',                                                                                   // 1183
+    '\u2029': 'u2029'                                                                                    // 1184
+  };                                                                                                     // 1185
+                                                                                                         // 1186
+  var escaper = /\\|'|\r|\n|\t|\u2028|\u2029/g;                                                          // 1187
+                                                                                                         // 1188
+  // JavaScript micro-templating, similar to John Resig's implementation.                                // 1189
+  // Underscore templating handles arbitrary delimiters, preserves whitespace,                           // 1190
+  // and correctly escapes quotes within interpolated code.                                              // 1191
+  _.template = function(text, data, settings) {                                                          // 1192
+    var render;                                                                                          // 1193
+    settings = _.defaults({}, settings, _.templateSettings);                                             // 1194
+                                                                                                         // 1195
+    // Combine delimiters into one regular expression via alternation.                                   // 1196
+    var matcher = new RegExp([                                                                           // 1197
+      (settings.escape || noMatch).source,                                                               // 1198
+      (settings.interpolate || noMatch).source,                                                          // 1199
+      (settings.evaluate || noMatch).source                                                              // 1200
+    ].join('|') + '|$', 'g');                                                                            // 1201
+                                                                                                         // 1202
+    // Compile the template source, escaping string literals appropriately.                              // 1203
+    var index = 0;                                                                                       // 1204
+    var source = "__p+='";                                                                               // 1205
+    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {                       // 1206
+      source += text.slice(index, offset)                                                                // 1207
+        .replace(escaper, function(match) { return '\\' + escapes[match]; });                            // 1208
+                                                                                                         // 1209
+      if (escape) {                                                                                      // 1210
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";                             // 1211
+      }                                                                                                  // 1212
+      if (interpolate) {                                                                                 // 1213
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";                                  // 1214
+      }                                                                                                  // 1215
+      if (evaluate) {                                                                                    // 1216
+        source += "';\n" + evaluate + "\n__p+='";                                                        // 1217
+      }                                                                                                  // 1218
+      index = offset + match.length;                                                                     // 1219
+      return match;                                                                                      // 1220
+    });                                                                                                  // 1221
+    source += "';\n";                                                                                    // 1222
+                                                                                                         // 1223
+    // If a variable is not specified, place data values in local scope.                                 // 1224
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';                                // 1225
+                                                                                                         // 1226
+    source = "var __t,__p='',__j=Array.prototype.join," +                                                // 1227
+      "print=function(){__p+=__j.call(arguments,'');};\n" +                                              // 1228
+      source + "return __p;\n";                                                                          // 1229
+                                                                                                         // 1230
+    try {                                                                                                // 1231
+      render = new Function(settings.variable || 'obj', '_', source);                                    // 1232
+    } catch (e) {                                                                                        // 1233
+      e.source = source;                                                                                 // 1234
+      throw e;                                                                                           // 1235
+    }                                                                                                    // 1236
+                                                                                                         // 1237
+    if (data) return render(data, _);                                                                    // 1238
+    var template = function(data) {                                                                      // 1239
+      return render.call(this, data, _);                                                                 // 1240
+    };                                                                                                   // 1241
+                                                                                                         // 1242
+    // Provide the compiled function source as a convenience for precompilation.                         // 1243
+    template.source = 'function(' + (settings.variable || 'obj') + '){\n' + source + '}';                // 1244
+                                                                                                         // 1245
+    return template;                                                                                     // 1246
+  };                                                                                                     // 1247
+                                                                                                         // 1248
+  // Add a "chain" function, which will delegate to the wrapper.                                         // 1249
+  _.chain = function(obj) {                                                                              // 1250
+    return _(obj).chain();                                                                               // 1251
+  };                                                                                                     // 1252
+                                                                                                         // 1253
+  // OOP                                                                                                 // 1254
+  // ---------------                                                                                     // 1255
+  // If Underscore is called as a function, it returns a wrapped object that                             // 1256
+  // can be used OO-style. This wrapper holds altered versions of all the                                // 1257
+  // underscore functions. Wrapped objects may be chained.                                               // 1258
+                                                                                                         // 1259
+  // Helper function to continue chaining intermediate results.                                          // 1260
+  var result = function(obj) {                                                                           // 1261
+    return this._chain ? _(obj).chain() : obj;                                                           // 1262
+  };                                                                                                     // 1263
+                                                                                                         // 1264
+  // Add all of the Underscore functions to the wrapper object.                                          // 1265
+  _.mixin(_);                                                                                            // 1266
+                                                                                                         // 1267
+  // Add all mutator Array functions to the wrapper.                                                     // 1268
+  each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {                // 1269
+    var method = ArrayProto[name];                                                                       // 1270
+    _.prototype[name] = function() {                                                                     // 1271
+      var obj = this._wrapped;                                                                           // 1272
+      method.apply(obj, arguments);                                                                      // 1273
+      if ((name == 'shift' || name == 'splice') && obj.length === 0) delete obj[0];                      // 1274
+      return result.call(this, obj);                                                                     // 1275
+    };                                                                                                   // 1276
+  });                                                                                                    // 1277
+                                                                                                         // 1278
+  // Add all accessor Array functions to the wrapper.                                                    // 1279
+  each(['concat', 'join', 'slice'], function(name) {                                                     // 1280
+    var method = ArrayProto[name];                                                                       // 1281
+    _.prototype[name] = function() {                                                                     // 1282
+      return result.call(this, method.apply(this._wrapped, arguments));                                  // 1283
+    };                                                                                                   // 1284
+  });                                                                                                    // 1285
+                                                                                                         // 1286
+  _.extend(_.prototype, {                                                                                // 1287
+                                                                                                         // 1288
+    // Start chaining a wrapped Underscore object.                                                       // 1289
+    chain: function() {                                                                                  // 1290
+      this._chain = true;                                                                                // 1291
+      return this;                                                                                       // 1292
+    },                                                                                                   // 1293
+                                                                                                         // 1294
+    // Extracts the result from a wrapped and chained object.                                            // 1295
+    value: function() {                                                                                  // 1296
+      return this._wrapped;                                                                              // 1297
+    }                                                                                                    // 1298
+                                                                                                         // 1299
+  });                                                                                                    // 1300
+                                                                                                         // 1301
+}).call(this);                                                                                           // 1302
+                                                                                                         // 1303
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }).call(this);

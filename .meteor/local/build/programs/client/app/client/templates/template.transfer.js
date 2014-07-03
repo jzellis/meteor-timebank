@@ -1,3 +1,27 @@
-(function(){Template.__define__("transfer",Package.handlebars.Handlebars.json_ast_to_func(["<div class='container'>\n\t\t<div class='col-md-8 col-md-offset-2 panel panel-default'>\n\t\t\t<div class='panel-body'>\n\n\t\t",["#",[[0,"if"],[0,"currentUser"]],["\n\t\t\t<h2><i class='fa fa-heart' style='color: #f00'></i> Send ",["{",[[0,"getOption"],"currencyAbbr"]],"</h2>\n\t\t\t<hr>\n\n\t",[">","transferForm"],"\n</div>\n\t"],["\n\t<h2>You must be logged in to do this.</h2>\n\t"]],"\n</div>\n</div>"]));
+(function(){
+Template.__define__("transfer", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "container"
+  }, "\n		", HTML.DIV({
+    "class": "col-md-8 col-md-offset-2 panel panel-default"
+  }, "\n			", HTML.DIV({
+    "class": "panel-body"
+  }, "\n\n		", UI.If(function() {
+    return Spacebars.call(self.lookup("currentUser"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n			", HTML.H2(HTML.I({
+      "class": "fa fa-heart",
+      style: "color: #f00"
+    }), " Send ", function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+    }), "\n			", HTML.HR(), "\n\n	", Spacebars.include(self.lookupTemplate("transferForm")), "\n	" ];
+  }), UI.block(function() {
+    var self = this;
+    return [ "\n	", HTML.H2("You must be logged in to do this."), "\n	" ];
+  })), "\n	"), "\n\n"), "\n");
+}));
 
 })();

@@ -1,3 +1,20 @@
-(function(){Template.__define__("send",Package.handlebars.Handlebars.json_ast_to_func(["<div class='container'>\n\t\t",["#",[[0,"if"],[0,"currentUser"]],["\n\t\t<div class='col-md-8 col-md-offset-2'>\n\t",[">","transferForm"],"\n</div>\n\t"],["\n\t<h2>You must be logged in to do this.</h2>\n\t"]],"\n</div>"]));
+(function(){
+Template.__define__("send", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "container"
+  }, "\n		", UI.If(function() {
+    return Spacebars.call(self.lookup("currentUser"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n		", HTML.DIV({
+      "class": "col-md-8 col-md-offset-2"
+    }, "\n	", Spacebars.include(self.lookupTemplate("transferForm")), "\n"), "\n	" ];
+  }), UI.block(function() {
+    var self = this;
+    return [ "\n	", HTML.H2("You must be logged in to do this."), "\n	" ];
+  })), "\n");
+}));
 
 })();

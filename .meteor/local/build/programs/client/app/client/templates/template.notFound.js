@@ -1,3 +1,8 @@
-(function(){Template.__define__("notFound",Package.handlebars.Handlebars.json_ast_to_func(["Not found"]));
+(function(){
+Template.__define__("notFound", (function() {
+  var self = this;
+  var template = this;
+  return "Not found";
+}));
 
 })();

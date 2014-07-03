@@ -1,3 +1,167 @@
-(function(){Template.__define__("home",Package.handlebars.Handlebars.json_ast_to_func(["<div class='container'>\n\t<div class='row'>\n<div class='col-md-12' style='padding: 1em 1em 2em 2em !important'><h3>",["{",[[0,"getOption"],"siteSubtitle"]],"</h3></div>\n</div>\n<div class='row'>\n\t<div class='col-md-3'>\n\t\t<div class='panel panel-default'>\n\t\t\t<div class=\"panel-heading\"><h4><i class='fa fa-refresh'></i> Activity</h4></div>\n\t\t\t  <div class=\"panel-body\">\n\t\t\t    <ul class='small transactions list-unstyled'>\n\t\t\t    \t",["#",[[0,"each"],[0,"recentTransactions"],20],["\n\t\t\t    \t<li class='text-muted'>\n\t\t\t    \t\t",["#",[[0,"with"],[0,"getUserById"],[0,"sender"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]]," sent ",["#",[[0,"with"],[0,"getUserById"],[0,"recipient"]],["<a href='/users/",["{",[[0,"username"]]],"'>",["{",[[0,"username"]]],"</a>"]]," ",["{",[[0,"getOption"],"currencyAbbr"]]," ",["{",[[0,"amount"]]]," ",["#",[[0,"if"],[0,"description"]],["for &quot;",["{",[[0,"description"]]],"&quot; "]],["{",[[0,"relativeTime"],[0,"timestamp"]]],".\n\t\t\t    \t</li>\n\t\t\t    \t"]],"\n\t\t\t    </ul>\n\t\t\t  </div>\n\t\t</div>\n\t</div>\n\n",["#",[[0,"if"],[0,"currentUser"]],["\n\t<div class='col-md-9'> \n\t\t<div class='panel panel-default'> <!-- Transfer form -->\n\t\t\t<div class='panel-heading'><h4><i class='fa fa-heart'></i> Send ",["{",[[0,"getOption"],"currencyAbbr"]],"</h4></div>\n\t\t\t<div class='panel-body'>\n\t\t\t\t<div class='col-md-8'>\n\t\t\t\t\t",[">","transferForm"],"\n\t\t\t\t</div>\n\t\t\t\t<div class='col-md-4 small text-muted'>\n\t\t\t\t\t<p class='lead'>Use this form to send or request ",["{",[[0,"getOption"],"currencyName"]]," from folks in your community!</p>\n\n\t\t\t\t\t<p>If the person you want to send ",["{",[[0,"getOption"],"currencyAbbr"]]," to isn't a member of the community, they'll receive an invite...and when they sign up, they'll automagically be credited with what you've sent them.</p>\n\t\t\t\t</div>\n\t\t\t</div>\n\t</div><!-- /transfer form -->\n</div>\n"],["\n\n\t<div class='col-md-9'> \n\t\t<div class='panel panel-default'> <!-- Transfer form -->\n\t\t\t<div class='panel-heading'><h4>",["{",[[0,"getOption"],"siteSubtitle"]],"</h4></div>\n\t\t\t<div class='panel-body'>\n\t\t\t",["!",[[0,"getOption"],"description"]],"\n\t\t\t</div>\n\t</div><!-- /transfer form -->\n</div>\n\n"]],"\n\n\t<div class='col-md-4'>\n\t\t<div class='panel panel-default'>\n\t\t\t\t\t\t<div class='panel-heading'><h4><i class='fa fa-arrow-circle-right'></i> Offers </h4></div>\n\n\t\t\t\t\t\t\t\t\t<div class='panel-body'>\n\t\t\t\t\t\t\t\t\t\t",["#",[[0,"if"],[0,"currentUser"]],["<a class='btn btn-primary form-control' href='/offers/post'><i class='fa fa-plus-circle'></i> Post An Offer</a><br><br>"]],"\n\t\t\t\t\t\t\t\t\t\t<ul class='list-unstyled'>\n\t\t\t\t\t\t\t\t\t\t",["#",[[0,"each"],[0,"getOffers"]],["\n\t\t\t\t\t\t\t\t\t\t<li class='offer'>\n\n\t\t\t\t\t\t\t\t\t\t",[">","offerSingleSmall"],"\n\n\t\t\t\t\t\t\t\t\t\t</li>\n<hr>\n\t\t\t\t\t\t\t\t\t\t"]],"\n\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t</div>\n\n\t<div class='col-md-4 col-md-offset-1'>\n\t\t<div class='panel panel-default'>\n\t\t\t\t\t\t\t\t\t<div class='panel-heading'><h4><i class='fa fa-arrow-circle-left'></i> Wanted</h4></div>\n\n\t\t\t\t\t\t\t\t\t<div class='panel-body'>\n\t\t\t\t\t\t\t\t\t\t",["#",[[0,"if"],[0,"currentUser"]],["<a class='btn btn-primary form-control' href='/wanteds/post'><i class='fa fa-plus-circle'></i> Post A Wanted</a><br><br>"]],"\n<ul class='list-unstyled'>\n\t\t\t\t\t\t\t\t\t\t",["#",[[0,"each"],[0,"getWanteds"]],["\n\t\t\t\t\t\t\t\t\t\t<li class='offer'>\n\n\t\t\t\t\t\t\t\t\t\t",[">","wantedSingleSmall"],"\n\n\t\t\t\t\t\t\t\t\t\t</li>\n<hr>\n\t\t\t\t\t\t\t\t\t\t"]],"\n\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t</div>\n</div>\n</div>"]));
+(function(){
+Template.__define__("home", (function() {
+  var self = this;
+  var template = this;
+  return HTML.DIV({
+    "class": "container"
+  }, "\n	", HTML.DIV({
+    "class": "row"
+  }, "\n", HTML.DIV({
+    "class": "col-md-12",
+    style: "padding: 1em 1em 2em 2em !important"
+  }, HTML.H3(function() {
+    return Spacebars.mustache(self.lookup("getOption"), "siteSubtitle");
+  })), "\n"), "\n", HTML.DIV({
+    "class": "row"
+  }, "\n	", HTML.DIV({
+    "class": "col-md-3"
+  }, "\n		", HTML.DIV({
+    "class": "panel panel-default"
+  }, HTML.Raw('\n			<div class="panel-heading"><h4><i class="fa fa-refresh"></i> Activity</h4></div>\n			  '), HTML.DIV({
+    "class": "panel-body"
+  }, "\n			    ", HTML.UL({
+    "class": "small transactions list-unstyled"
+  }, "\n			    	", UI.Each(function() {
+    return Spacebars.dataMustache(self.lookup("recentTransactions"), 20);
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n			    	", HTML.LI({
+      "class": "text-muted"
+    }, "\n			    		", Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("sender"));
+    }, UI.block(function() {
+      var self = this;
+      return HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      });
+    })), " sent ", Spacebars.With(function() {
+      return Spacebars.dataMustache(self.lookup("getUserById"), self.lookup("recipient"));
+    }, UI.block(function() {
+      var self = this;
+      return HTML.A({
+        href: [ "/users/", function() {
+          return Spacebars.mustache(self.lookup("username"));
+        } ]
+      }, function() {
+        return Spacebars.mustache(self.lookup("username"));
+      });
+    })), " ", function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+    }, " ", function() {
+      return Spacebars.mustache(self.lookup("amount"));
+    }, " ", UI.If(function() {
+      return Spacebars.call(self.lookup("description"));
+    }, UI.block(function() {
+      var self = this;
+      return [ "for ", HTML.CharRef({
+        html: "&quot;",
+        str: '"'
+      }), function() {
+        return Spacebars.mustache(self.lookup("description"));
+      }, HTML.CharRef({
+        html: "&quot;",
+        str: '"'
+      }), " " ];
+    })), function() {
+      return Spacebars.mustache(self.lookup("relativeTime"), self.lookup("timestamp"));
+    }, ".\n			    	"), "\n			    	" ];
+  })), "\n			    "), "\n			  "), "\n		"), "\n	"), "\n\n", UI.If(function() {
+    return Spacebars.call(self.lookup("currentUser"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n	", HTML.DIV({
+      "class": "col-md-9"
+    }, " \n		", HTML.DIV({
+      "class": "panel panel-default"
+    }, " ", HTML.Comment(" Transfer form "), "\n			", HTML.DIV({
+      "class": "panel-heading"
+    }, HTML.H4(HTML.I({
+      "class": "fa fa-heart"
+    }), " Send ", function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+    })), "\n			", HTML.DIV({
+      "class": "panel-body"
+    }, "\n				", HTML.DIV({
+      "class": "col-md-8"
+    }, "\n					", Spacebars.include(self.lookupTemplate("transferForm")), "\n				"), "\n				", HTML.DIV({
+      "class": "col-md-4 small text-muted"
+    }, "\n					", HTML.P({
+      "class": "lead"
+    }, "Use this form to send or request ", function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyName");
+    }, " from folks in your community!"), "\n\n					", HTML.P("If the person you want to send ", function() {
+      return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
+    }, " to isn't a member of the community, they'll receive an invite...and when they sign up, they'll automagically be credited with what you've sent them."), "\n				"), "\n			"), "\n	"), HTML.Comment(" /transfer form "), "\n"), "\n" ];
+  }), UI.block(function() {
+    var self = this;
+    return [ "\n\n	", HTML.DIV({
+      "class": "col-md-9"
+    }, " \n		", HTML.DIV({
+      "class": "panel panel-default"
+    }, " ", HTML.Comment(" Transfer form "), "\n			", HTML.DIV({
+      "class": "panel-heading"
+    }, HTML.H4(function() {
+      return Spacebars.mustache(self.lookup("getOption"), "siteSubtitle");
+    })), "\n			", HTML.DIV({
+      "class": "panel-body"
+    }, "\n			", function() {
+      return Spacebars.makeRaw(Spacebars.mustache(self.lookup("getOption"), "description"));
+    }, "\n			"), "\n	"), HTML.Comment(" /transfer form "), "\n"), "\n\n" ];
+  })), "\n\n	", HTML.DIV({
+    "class": "col-md-4"
+  }, "\n		", HTML.DIV({
+    "class": "panel panel-default"
+  }, HTML.Raw('\n						<div class="panel-heading"><h4><i class="fa fa-arrow-circle-right"></i> Offers </h4></div>\n\n									'), HTML.DIV({
+    "class": "panel-body"
+  }, "\n										", UI.If(function() {
+    return Spacebars.call(self.lookup("currentUser"));
+  }, UI.block(function() {
+    var self = this;
+    return [ HTML.A({
+      "class": "btn btn-primary form-control",
+      href: "/offers/post"
+    }, HTML.I({
+      "class": "fa fa-plus-circle"
+    }), " Post An Offer"), HTML.BR(), HTML.BR() ];
+  })), "\n										", HTML.UL({
+    "class": "list-unstyled"
+  }, "\n										", UI.Each(function() {
+    return Spacebars.call(self.lookup("getOffers"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n										", HTML.LI({
+      "class": "offer"
+    }, "\n\n										", Spacebars.include(self.lookupTemplate("offerSingleSmall")), "\n\n										"), "\n", HTML.HR(), "\n										" ];
+  })), "\n										"), "\n				"), "\n			"), "\n	"), "\n\n	", HTML.DIV({
+    "class": "col-md-4 col-md-offset-1"
+  }, "\n		", HTML.DIV({
+    "class": "panel panel-default"
+  }, HTML.Raw('\n									<div class="panel-heading"><h4><i class="fa fa-arrow-circle-left"></i> Wanted</h4></div>\n\n									'), HTML.DIV({
+    "class": "panel-body"
+  }, "\n										", UI.If(function() {
+    return Spacebars.call(self.lookup("currentUser"));
+  }, UI.block(function() {
+    var self = this;
+    return [ HTML.A({
+      "class": "btn btn-primary form-control",
+      href: "/wanteds/post"
+    }, HTML.I({
+      "class": "fa fa-plus-circle"
+    }), " Post A Wanted"), HTML.BR(), HTML.BR() ];
+  })), "\n", HTML.UL({
+    "class": "list-unstyled"
+  }, "\n										", UI.Each(function() {
+    return Spacebars.call(self.lookup("getWanteds"));
+  }, UI.block(function() {
+    var self = this;
+    return [ "\n										", HTML.LI({
+      "class": "offer"
+    }, "\n\n										", Spacebars.include(self.lookupTemplate("wantedSingleSmall")), "\n\n										"), "\n", HTML.HR(), "\n										" ];
+  })), "\n										"), "\n				"), "\n			"), "\n	"), "\n"), "\n");
+}));
 
 })();

@@ -2,11 +2,10 @@
 
 /* Imports */
 var Meteor = Package.meteor.Meteor;
-var Handlebars = Package.handlebars.Handlebars;
 var _ = Package.underscore._;
 
 /* Package-scope variables */
-var OriginalHandlebars;
+var Handlebars, OriginalHandlebars;
 
 (function () {
 
@@ -17,11 +16,12 @@ var OriginalHandlebars;
 ///////////////////////////////////////////////////////////////////////
                                                                      //
 OriginalHandlebars = Npm.require('handlebars');                      // 1
-                                                                     // 2
-_.extend(Handlebars, {                                               // 3
-  templates: {},                                                     // 4
-});                                                                  // 5
-                                                                     // 6
+Handlebars = Handlebars || {};                                       // 2
+                                                                     // 3
+_.extend(Handlebars, {                                               // 4
+  templates: {},                                                     // 5
+});                                                                  // 6
+                                                                     // 7
 ///////////////////////////////////////////////////////////////////////
 
 }).call(this);
@@ -30,6 +30,7 @@ _.extend(Handlebars, {                                               // 3
 /* Exports */
 if (typeof Package === 'undefined') Package = {};
 Package['handlebars-server'] = {
+  Handlebars: Handlebars,
   OriginalHandlebars: OriginalHandlebars
 };
 

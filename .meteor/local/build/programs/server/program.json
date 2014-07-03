@@ -39,19 +39,34 @@
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/webapp.js",
-      "node_modules": "npm/webapp/main/node_modules",
-      "sourceMap": "packages/webapp.js.map",
+      "path": "packages/spacebars-common.js",
+      "sourceMap": "packages/spacebars-common.js.map",
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/check.js",
-      "sourceMap": "packages/check.js.map",
+      "path": "packages/htmljs.js",
+      "sourceMap": "packages/htmljs.js.map",
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/random.js",
-      "sourceMap": "packages/random.js.map",
+      "path": "packages/html-tools.js",
+      "sourceMap": "packages/html-tools.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/minifiers.js",
+      "node_modules": "npm/minifiers/main/node_modules",
+      "sourceMap": "packages/minifiers.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/spacebars-compiler.js",
+      "sourceMap": "packages/spacebars-compiler.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/jquery.js",
+      "sourceMap": "packages/jquery.js.map",
       "sourceMapRoot": "packages"
     },
     {
@@ -60,13 +75,18 @@
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/autopublish.js",
-      "sourceMap": "packages/autopublish.js.map",
+      "path": "packages/random.js",
+      "sourceMap": "packages/random.js.map",
       "sourceMapRoot": "packages"
     },
     {
       "path": "packages/ordered-dict.js",
       "sourceMap": "packages/ordered-dict.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/id-map.js",
+      "sourceMap": "packages/id-map.js.map",
       "sourceMapRoot": "packages"
     },
     {
@@ -77,6 +97,55 @@
     {
       "path": "packages/minimongo.js",
       "sourceMap": "packages/minimongo.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/observe-sequence.js",
+      "sourceMap": "packages/observe-sequence.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/ui.js",
+      "sourceMap": "packages/ui.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/templating.js",
+      "sourceMap": "packages/templating.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/spacebars.js",
+      "sourceMap": "packages/spacebars.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/webapp.js",
+      "node_modules": "npm/webapp/main/node_modules",
+      "sourceMap": "packages/webapp.js.map",
+      "sourceMapRoot": "packages",
+      "assets": {
+        "boilerplate.html": "assets/packages/webapp/boilerplate.html"
+      }
+    },
+    {
+      "path": "packages/check.js",
+      "sourceMap": "packages/check.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/retry.js",
+      "sourceMap": "packages/retry.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/autopublish.js",
+      "sourceMap": "packages/autopublish.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/callback-hook.js",
+      "sourceMap": "packages/callback-hook.js.map",
       "sourceMapRoot": "packages"
     },
     {
@@ -93,6 +162,11 @@
     {
       "path": "packages/application-configuration.js",
       "sourceMap": "packages/application-configuration.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/binary-heap.js",
+      "sourceMap": "packages/binary-heap.js.map",
       "sourceMapRoot": "packages"
     },
     {
@@ -117,28 +191,13 @@
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/spark.js",
-      "sourceMap": "packages/spark.js.map",
-      "sourceMapRoot": "packages"
-    },
-    {
-      "path": "packages/preserve-inputs.js",
-      "sourceMap": "packages/preserve-inputs.js.map",
-      "sourceMapRoot": "packages"
-    },
-    {
-      "path": "packages/jquery.js",
-      "sourceMap": "packages/jquery.js.map",
-      "sourceMapRoot": "packages"
-    },
-    {
-      "path": "packages/service-configuration.js",
-      "sourceMap": "packages/service-configuration.js.map",
-      "sourceMapRoot": "packages"
-    },
-    {
       "path": "packages/accounts-base.js",
       "sourceMap": "packages/accounts-base.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
+      "path": "packages/sha.js",
+      "sourceMap": "packages/sha.js.map",
       "sourceMapRoot": "packages"
     },
     {
@@ -184,6 +243,11 @@
       "sourceMapRoot": "packages"
     },
     {
+      "path": "packages/service-configuration.js",
+      "sourceMap": "packages/service-configuration.js.map",
+      "sourceMapRoot": "packages"
+    },
+    {
       "path": "packages/oauth.js",
       "sourceMap": "packages/oauth.js.map",
       "sourceMapRoot": "packages"
@@ -210,7 +274,6 @@
     },
     {
       "path": "packages/handlebars.js",
-      "node_modules": "npm/handlebars/main/node_modules",
       "sourceMap": "packages/handlebars.js.map",
       "sourceMapRoot": "packages"
     },
@@ -242,13 +305,13 @@
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/session.js",
-      "sourceMap": "packages/session.js.map",
+      "path": "packages/blaze-layout.js",
+      "sourceMap": "packages/blaze-layout.js.map",
       "sourceMapRoot": "packages"
     },
     {
-      "path": "packages/templating.js",
-      "sourceMap": "packages/templating.js.map",
+      "path": "packages/session.js",
+      "sourceMap": "packages/session.js.map",
       "sourceMapRoot": "packages"
     },
     {

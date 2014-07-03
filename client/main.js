@@ -46,7 +46,8 @@ Offers = new Meteor.Collection("offers", {
 
 Router.configure({
     notFoundTemplate: 'notFound',
-    loadingTemplate: 'loading'
+    loadingTemplate: 'loading',
+    layoutTemplate: "layout"
 });
 
 Router.map(function () {
@@ -115,15 +116,7 @@ Router.map(function () {
     });
 
     this.route('setup', {
-        path: '/setup',
-        before: function () {
-            // if (Meteor.users.find().count() > 0) {
-            //     this.render('alreadySetup');
-
-            //     // stop the rest of the before hooks and the action function 
-            //     this.stop();
-            // }
-        }
+        path: '/setup'
     });
 
     this.route('account', {
@@ -282,7 +275,7 @@ Router.map(function () {
 
 });
 
-Router.before(function () {
+Router.onRun(function () {
     if (Meteor.users.find().count() == 0) {
         this.render('loading');
 
@@ -759,7 +752,8 @@ Template.navbar.rendered = function () {
         templates: {
             suggestion: function (user) {
                 // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
-                return Template.autocompleteSuggestion(user);
+                // return Template.autocompleteSuggestion(user);
+                return "<div class='text-left'> <div class='col-md-4'><img src='" + user.profile.picture + "' style='height: 3em'></div> <div class='col-md-8'>" + user.username + "</div>    </div><div class='row'> <div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
             }
         }
     });
@@ -778,14 +772,14 @@ Template.user.rendered = function () {
         confirmKeys: [13, 9, 188],
         maxTags: 20
     });
-    Meteor.users.findOne({
-        _id: Meteor.userId()
-    }).profile.tags.forEach(function (tag) {
-
+    window.setTimeout(function(){
+    if(Meteor.user()){
+        Meteor.user().profile.tags.forEach(function (tag) {
         $('#tags').tagsinput('add', tag);
 
     });
-
+    }
+}, 500);
 
 }
 
@@ -849,7 +843,7 @@ Template.groupCreate.rendered = function(){
         templates: {
             suggestion: function (user) {
                 // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
-                return Template.autocompleteSuggestion(user);
+                return "<div class='text-left'> <div class='col-md-4'><img src='" + user.profile.picture + "' style='height: 3em'></div> <div class='col-md-8'>" + user.username + "</div>    </div><div class='row'> <div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
             }
         }
     });
@@ -898,7 +892,7 @@ $('#userLookup').typeahead({
         templates: {
             suggestion: function (user) {
                 // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
-                return Template.autocompleteSuggestion(user);
+                return "<div class='text-left'> <div class='col-md-4'><img src='" + user.profile.picture + "' style='height: 3em'></div> <div class='col-md-8'>" + user.username + "</div>    </div><div class='row'> <div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
             }
         }
     });
@@ -2049,7 +2043,7 @@ function initializeUserSearchTypeahead() {
         templates: {
             suggestion: function (user) {
                 // return "<div class='row'><div class='col-md-4'><img src='" + user.profile.picture + "' style='width: 100%'></div><div class='col-md-8'>" + user.username + "</div><div class='row'><div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
-                return Template.autocompleteSuggestion(user);
+                return "<div class='text-left'> <div class='col-md-4'><img src='" + user.profile.picture + "' style='height: 3em'></div> <div class='col-md-8'>" + user.username + "</div>    </div><div class='row'> <div class='col-md-12'><small>Balance: " + user.profile.balance + "</small></div></div>";
             }
         }
     });
@@ -2219,3 +2213,10 @@ calendar[i].day = moment(calendar[i].day).format('MMMM Do YYYY');
 return calendar;
 
 }
+
+
+
+Handlebars.registerHelper("isAdmin", function(){
+    return this.profile.isAdmin;
+})
+

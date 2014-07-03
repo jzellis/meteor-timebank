@@ -20,6 +20,7 @@
 /* Imports */
 var Meteor = Package.meteor.Meteor;
 var ServiceConfiguration = Package['service-configuration'].ServiceConfiguration;
+var OAuth = Package.oauth.OAuth;
 var Oauth = Package.oauth.Oauth;
 
 
@@ -30,4 +31,4 @@ Package.oauth2 = {};
 
 })();
 
-//# sourceMappingURL=228fb002a50ab94e17475623f0e34cd441d691ba.map
+//# sourceMappingURL=5fa58098b89a1467037a0b8eb4b17ad33b72cf07.map
