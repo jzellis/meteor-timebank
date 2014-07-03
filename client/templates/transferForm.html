@@ -24,7 +24,7 @@
 	</optgroup>
 		<optgroup label="My Groups">
 		{{#each myGroups}}
-		<option data-content="<img src='{{profile.picture}}' style='height:1em'> {{profile.name}} <b>Balance: {{profile.balance}}</b>"value='{{_id}}'>{{username}} Balance: {{profile.balance}}</option>
+		<option data-content="<img src='{{profile.picture}}' style='height:1em'> {{profile.name}} <b>Balance: {{profile.balance}}</b>" value='{{_id}}'>{{username}} Balance: {{profile.balance}}</option>
 		{{/each}}
 	</optgroup>
 	</select>
@@ -62,13 +62,13 @@
 
 		<div class="input-group">
 		  <span class="input-group-addon">{{getOption "currencyAbbr"}}</span>
-		  <input type="text" name='amount' class="form-control amount" placeholder="Minutes (please use multiples of 5/10 min! estimating is OK!)" {{#if amount}}value='{{amount}}'{{/if}}>
+		  <input type="text" name='amount' class="form-control amount" placeholder="Minutes (please use multiples of 5/10 min! estimating is OK!)" value='{{#if amount}}{{amount}}{{/if}}'>
 		</div>
 </fieldset>
 <fieldset class='col-md-12 form-group'>
 <div class="col-md-12 input-group">
   <span class="input-group-addon">For</span>
-  <input type="text" class="form-control description" name='description' placeholder="Optional description, e.g. hours of lawn mowing." {{#if description}}value='{{description}}'{{/if}}>
+  <input type="text" class="form-control description" name='description' placeholder="Optional description, e.g. hours of lawn mowing." value='{{#if description}}{{description}}{{/if}}'>
 </div>
 </fieldset>
 

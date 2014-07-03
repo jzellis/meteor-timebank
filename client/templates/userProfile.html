@@ -1,0 +1,33 @@
+<template name='userProfile'>
+			<div class='row'>
+{{#if user.profile.picture}}<img src='{{user.profile.picture}}' >{{/if}}<br>
+				<div class='h1'>{{user.username}}</div>
+
+			</div>
+			<div class='row'>
+
+				<p class='h3'>{{getOption "currencyAbbr"}} {{user.profile.balance}}</p>
+				<p>{{user.profile.bio}}</p>
+				<p><a href='{{user.profile.url}}' target='_new'>{{user.profile.url}}</a>
+						</p>
+
+
+				</div>
+				<div class='row tags'>
+
+					<b>Tags:</b> 
+					{{#each user.profile.tags}}
+					<span class='label label-primary'><a href='/tags/{{urlEncode this}}' >{{this}}</a></span>
+					{{/each}}
+				</div>
+
+<div class='row'>
+				<div class='btn {{#if isFavorite user._id}}btn-success{{else}}btn-primary{{/if}} btn-sm toggleFavorite' data-id='{{user._id}}'>
+
+		<i class='fa fa-star'></i> Add To Favorites
+
+
+
+				</div> <a class='btn btn-primary btn-sm' href='/send/{{user.username}}'><i class='fa fa-arrow-circle-right'></i> Send {{user.username}} {{getOption "currencyName"}}</a> <a class='btn btn-primary btn-sm' href='/request/{{user.username}}'><i class='fa fa-arrow-circle-left'></i> Request {{getOption "currencyName"}} from {{user.username}} </a>
+</div>
+</template>

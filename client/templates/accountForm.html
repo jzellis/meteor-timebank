@@ -1,7 +1,7 @@
 <template name='accountForm'>
 		<fieldset class='form-group'>
 			<label for='username'>Username</label>
-			<input class='form-control' id='username' {{#if username}}value='{{username}}'{{/if}} required>
+			<input class='form-control' id='username' value='{{#if username}}{{username}}{{/if}}' required>
 		</fieldset>
 		<fieldset>
 			<label for='avatar'>User Picture/Avatar (maximum file size 4MB)</label>

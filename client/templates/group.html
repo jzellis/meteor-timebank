@@ -4,7 +4,7 @@
 		<div class='col-md-9'>
 			<div class='panel panel-default'>
 				
-				<h2 class='panel-heading'>{{profile.name}} {{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right'data-toggle="modal" data-target="#groupForm">Edit Group Info</span>{{/if}}</h2>
+				<h2 class='panel-heading'>{{profile.name}} {{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right' data-toggle="modal" data-target="#groupForm">Edit Group Info</span>{{/if}}</h2>
 				<div class='panel-body'>
 					<div class='row'>
 						<div class='col-md-2'>
@@ -16,7 +16,7 @@
 							<br><div class='col-md-11'>{{{nl2br profile.bio}}}</div>
 							<div class='clearfix'></div>
 							<hr>
-							<h4>Members{{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right'data-toggle="modal" data-target="#addMember">Add Members</span>{{/if}}</h4><br>
+							<h4>Members{{#if currentUserIsMember _id}}<span class='btn btn-default btn-small pull-right' data-toggle="modal" data-target="#addMember">Add Members</span>{{/if}}</h4><br>
 							<ul class='list-unstyled list-inline memberList col-md-12'>
 
 								{{#each profile.members}}

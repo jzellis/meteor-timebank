@@ -36,7 +36,13 @@
 						<tbody>
 						{{#each rankings.sent}}
 							
-							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
+							<tr>
+								<td class='col-md-1'>{{num}}</td>
+								{{#with getUserById id}}
+									<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td>
+									<td><a href='/users/{{username}}'>{{username}}</a></td>{{/with}}
+									<td>{{amount}}</td>
+								</tr>
 							
 						{{/each}}
 					</tbody>
@@ -52,7 +58,7 @@
 						<tbody>
 						{{#each rankings.received}}
 							
-							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
+							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a></td>{{/with}}<td>{{amount}}</td></tr>
 							
 						{{/each}}
 					</tbody>
@@ -68,7 +74,7 @@
 						<tbody>
 						{{#each rankings.total}}
 							
-							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td></tr>
+							<tr><td class='col-md-1'>{{num}}</td>{{#with getUserById id}}<td class='col-md-1'><a href='/users/{{username}}'><img src='{{profile.picture}}' class='avatar'></a></td><td><a href='/users/{{username}}'>{{username}}</a></td>{{/with}}<td>{{amount}}</td></tr>
 							
 						{{/each}}
 					</tbody>

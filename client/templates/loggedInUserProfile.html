@@ -1,0 +1,31 @@
+<template name='loggedInUserProfile'>
+<form role='form' name='profileForm' id='profileForm'>
+<div class='row'>
+
+{{#if user.profile.picture}}<img src='{{user.profile.picture}}' >{{/if}}<br>
+				<div class='h1'>{{user.username}}</div>
+
+			</div>
+			<div class='row'>
+
+				<p class='h3'>{{getOption "currencyAbbr"}} {{user.profile.balance}}</p>
+				<p><fieldset class='form-group text-left'><label for='email'>Email</label>
+					<input class='form-control' type='email' id='email' name='email' value='{{user.emails.[0].address}}'></fieldset></p>
+				<p><fieldset class='form-group text-left'><label for='bio'>Bio</label><textarea id='bio' name='bio' class='form-control' rows='4'>{{user.profile.bio}}</textarea></fieldset></p>
+				<p>
+					<fieldset class='form-group text-left'><label for='url'>URL</label><input name='url' id='url' class='form-control' placeholder='URL' value='{{user.profile.url}}'></fieldset></p>
+
+
+				</div>
+				<div class='row tags'>
+					
+					<div>
+					<fieldset class='form-group text-left'><label for='tags'>Tags</label>
+						<input id='tags' name='tags' class='form-control' data-role="tagsinput">
+					</fieldset>
+				</div>
+					
+				</div>
+<div class='row pull-right'><button type='submit' id='updateProfile' class='btn btn-default'>Update Profile</button></div><div class='clearfix'></div>
+</form>
+</template>

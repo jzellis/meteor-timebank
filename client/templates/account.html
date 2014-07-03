@@ -7,7 +7,7 @@
 		<form id='accountForm' parsley-validate>
 			<fieldset class='form-group'>
 				<label for='email'>Email</label>
-				<input type='email' id='email' class='email form-control unstyled' parsley-trigger="change" data-original='{{currentUser.emails.0.address}}' value='{{currentUser.emails.0.address}}'>
+				<input type='email' id='email' class='email form-control unstyled' parsley-trigger="change" data-original='{{currentUser.emails[0].address}}' value='{{currentUser.emails[0].address}}'>
 			</fieldset>
 			<fieldset class='form-group'>
 				<label for='url'>URL</label>
@@ -28,8 +28,8 @@
 		<tbody>
 	{{#each getMyTransactions}}
 	<tr class='{{transactionType}}'>
-	<td>{{#if isSender}}<i class='fa fa-chevron-circle-right'></i>{{/if}}{{#if isRecipient}}<i class='fa fa-chevron-circle-left'></i>{{/if}}<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
-	</tr>
+	<td>{{#if isSender}}<i class='fa fa-chevron-circle-right'></i>{{/if}}{{#if isRecipient}}<i class='fa fa-chevron-circle-left'></i>{{/if}}</td><td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
+
 	{{/each}}
 </tbody>
 	</table>

@@ -22,54 +22,12 @@
 		</div>
 <div class='col-md-8'>
 	<div class='well text-center'>
-		<div class='row'>
-{{#if isCurrentUser user._id}}<form role='form' name='profileForm' id='profileForm'>{{/if}}
-{{#if user.profile.picture}}<img src='{{user.profile.picture}}' >{{/if}}<br>
-				<div class='h1'>{{user.username}}</div>
 
-			</div>
-			<div class='row'>
-
-				<p class='h3'>{{getOption "currencyAbbr"}} {{user.profile.balance}}</p>
-				{{#if isCurrentUser user._id}}<p><fieldset class='form-group text-left'><label for='email'>Email</label>
-					<input class='form-control' type='email' id='email' name='email' value='{{user.emails.0.address}}'></fieldset></p>{{/if}}
-				<p>{{#if isCurrentUser user._id}}<fieldset class='form-group text-left'><label for='bio'>Bio</label><textarea id='bio' name='bio' class='form-control' rows='4'>{{user.profile.bio}}</textarea></fieldset>{{else}}{{user.profile.bio}}{{/if}}</p>
-				<p>{{#if isCurrentUser user._id}}
-					<fieldset class='form-group text-left'><label for='url'>URL</label><input name='url' id='url' class='form-control' placeholder='URL' value='{{user.profile.url}}'></fieldset>{{else}}<a href='{{user.profile.url}}' target='_new'>{{user.profile.url}}</a>
-						{{/if}}</p>
-
-
-				</div>
-				<div class='row tags'>
-					{{#if isCurrentUser user._id}}
-					{{#constant}}
-					<div>
-					<fieldset class='form-group text-left'><label for='tags'>Tags</label>
-						<input id='tags' name='tags' class='form-control' data-role="tagsinput">
-					</fieldset>
-				</div>
-					{{/constant}}
-					{{else}}
-					<b>Tags:</b> 
-					{{#each user.profile.tags}}
-					<span class='label label-primary'><a href='/tags/{{urlEncode this}}' >{{this}}</a></span>
-					{{/each}}
-					{{/if}}
-				</div>
-{{#if isCurrentUser user._id}}<div class='row pull-right'><button type='submit' id='updateProfile' class='btn btn-default'>Update Profile</button></div><div class='clearfix'></div>{{/if}}
-{{#unless isCurrentUser user._id}}
-<div class='row'>
-				<div class='btn {{#if isFavorite user._id}}btn-success{{else}}btn-primary{{/if}} btn-sm toggleFavorite' data-id='{{user._id}}'>
-		{{#if isFavorite user._id}}<i class='fa fa-star-o'></i> Remove From Favorites
-		{{else}}
-		<i class='fa fa-star'></i> Add To Favorites
-		{{/if}}
-
-
-				</div> <a class='btn btn-primary btn-sm' href='/send/{{user.username}}'><i class='fa fa-arrow-circle-right'></i> Send {{user.username}} {{getOption "currencyName"}}</a> <a class='btn btn-primary btn-sm' href='/request/{{user.username}}'><i class='fa fa-arrow-circle-left'></i> Request {{getOption "currencyName"}} from {{user.username}} </a>
-</div>
-{{/unless}}
-{{#if isCurrentUser user._id}}</form>{{/if}}
+{{#if isCurrentUser user._id}}
+{{> loggedInUserProfile}}
+{{else}}
+{{> userProfile}}
+{{/if}}
 	</div>
 	<div class='row'>
 		<h3>Transactions</h3>
@@ -80,7 +38,6 @@
 	{{#each getUserTransactions user._id}}
 	<tr class='{{transactionType}}'>
 	<td>{{#with getUserById sender}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{#with getUserById recipient}}<a href='/users/{{username}}'>{{username}}</a>{{/with}}</td><td>{{amount}}</td><td>{{description}}</td><td>{{formatDate timestamp}}</td></tr>
-	</tr>
 	{{/each}}
 </tbody>
 	</table>
