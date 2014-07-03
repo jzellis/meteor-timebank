@@ -1,6 +1,6 @@
 {
   "packages": {
-    "iron-router": "0.6.4",
+    "iron-router": {},
     "bootstrap-3": {},
     "accounts-ui-bootstrap-3": {},
     "handlebars-server": {},
