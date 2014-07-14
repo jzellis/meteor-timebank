@@ -201,7 +201,7 @@ Meteor.methods({
 
         message.transactionId = Transactions.insert(transaction);
 
-                    mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Options.findOne({name: "siteURL"}).value;
+                    mailBody = "Hi there! " + Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + " on " + Options.findOne({name: "sitename"}).value + "! Go start using your newfound wealth at " + Meteor.absoluteUrl();
             if(typeof recipient.emails != "undefined"){
             try{
                 Email.send({to: recipient.emails[0].address, from: "admin@mcred.org", subject: Meteor.user().profile.name + " has sent you " + Options.findOne({name: "currencyAbbr"}).value + " " + transaction.amount + "!",text: mailBody});
