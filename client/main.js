@@ -331,11 +331,11 @@ $(document).ready(function () {
         for(i = 0; i < read.length; i++){
             Notifications.update({_id: read[i]}, {$set: {read: true}});
         }
-
+ 
 
 });
 
-},500);
+},200);
 
     
 
