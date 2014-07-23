@@ -320,10 +320,24 @@ $(document).ready(function () {
 
     });
 
+//  $('#notificationWrapper').on('hidden.bs.dropdown', function () {
+//     alert('yo');
+//                     read = [];
+//         $('#notificationList li').each(function(){
+//             read.push($(this).attr('data-id'));
 
-    Meteor.setTimeout(function(){            $('#notificationWrapper').on('hidden.bs.dropdown', function () {
-                    read = [];
-        $('#notificationList li').each(function(){
+//         });
+
+//         for(i = 0; i < read.length; i++){
+//             Notifications.update({_id: read[i]}, {$set: {read: true}});
+//         }
+ 
+
+// });
+
+$('#notificationWrapper').on('click', function(e){
+
+            $('#notificationList li').each(function(){
             read.push($(this).attr('data-id'));
 
         });
@@ -331,12 +345,8 @@ $(document).ready(function () {
         for(i = 0; i < read.length; i++){
             Notifications.update({_id: read[i]}, {$set: {read: true}});
         }
- 
 
 });
-
-},200);
-
     
 
 });
@@ -645,7 +655,12 @@ if(Meteor.users.findOne({_id: id, "profile.members" : uId})){ return true;}else{
 
 Template.navbar.rendered = function(){
 
-//         window.setTimeout(function(){
+$('#notificationIcon').on('click', function(e){
+    e.preventDefault();
+    alert ('hello');
+});
+
+//         setTimeout(function(){
 //             $('#notificationWrapper').on('hidden.bs.dropdown', function () {
 
 //                     read = [];

@@ -49,52 +49,7 @@ Template.__define__("navbar", (function() {
       return Spacebars.mustache(self.lookup("getOption"), "currencyAbbr");
     }, " ", function() {
       return Spacebars.mustache(Spacebars.dot(self.lookup("currentUser"), "profile", "balance"));
-    }, " | \n    ", HTML.SPAN({
-      "class": "dropdown",
-      id: "notificationWrapper"
-    }, "\n  ", HTML.A({
-      "class": "text-muted",
-      style: "text-decoration: none",
-      id: "notificationIcon",
-      role: "button",
-      "data-toggle": "dropdown",
-      "data-target": "notificationList"
-    }, "\n    ", HTML.I({
-      "class": "fa fa-bell"
-    }, " "), " ", HTML.SPAN({
-      "class": "label label-danger"
-    }, function() {
-      return Spacebars.mustache(self.lookup("myUnreadNotificationsCount"));
-    }), "\n  "), "\n\n\n  ", HTML.UL({
-      "class": "dropdown-menu col-md-8 list-unstyled",
-      id: "notificationList",
-      role: "menu",
-      "aria-labelledby": "notificationIcon"
-    }, "\n  ", UI.Each(function() {
-      return Spacebars.dataMustache(self.lookup("myNotifications"), 10);
-    }, UI.block(function() {
-      var self = this;
-      return [ "\n  ", HTML.LI({
-        "data-id": function() {
-          return Spacebars.mustache(self.lookup("_id"));
-        },
-        "class": [ "small col-md-12 ", UI.If(function() {
-          return Spacebars.call(self.lookup("read"));
-        }, UI.block(function() {
-          var self = this;
-          return "read";
-        }), UI.block(function() {
-          var self = this;
-          return "unread";
-        })) ]
-      }, HTML.DIV(function() {
-        return Spacebars.mustache(self.lookup("message"));
-      }), HTML.DIV({
-        "class": "small text-muted pull-right"
-      }, function() {
-        return Spacebars.mustache(self.lookup("relativeTime"), self.lookup("timestamp"));
-      }), HTML.HR()), "\n  " ];
-    })), "\n  ", HTML.Comment(" <div class='text-center small'>Show all notifications</div> "), "\n  "), "\n"), " | ", HTML.A({
+    }, " | \n", HTML.Comment(" <span class=\"dropdown\" id='notificationWrapper'>\n  <a class='text-muted' style='text-decoration: none' id=\"notificationIcon\" role=\"button\" data-toggle=\"dropdown\" data-target=\"notificationList\">\n    <i class='fa fa-bell'> </i> <span class='label label-danger'>{{myUnreadNotificationsCount}}</span>\n  </a>\n\n\n  <ul class=\"dropdown-menu col-md-8 list-unstyled\" id='notificationList' role=\"menu\" aria-labelledby=\"notificationIcon\">\n  {{#each myNotifications 10}}\n  <li data-id='{{_id}}' class='small col-md-12 {{#if read}}read{{else}}unread{{/if}}'><div>{{message}}</div><div class='small text-muted pull-right'>{{relativeTime timestamp}}</div><hr></li>\n  {{/each}}\n  </ul> | \n</span> "), "\n", HTML.A({
       "class": "logout"
     }, HTML.I({
       "class": "fa fa-unlock-alt"

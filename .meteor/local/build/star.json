@@ -9,12 +9,12 @@
     },
     {
       "name": "server",
-      "arch": "os.osx.x86_64",
+      "arch": "os.linux.x86_64",
       "path": "programs/server/start.sh"
     },
     {
       "name": "ctl",
-      "arch": "os.osx.x86_64",
+      "arch": "os.linux.x86_64",
       "path": "programs/ctl/start.sh"
     }
   ],
